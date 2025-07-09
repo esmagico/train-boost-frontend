@@ -34,18 +34,14 @@ const Home = () => {
           {!isQuestionMode ? (
             <div className="flex w-full h-full gap-6">
               <VideoPanel transcript={transcript}/>
-              <PPTSection onAskQuestion={handleAskQuestion} currentImage={transcript[0].img} />
+              <PPTSection onAskQuestion={handleAskQuestion} />
             </div>
           ) : (
             <div className="flex w-full h-full gap-6 transition-all duration-300">
               <div className="flex flex-col w-[70%] h-full">
-                <div className="p-4 bg-white rounded-xl border border-gray-200 h-[calc(100vh-120px)] min-h-[500px] transition-all duration-300">
-                  <div className="flex items-center justify-center w-full h-full bg-gray-100 rounded-lg overflow-hidden">
-                    <div className="text-center p-4">
-                      <div className="text-2xl font-bold mb-2">PowerPoint Slide (Zoomed Out)</div>
-                      <div className="text-gray-600">You can see more of the slide now in this expanded view</div>
-                    </div>
-                  </div>
+                <div className="bg-white rounded-xl h-[calc(100vh-120px)] transition-all duration-300">
+                  <PPTSection onAskQuestion={handleAskQuestion} removeAskQuestionButton={true}
+                  height = "calc(100vh - 120px)" width='100%' />
                 </div>
               </div>
               <QuestionPanel onClose={handleCloseQuestion} />
