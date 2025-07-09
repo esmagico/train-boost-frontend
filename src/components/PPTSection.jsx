@@ -1,60 +1,48 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 
 const PPTSection = ({
   onAskQuestion,
   removeAskQuestionButton = false,
   height = "calc(100vh - 220px)",
   width = "70%",
+  autoPlayDelay = 5000,
+  presentationUrl = "https://docs.google.com/presentation/d/1h2O6645kWV0kWihwFF--DKx82RykKc1L/edit?usp=drive_link&ouid=112603893642491756794&rtpof=true&sd=true", // new prop
 }) => {
-  const baseUrl =
-    "https://docs.google.com/presentation/d/1h2O6645kWV0kWihwFF--DKx82RykKc1L";
-  const googleSlidesUrl = `${baseUrl}/embed?rm=minimal&loop=true&delayms=5000&start=true&slide=1`;
   const iframeRef = useRef(null);
-  const intervalRef = useRef(null);
 
-  const goToNextSlide = () => {
-    if (iframeRef.current) {
-      // This message will be handled by Google Slides to go to the next slide
-      iframeRef.current.contentWindow.postMessage("nextslide", "*");
-    }
+  const extractPresentationId = (url) => {
+    const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    return match ? match[1] : null;
   };
 
-  useEffect(() => {
-    // Start the interval when component mounts
-    intervalRef.current = setInterval(goToNextSlide, 5000); // 5000ms = 5 seconds
-
-    // Clear interval on component unmount
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, []);
-
-  const handleClickPresentation = () => {
-    // Manually trigger next slide on click
-    goToNextSlide();
-    // Reset the interval
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = setInterval(goToNextSlide, 5000);
-    }
+  const presentationId = extractPresentationId(presentationUrl);
+  const getSlideUrl = () => {
+    if (!presentationId) return "";
+    return `https://docs.google.com/presentation/d/${presentationId}/embed?start=true&loop=true&delayms=${autoPlayDelay}&slide=1`;
   };
 
   return (
     <div className={`flex flex-col w-[${width}] h-[calc(100vh-120px)]`}>
       <div
-        onClick={handleClickPresentation}
-        className="p-4 bg-white rounded-xl border border-gray-200 min-h-[500px] relative cursor-pointer"
+        className="p-4 bg-white rounded-xl border border-gray-200 min-h-[500px] relative"
         style={{ height }}
       >
-        <iframe
-          ref={iframeRef}
-          src={googleSlidesUrl}
-          className="w-full h-full rounded-xl"
-          allowFullScreen
-          allow="autoplay"
-        />
+        {presentationId ? (
+          <iframe
+            ref={iframeRef}
+            src={getSlideUrl()}
+            className="w-full h-full rounded-xl"
+            allowFullScreen
+            allow="autoplay"
+            title="Presentation Slides"
+            frameBorder="0"
+            sandbox="allow-same-origin allow-scripts allow-popups allow-presentation"
+          />
+        ) : (
+          <div className="text-red-500 text-center">
+            Invalid Google Drive Presentation URL
+          </div>
+        )}
       </div>
       {!removeAskQuestionButton && (
         <div className="flex justify-center mt-4">
