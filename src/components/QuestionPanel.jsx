@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AnswerSection from './AnswerSection';
 
 
-const QuestionPanel = ({ onClose }) => {
+const QuestionPanel = ({ onClose,answer }) => {
   const [question, setQuestion] = useState('');
   const [showAnswer, setShowAnswer] = useState(false);
 
@@ -46,7 +46,7 @@ const QuestionPanel = ({ onClose }) => {
           </button>
         </div>
         
-        {showAnswer && <AnswerSection onClose={onClose} />}
+        {showAnswer && <AnswerSection onClose={onClose} answer={answer}/>}
       </div>
     </div>
   );

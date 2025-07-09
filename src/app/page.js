@@ -16,6 +16,8 @@ const transcript = [
   { time: 390, text: "Any questions so far?" },
 ]
 
+const answer = "Revenue growth was driven by two key factors: a surge in website traffic from our new marketing efforts, and the direct impact of Project Phoenix's launch."
+
 const Home = () => {
   const [isQuestionMode, setIsQuestionMode] = useState(false);
 
@@ -44,7 +46,7 @@ const Home = () => {
                   height = "calc(100vh - 120px)" width='100%' />
                 </div>
               </div>
-              <QuestionPanel onClose={handleCloseQuestion} />
+              <QuestionPanel onClose={handleCloseQuestion} answer={answer}/>
             </div>
           )}
         </div>
