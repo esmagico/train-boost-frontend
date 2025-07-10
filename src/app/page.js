@@ -23,6 +23,7 @@ const Home = () => {
                 <div className="bg-white rounded-xl h-[calc(100vh-120px)] transition-all duration-300">
                   <PPTSection
                     removeAskQuestionButton={true}
+                    isQuestionMode={true}
                     height="calc(100vh - 120px)"
                     width="100%"
                   />

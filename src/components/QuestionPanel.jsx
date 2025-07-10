@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import {
   setCurrentSlide,
   setIsQuestionMode,
+  setQuestionPanelPptSlide,
 } from "@/store/features/videoSlice";
 import { useSubmitQuestionMutation } from "@/store/api/questionsApi";
 
@@ -17,7 +18,6 @@ const QuestionPanel = () => {
 
   const handleSubmit = async () => {
     if (!question.trim()) return;
-
     try {
       // Submit the question and get the response
       const response = await submitQuestion({ question }).unwrap();
@@ -25,7 +25,7 @@ const QuestionPanel = () => {
       setAnswer(response.data.answer || "No answer received");
       setShowAnswer(true);
       setQuestion("");
-      // dispatch(setCurrentSlide(response.data.slide));
+      dispatch(setQuestionPanelPptSlide(1));
     } catch (error) {
       console.log("Error submitting question:", error);
       // Optionally show an error message to the user

@@ -1,17 +1,19 @@
-import { setIsQuestionMode } from "@/store/features/videoSlice";
+import { setIsQuestionMode, setQuestionPanelPptSlide } from "@/store/features/videoSlice";
 import React, { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 const PPTSection = ({
   removeAskQuestionButton = false,
+  isQuestionMode=false,
   height = "calc(100vh - 220px)",
   width = "70%",
   autoPlayDelay = 3000,
   presentationUrl = "https://docs.google.com/presentation/d/1h2O6645kWV0kWihwFF--DKx82RykKc1L/edit?usp=drive_link&ouid=112603893642491756794&rtpof=true&sd=true", // new prop
 }) => {
   const iframeRef = useRef(null);
-  const { currentSlide } = useSelector((state) => state.video);
+  const { currentSlide , questionPanelPptSlide } = useSelector((state) => state.video);
   const dispatch = useDispatch();
+  const slideNumber = isQuestionMode ? questionPanelPptSlide : currentSlide;
 
   const extractPresentationId = (url) => {
     const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
@@ -26,10 +28,10 @@ const PPTSection = ({
 
   const getSlideUrl = () => {
     if (!presentationId) return "";
-    return `https://docs.google.com/presentation/d/${presentationId}/embed?start=false&loop=false&delayms=${autoPlayDelay}&rm=minimal&slide=${currentSlide}`;
+    return `https://docs.google.com/presentation/d/${presentationId}/embed?start=false&loop=false&delayms=${autoPlayDelay}&rm=minimal&slide=${slideNumber}`;
   };
 
-  console.log(currentSlide, "currentSlide");
+  console.log(slideNumber, "slideNumber");
 
   return (
     <div className={`flex flex-col w-[${width}] h-[calc(100vh-120px)]`}>
@@ -57,7 +59,10 @@ const PPTSection = ({
       {!removeAskQuestionButton && (
         <div className="flex justify-center mt-4">
           <button
-            onClick={() => dispatch(setIsQuestionMode(true))}
+            onClick={() => {
+              dispatch(setIsQuestionMode(true));
+              dispatch(setQuestionPanelPptSlide(currentSlide));
+            }}
             className="cursor-pointer px-6 py-2 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-colors"
           >
             Ask a Question
