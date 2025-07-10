@@ -4,6 +4,7 @@ import {
 } from "@/store/features/videoSlice";
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from 'next/navigation';
 
 const dummyVideos = [
   {
@@ -58,15 +59,45 @@ const VideoPanel = ({ videos = dummyVideos }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const videoRef = useRef(null);
+  const router = useRouter();
   const dispatch = useDispatch();
   const { currentVideoIndex } = useSelector((state) => state.video);
+  const [showRedirectPopup, setShowRedirectPopup] = useState(false);
+  const [countdown, setCountdown] = useState(10);
 
   // Handle video end
   const handleVideoEnd = () => {
     if (currentVideoIndex < videos.length - 1) {
       dispatch(setCurrentVideoIndex(currentVideoIndex + 1));
       dispatch(setCurrentSlide(videos[currentVideoIndex + 1].slide));
+    } else {
+      // All videos finished, show redirect popup
+      setShowRedirectPopup(true);
     }
+  };
+
+  // Handle countdown and redirect
+  useEffect(() => {
+    if (!showRedirectPopup) return;
+
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          router.push('/test');
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [showRedirectPopup, router]);
+
+  // Close popup handler
+  const handleClosePopup = () => {
+    setShowRedirectPopup(false);
+    setCountdown(10);
   };
 
   // Play the current video when index changes
@@ -121,7 +152,38 @@ const VideoPanel = ({ videos = dummyVideos }) => {
   };
 
   return (
-    <div className="flex flex-col w-[30%] h-full">
+    <div className="flex flex-col w-[30%] h-full relative">
+      {/* Redirect Popup */}
+      {showRedirectPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
+            <h3 className="text-xl font-semibold mb-4">Training Complete!</h3>
+            <p className="mb-6">
+              Redirecting to Test Page in {countdown} seconds...
+            </p>
+            <div className="w-full bg-gray-200 rounded-full h-2.5">
+              <div 
+                className="bg-blue-600 h-2.5 rounded-full" 
+                style={{ width: `${(10 - countdown) * 10}%` }}
+              ></div>
+            </div>
+            <div className="mt-6 flex justify-end space-x-3">
+              <button
+                onClick={handleClosePopup}
+                className="px-4 py-2 rounded-full text-gray-600 hover:text-gray-800 bg-gray-100 hover:bg-gray-200"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => router.push('/test')}
+                className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700"
+              >
+                Go to Test Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="p-4 bg-white rounded-xl border border-gray-200">
         <div className="relative w-full pt-[56.25%] bg-black rounded-lg overflow-hidden">
           {" "}
@@ -138,34 +200,6 @@ const VideoPanel = ({ videos = dummyVideos }) => {
             autoPlay={true}
             controls={true}
           />
-          {/* {!isPlaying && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <button
-                className="p-3 bg-black/50 rounded-full text-white"
-                onClick={togglePlayPause}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </button>
-            </div>
-          )} */}
-          {/* <div className="absolute bottom-10 left-0 right-0 h-1 bg-gray-600/50 mx-2 cursor-pointer" onClick={handleProgressBarClick}>
-            <div 
-              className="h-full bg-red-500" 
-              style={{ width: `${(currentTime / duration) * 100 || 0}%` }}
-            />
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-2 text-sm flex justify-between items-center">
-            <span>{videos[currentVideoIndex]?.title}</span>
-            <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
-          </div> */}
         </div>
       </div>
 

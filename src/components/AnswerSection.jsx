@@ -6,6 +6,7 @@ const AnswerSection = ({answer}) => {
   const [isPlaying, setIsPlaying] = useState(true);
   const audioRef = useRef(null);
   const dispatch = useDispatch();
+  const audioLink = "http://cdn.epic.dev.esmagico.in/api/v1/download-shared-object/aHR0cDovLzEyNy4wLjAuMTo5MDAwL3NkZi8xNzE2MmU5OC0yYTg5LTQyMjAtODdhZi03MzIxZmFmNWQwZjIubXAzP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LUNyZWRlbnRpYWw9NjJPNDIxNU9DQ01WRUlKVTBWTlclMkYyMDI1MDcxMCUyRnVzLWVhc3QtMSUyRnMzJTJGYXdzNF9yZXF1ZXN0JlgtQW16LURhdGU9MjAyNTA3MTBUMTEzMTU1WiZYLUFtei1FeHBpcmVzPTQzMTk4JlgtQW16LVNlY3VyaXR5LVRva2VuPWV5SmhiR2NpT2lKSVV6VXhNaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpoWTJObGMzTkxaWGtpT2lJMk1rODBNakUxVDBORFRWWkZTVXBWTUZaT1Z5SXNJbVY0Y0NJNk1UYzFNakU1TURJNU15d2ljR0Z5Wlc1MElqb2liVGR2UjA5RllucFhZVEY1VkU1QkluMC5PS3pSOUZsOXdPSXFFakZ0dFhqRDVFaFJzaDM4RmdxeHlHUFFWMlYtZjg2M1AwVDdlNXRGUVNieEc4bHFsODROR0Nfd0YydlEtSmJOeHFvVXF3VzNmQSZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmdmVyc2lvbklkPW51bGwmWC1BbXotU2lnbmF0dXJlPTUzNGFlYTRiN2JiYWRhNzJhYWUxZTFkZGUxNjAyZDQ1MDM1MWY5MzllNGQyNGEwYjRlMGFjNmVmYmIwMTZlMzE";
 
   useEffect(() => {
     // Auto-play the audio when component mounts
@@ -58,7 +59,7 @@ const AnswerSection = ({answer}) => {
       <audio
         ref={audioRef}
         autoPlay
-        src="http://webaudioapi.com/samples/audio-tag/chrono.mp3"
+        src={audioLink}
         onEnded={handleAudioEnd}
         className="w-full"
       />
