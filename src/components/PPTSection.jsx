@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useState, useRef } from "react";
 
 const PPTSection = ({
   onAskQuestion,
@@ -6,6 +6,8 @@ const PPTSection = ({
   height = "calc(100vh - 220px)",
   width = "70%",
   autoPlayDelay = 5000,
+  currentSlide = 1,
+  setCurrentSlide=()=>{},
   presentationUrl = "https://docs.google.com/presentation/d/1h2O6645kWV0kWihwFF--DKx82RykKc1L/edit?usp=drive_link&ouid=112603893642491756794&rtpof=true&sd=true", // new prop
 }) => {
   const iframeRef = useRef(null);
@@ -18,8 +20,11 @@ const PPTSection = ({
   const presentationId = extractPresentationId(presentationUrl);
   const getSlideUrl = () => {
     if (!presentationId) return "";
-    return `https://docs.google.com/presentation/d/${presentationId}/embed?start=true&loop=true&delayms=${autoPlayDelay}&slide=1`;
+    return `https://docs.google.com/presentation/d/${presentationId}/embed?start=true&loop=true&delayms=${autoPlayDelay}&slide=${currentSlide}`;
   };
+
+
+  console.log(currentSlide, "currentSlide")
 
   return (
     <div className={`flex flex-col w-[${width}] h-[calc(100vh-120px)]`}>

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 
 const dummyVideos = [
   {
-    slide:1,
+    slide: 1,
     trainer_video: [
       "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     ],
@@ -11,7 +11,7 @@ const dummyVideos = [
     title: "Big Buck Bunny",
   },
   {
-    slide:2,
+    slide: 2,
     trainer_video: [
       "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
     ],
@@ -20,7 +20,7 @@ const dummyVideos = [
     title: "Elephant Dream",
   },
   {
-    slide:3,
+    slide: 3,
     trainer_video: [
       "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
     ],
@@ -29,7 +29,7 @@ const dummyVideos = [
     title: "Sintel",
   },
   {
-    slide:4,
+    slide: 4,
     trainer_video: [
       "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
     ],
@@ -38,7 +38,7 @@ const dummyVideos = [
     title: "For Bigger Blazes",
   },
   {
-    slide:5,
+    slide: 5,
     trainer_video: [
       "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
     ],
@@ -46,12 +46,10 @@ const dummyVideos = [
       "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerEscapes.jpg",
     title: "For Bigger Escape",
   },
-]
+];
 
-const VideoPanel = ({videos=dummyVideos}) => {
-  
-
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+const VideoPanel = ({ videos = dummyVideos, setCurrentSlide , currentVideoIndex , setCurrentVideoIndex}) => {
+ 
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -105,12 +103,12 @@ const VideoPanel = ({videos=dummyVideos}) => {
 
   const handleProgressBarClick = (e) => {
     if (!videoRef.current) return;
-    
+
     const progressBar = e.currentTarget;
     const clickPosition = e.clientX - progressBar.getBoundingClientRect().left;
     const progressBarWidth = progressBar.clientWidth;
     const seekTime = (clickPosition / progressBarWidth) * duration;
-    
+
     videoRef.current.currentTime = seekTime;
     setCurrentTime(seekTime);
   };
@@ -177,7 +175,10 @@ const VideoPanel = ({videos=dummyVideos}) => {
                   ? "bg-blue-50 border-l-4 border-blue-500"
                   : "hover:bg-gray-50 border-l-4 border-transparent"
               }`}
-              onClick={() => handleTranscriptClick(index)}
+              onClick={() => {
+                handleTranscriptClick(index);
+                setCurrentSlide(video.slide);
+              }}
             >
               <img
                 src={video.thumb}

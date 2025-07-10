@@ -20,6 +20,8 @@ const answer = "Revenue growth was driven by two key factors: a surge in website
 
 const Home = () => {
   const [isQuestionMode, setIsQuestionMode] = useState(false);
+   const [currentSlide, setCurrentSlide] = useState(1);
+    const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
   const handleAskQuestion = () => {
     setIsQuestionMode(true);
@@ -35,15 +37,15 @@ const Home = () => {
         <div className="flex flex-1 p-6 overflow-hidden">
           {!isQuestionMode ? (
             <div className="flex w-full h-full gap-6">
-              <VideoPanel transcript={transcript}/>
-              <PPTSection onAskQuestion={handleAskQuestion} />
+              <VideoPanel transcript={transcript} setCurrentSlide={setCurrentSlide} currentVideoIndex={currentVideoIndex} setCurrentVideoIndex={setCurrentVideoIndex}/>
+              <PPTSection onAskQuestion={handleAskQuestion} currentSlide={currentSlide} setCurrentSlide={setCurrentSlide} />
             </div>
           ) : (
             <div className="flex w-full h-full gap-6 transition-all duration-300">
               <div className="flex flex-col w-[70%] h-full">
                 <div className="bg-white rounded-xl h-[calc(100vh-120px)] transition-all duration-300">
                   <PPTSection onAskQuestion={handleAskQuestion} removeAskQuestionButton={true}
-                  height = "calc(100vh - 120px)" width='100%' />
+                  height = "calc(100vh - 120px)" width='100%' currentSlide={currentSlide} setCurrentSlide={setCurrentSlide} />
                 </div>
               </div>
               <QuestionPanel onClose={handleCloseQuestion} answer={answer}/>
