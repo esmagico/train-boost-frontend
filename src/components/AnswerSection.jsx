@@ -2,12 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setIsQuestionMode } from "@/store/features/videoSlice";
 
-const AnswerSection = () => {
+const AnswerSection = ({answer}) => {
   const [isPlaying, setIsPlaying] = useState(true);
   const audioRef = useRef(null);
   const dispatch = useDispatch();
-  const answer =
-    "Revenue growth was driven by two key factors: a surge in website traffic from our new marketing efforts, and the direct impact of Project Phoenix's launch.";
 
   useEffect(() => {
     // Auto-play the audio when component mounts

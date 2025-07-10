@@ -23,24 +23,24 @@ export const questionsApi = createApi({
     }),
     
     // Get all questions
-    getQuestions: builder.query({
-      query: () => 'questions',
-      providesTags: (result = [], error, arg) => [
-        'Question',
-        ...result.map(({ id }) => ({ type: 'Question', id })),
-      ],
-    }),
+    // getQuestions: builder.query({
+    //   query: () => 'questions',
+    //   providesTags: (result = [], error, arg) => [
+    //     'Question',
+    //     ...result.map(({ id }) => ({ type: 'Question', id })),
+    //   ],
+    // }),
     
-    // Get a single question by ID
-    getQuestionById: builder.query({
-      query: (id) => `questions/${id}`,
-      providesTags: (result, error, id) => [{ type: 'Question', id }],
-    }),
+    // // Get a single question by ID
+    // getQuestionById: builder.query({
+    //   query: (id) => `questions/${id}`,
+    //   providesTags: (result, error, id) => [{ type: 'Question', id }],
+    // }),
   }),
 });
 
 export const {
   useSubmitQuestionMutation,
-  useGetQuestionsQuery,
-  useGetQuestionByIdQuery,
+  // useGetQuestionsQuery,
+  // useGetQuestionByIdQuery,
 } = questionsApi;
