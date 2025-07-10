@@ -1,17 +1,23 @@
-import { setIsQuestionMode, setQuestionPanelPptSlide } from "@/store/features/videoSlice";
+import {
+  setIsQuestionMode,
+  setQuestionPanelPptSlide,
+} from "@/store/features/videoSlice";
 import React, { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 const PPTSection = ({
+  loading = false,
   removeAskQuestionButton = false,
-  isQuestionMode=false,
+  isQuestionMode = false,
   height = "calc(100vh - 220px)",
   width = "70%",
   autoPlayDelay = 3000,
   presentationUrl = "https://docs.google.com/presentation/d/1h2O6645kWV0kWihwFF--DKx82RykKc1L/edit?usp=drive_link&ouid=112603893642491756794&rtpof=true&sd=true", // new prop
 }) => {
   const iframeRef = useRef(null);
-  const { currentSlide , questionPanelPptSlide } = useSelector((state) => state.video);
+  const { currentSlide, questionPanelPptSlide } = useSelector(
+    (state) => state.video
+  );
   const dispatch = useDispatch();
   const slideNumber = isQuestionMode ? questionPanelPptSlide : currentSlide;
 
@@ -31,7 +37,28 @@ const PPTSection = ({
     return `https://docs.google.com/presentation/d/${presentationId}/embed?start=false&loop=false&delayms=${autoPlayDelay}&rm=minimal&slide=${slideNumber}`;
   };
 
-  console.log(slideNumber, "slideNumber");
+  if (loading) {
+    return (
+      <div className={`flex flex-col w-[${width}] h-[calc(100vh-120px)]`}>
+        <div
+          className="p-4 bg-white rounded-xl border border-gray-200 min-h-[500px] relative animate-pulse"
+          style={{ height }}
+        >
+          <div className="w-full h-full bg-gray-200 rounded-xl flex items-center justify-center">
+            <div className="text-center space-y-4">
+              <div className="h-8 w-48 bg-gray-300 rounded mx-auto"></div>
+              <div className="h-4 w-32 bg-gray-300 rounded mx-auto"></div>
+            </div>
+          </div>
+        </div>
+        {!removeAskQuestionButton && (
+          <div className="flex justify-center mt-4">
+            <div className="h-10 w-40 bg-gray-200 rounded-full"></div>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className={`flex flex-col w-[${width}] h-[calc(100vh-120px)]`}>
@@ -43,7 +70,7 @@ const PPTSection = ({
           <iframe
             ref={iframeRef}
             src={getSlideUrl()}
-            className="w-full h-full rounded-xl"
+            className="w-full h-full rounded-xl pointer-events-none"
             allowFullScreen
             allow="autoplay"
             title="Presentation Slides"

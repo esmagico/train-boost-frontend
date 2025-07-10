@@ -4,8 +4,6 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ;
 const PRESENTATION_ID = process.env.NEXT_PUBLIC_PRESENTATION_ID ;
 
-console.log(API_BASE_URL, PRESENTATION_ID,"API_BASE_URL, PRESENTATION_ID")
-
 export const questionsApi = createApi({
   reducerPath: 'questionsApi',
   baseQuery: fetchBaseQuery({ 
@@ -23,11 +21,16 @@ export const questionsApi = createApi({
       query: () => `presentations/${PRESENTATION_ID}/quiz`,
       providesTags: ['Question'],
     }),
+
+    getAllVideo: builder.query({
+      query: () => `video/${PRESENTATION_ID}`,
+      providesTags: ['Question'],
+    }),
     
     // Submit a new question
     submitQuestion: builder.mutation({
       query: (questionData) => ({
-        url: `qa/${questionData.quiz_id || PRESENTATION_ID}`,
+        url: `qa/${PRESENTATION_ID}`,
         method: 'POST',
         body: questionData,
       }),
@@ -41,4 +44,5 @@ export const questionsApi = createApi({
 export const {
   useGetQuizQuery,
   useSubmitQuestionMutation,
+  useGetAllVideoQuery,
 } = questionsApi;

@@ -5,56 +5,10 @@ import {
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from 'next/navigation';
+import { useGetAllVideoQuery } from "@/store/api/questionsApi";
 
-const dummyVideos = [
-  {
-    slide: 1,
-    trainer_video: [
-      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-    ],
-    thumb:
-      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg",
-    title: "Big Buck Bunny",
-  },
-  {
-    slide: 2,
-    trainer_video: [
-      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-    ],
-    thumb:
-      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ElephantsDream.jpg",
-    title: "Elephant Dream",
-  },
-  {
-    slide: 3,
-    trainer_video: [
-      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
-    ],
-    thumb:
-      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/Sintel.jpg",
-    title: "Sintel",
-  },
-  {
-    slide: 4,
-    trainer_video: [
-      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    ],
-    thumb:
-      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerBlazes.jpg",
-    title: "For Bigger Blazes",
-  },
-  {
-    slide: 5,
-    trainer_video: [
-      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-    ],
-    thumb:
-      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerEscapes.jpg",
-    title: "For Bigger Escape",
-  },
-];
 
-const VideoPanel = ({ videos = dummyVideos }) => {
+const VideoPanel = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -65,9 +19,13 @@ const VideoPanel = ({ videos = dummyVideos }) => {
   const [showRedirectPopup, setShowRedirectPopup] = useState(false);
   const [countdown, setCountdown] = useState(10);
 
+  const { data, isLoading, isError } = useGetAllVideoQuery();
+  const videos = data?.trainBoost;
+  console.log("data", videos)
+
   // Handle video end
   const handleVideoEnd = () => {
-    if (currentVideoIndex < videos.length - 1) {
+    if (currentVideoIndex < videos?.length - 1) {
       dispatch(setCurrentVideoIndex(currentVideoIndex + 1));
       dispatch(setCurrentSlide(videos[currentVideoIndex + 1].slide));
     } else {
@@ -190,13 +148,13 @@ const VideoPanel = ({ videos = dummyVideos }) => {
           {/* 16:9 Aspect Ratio */}
           <video
             ref={videoRef}
-            src={videos[currentVideoIndex]?.trainer_video[0]}
+            src={videos?.[currentVideoIndex]?.trainer_video}
             className="absolute top-0 left-0 w-full h-full object-cover"
             onEnded={handleVideoEnd}
             onTimeUpdate={(e) => setCurrentTime(e.target.currentTime)}
             onLoadedMetadata={(e) => setDuration(e.target.duration)}
             onClick={togglePlayPause}
-            poster={videos[currentVideoIndex]?.thumb}
+            poster={videos?.[currentVideoIndex]?.thumb}
             autoPlay={true}
             controls={true}
           />
@@ -205,10 +163,10 @@ const VideoPanel = ({ videos = dummyVideos }) => {
 
       <div className="mt-4 p-4 bg-white rounded-xl border border-gray-200 flex-1">
         <h3 className="font-medium mb-3">
-          Video Playlist ({videos.length} videos)
+          Video Playlist ({videos?.length} videos)
         </h3>
         <div className="space-y-3 text-sm max-h-[calc(100vh-497px)] overflow-y-auto">
-          {videos.map((video, index) => (
+          {videos?.map((video, index) => (
             <div
               key={index}
               className={`flex items-center p-2 rounded cursor-pointer transition-colors ${

@@ -12,6 +12,7 @@ const QuestionPanel = () => {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [showAnswer, setShowAnswer] = useState(false);
+  const [audioLink, setAudioLink] = useState("");
   const dispatch = useDispatch();
   const [submitQuestion, { isLoading, isError, error }] =
     useSubmitQuestionMutation();
@@ -21,11 +22,13 @@ const QuestionPanel = () => {
     try {
       // Submit the question and get the response
       const response = await submitQuestion({ question }).unwrap();
+      console.log(response)
       // Store the answer from the response
-      setAnswer(response.data.answer || "No answer received");
+      setAnswer(response?.trainBoost?.answer || "No answer received");
+      setAudioLink(response?.trainBoost?.audio_url || "");
+      dispatch(setQuestionPanelPptSlide(response?.trainBoost?.primary_jump_target));
       setShowAnswer(true);
       setQuestion("");
-      dispatch(setQuestionPanelPptSlide(1));
     } catch (error) {
       console.log("Error submitting question:", error);
       // Optionally show an error message to the user
@@ -77,7 +80,7 @@ const QuestionPanel = () => {
           </button>
         </div>
 
-        {showAnswer && <AnswerSection answer={answer} />}
+        {showAnswer && <AnswerSection answer={answer} audioLink={audioLink} />}
       </div>
     </div>
   );
