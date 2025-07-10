@@ -34,19 +34,17 @@ const QuestionPanel = () => {
     }
   };
 
-  console.log(isLoading, isError, error);
-
   return (
     <div className="flex flex-col w-[30%] h-full">
       <div className="bg-white rounded-xl border border-gray-200 p-4 h-[calc(100vh-120px)] overflow-y-auto">
-        <div className="mb-6">
+        {/* <div className="mb-6">
           <h3 className="font-medium mb-2">
             Transcript at time of question (00:45)
           </h3>
           <p className="p-3 bg-gray-50 rounded">
             "Welcome to today's training session."
           </p>
-        </div>
+        </div> */}
 
         <div className="mb-6">
           <h3 className="font-medium mb-2">Your Question</h3>

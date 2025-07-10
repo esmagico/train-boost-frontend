@@ -252,7 +252,7 @@ export default function TestPage() {
             <div className="flex justify-center space-x-4">
               <button
                 onClick={() => router.push(isPerfectScore ? '/congratulations' : '/')}
-                className={`px-6 py-3 rounded-full font-medium text-white ${
+                className={`cursor-pointer px-4 py-2 rounded-full font-medium text-white ${
                   isPerfectScore 
                     ? 'bg-green-600 hover:bg-green-700' 
                     : 'bg-blue-600 hover:bg-blue-700'
@@ -264,7 +264,7 @@ export default function TestPage() {
               {!isPerfectScore && (
                 <button
                   onClick={handleRetry}
-                  className="px-6 py-3 rounded-full font-medium text-gray-700 bg-gray-100 hover:bg-gray-200"
+                  className="cursor-pointer px-4 py-2 rounded-full font-medium text-gray-700 bg-gray-100 hover:bg-gray-200"
                 >
                   Try Again
                 </button>
@@ -326,7 +326,7 @@ export default function TestPage() {
               className={`px-4 py-2 rounded-full ${
                 currentQuestionIndex === 0 
                   ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                  : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                  : 'bg-gray-200 text-gray-800 hover:bg-gray-300 cursor-pointer'
               }`}
             >
               Previous
@@ -336,10 +336,10 @@ export default function TestPage() {
               <button
                 onClick={handleSubmit}
                 disabled={!answers[currentQuestion.question_id]}
-                className={`px-6 py-2 rounded-full font-medium ${
+                className={`px-4 py-2 rounded-full font-medium ${
                   !answers[currentQuestion.question_id]
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-green-600 text-white hover:bg-green-700'
+                    : 'bg-green-600 text-white hover:bg-green-700 cursor-pointer'
                 }`}
               >
                 Submit Test
@@ -348,10 +348,10 @@ export default function TestPage() {
               <button
                 onClick={handleNext}
                 disabled={!answers[currentQuestion.question_id]}
-                className={`px-6 py-2 rounded-full font-medium ${
+                className={`px-4 py-2 rounded-full font-medium ${
                   !answers[currentQuestion.question_id]
                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                    : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
                 }`}
               >
                 Next

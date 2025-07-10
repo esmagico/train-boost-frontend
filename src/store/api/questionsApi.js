@@ -1,9 +1,15 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+// Get environment variables with fallbacks
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ;
+const PRESENTATION_ID = process.env.NEXT_PUBLIC_PRESENTATION_ID ;
+
+console.log(API_BASE_URL, PRESENTATION_ID,"API_BASE_URL, PRESENTATION_ID")
+
 export const questionsApi = createApi({
   reducerPath: 'questionsApi',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: '/api/',
+    baseUrl: API_BASE_URL,
     prepareHeaders: (headers) => {
       // Add any auth headers here if needed
       // headers.set('Authorization', `Bearer ${token}`);
@@ -12,35 +18,27 @@ export const questionsApi = createApi({
   }),
   tagTypes: ['Question'],
   endpoints: (builder) => ({
+    // Get quiz data
+    getQuiz: builder.query({
+      query: () => `presentations/${PRESENTATION_ID}/quiz`,
+      providesTags: ['Question'],
+    }),
+    
     // Submit a new question
     submitQuestion: builder.mutation({
       query: (questionData) => ({
-        url: 'questions',
+        url: `qa/${questionData.quiz_id || PRESENTATION_ID}`,
         method: 'POST',
         body: questionData,
       }),
       invalidatesTags: ['Question'],
     }),
     
-    // Get all questions
-    // getQuestions: builder.query({
-    //   query: () => 'questions',
-    //   providesTags: (result = [], error, arg) => [
-    //     'Question',
-    //     ...result.map(({ id }) => ({ type: 'Question', id })),
-    //   ],
-    // }),
-    
-    // // Get a single question by ID
-    // getQuestionById: builder.query({
-    //   query: (id) => `questions/${id}`,
-    //   providesTags: (result, error, id) => [{ type: 'Question', id }],
-    // }),
+  
   }),
 });
 
 export const {
+  useGetQuizQuery,
   useSubmitQuestionMutation,
-  // useGetQuestionsQuery,
-  // useGetQuestionByIdQuery,
 } = questionsApi;
