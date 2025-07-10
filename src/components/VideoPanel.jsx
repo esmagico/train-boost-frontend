@@ -20,7 +20,7 @@ const VideoPanel = () => {
   const [countdown, setCountdown] = useState(10);
 
   const { data, isLoading, isError } = useGetAllVideoQuery();
-  const videos = data?.trainBoost;
+  const videos = data?.data;
   console.log("data", videos)
 
   // Handle video end
@@ -35,22 +35,26 @@ const VideoPanel = () => {
   };
 
   // Handle countdown and redirect
-  useEffect(() => {
-    if (!showRedirectPopup) return;
+useEffect(() => {
+  if (!showRedirectPopup) return;
 
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          router.push('/test');
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+  const timer = setInterval(() => {
+    setCountdown((prev) => {
+      if (prev <= 1) {
+        clearInterval(timer);
+        return 0;
+      }
+      return prev - 1;
+    });
+  }, 1000);
 
-    return () => clearInterval(timer);
-  }, [showRedirectPopup, router]);
+  // Handle the navigation in a separate effect
+  if (countdown === 0) {
+    router.push('/test');
+  }
+
+  return () => clearInterval(timer);
+}, [showRedirectPopup, countdown, router]);
 
   // Close popup handler
   const handleClosePopup = () => {

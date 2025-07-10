@@ -24,9 +24,9 @@ const QuestionPanel = () => {
       const response = await submitQuestion({ question }).unwrap();
       console.log(response)
       // Store the answer from the response
-      setAnswer(response?.trainBoost?.answer || "No answer received");
-      setAudioLink(response?.trainBoost?.audio_url || "");
-      dispatch(setQuestionPanelPptSlide(response?.trainBoost?.primary_jump_target));
+      setAnswer(response?.data?.answer || "No answer received");
+      setAudioLink(response?.data?.audio_url || "");
+      dispatch(setQuestionPanelPptSlide(response?.data?.primary_jump_target));
       setShowAnswer(true);
       setQuestion("");
     } catch (error) {

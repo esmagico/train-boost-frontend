@@ -14,7 +14,7 @@ export default function TestPage() {
   
   // Fetch quiz data
   const { data, isLoading, isError } = useGetQuizQuery();
-  const quizData = data?.trainBoost;
+  const quizData = data?.data;
   console.log("quizData", quizData)
   
   // Show loading state while fetching data
