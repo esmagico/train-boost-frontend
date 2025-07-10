@@ -1,16 +1,17 @@
+import { setIsQuestionMode } from "@/store/features/videoSlice";
 import React, { useState, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 const PPTSection = ({
-  onAskQuestion,
   removeAskQuestionButton = false,
   height = "calc(100vh - 220px)",
   width = "70%",
-  autoPlayDelay = 5000,
-  currentSlide = 1,
-  setCurrentSlide=()=>{},
+  autoPlayDelay = 3000,
   presentationUrl = "https://docs.google.com/presentation/d/1h2O6645kWV0kWihwFF--DKx82RykKc1L/edit?usp=drive_link&ouid=112603893642491756794&rtpof=true&sd=true", // new prop
 }) => {
   const iframeRef = useRef(null);
+  const { currentSlide } = useSelector((state) => state.video);
+  const dispatch = useDispatch();
 
   const extractPresentationId = (url) => {
     const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
@@ -18,13 +19,17 @@ const PPTSection = ({
   };
 
   const presentationId = extractPresentationId(presentationUrl);
+  // const getSlideUrl = () => {
+  //   if (!presentationId) return "";
+  //   return `https://docs.google.com/presentation/d/${presentationId}/embed?start=true&loop=true&delayms=${autoPlayDelay}&slide=${currentSlide}`;
+  // };
+
   const getSlideUrl = () => {
     if (!presentationId) return "";
-    return `https://docs.google.com/presentation/d/${presentationId}/embed?start=true&loop=true&delayms=${autoPlayDelay}&slide=${currentSlide}`;
+    return `https://docs.google.com/presentation/d/${presentationId}/embed?start=false&loop=false&delayms=${autoPlayDelay}&rm=minimal&slide=${currentSlide}`;
   };
 
-
-  console.log(currentSlide, "currentSlide")
+  console.log(currentSlide, "currentSlide");
 
   return (
     <div className={`flex flex-col w-[${width}] h-[calc(100vh-120px)]`}>
@@ -52,7 +57,7 @@ const PPTSection = ({
       {!removeAskQuestionButton && (
         <div className="flex justify-center mt-4">
           <button
-            onClick={onAskQuestion}
+            onClick={() => dispatch(setIsQuestionMode(true))}
             className="cursor-pointer px-6 py-2 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-colors"
           >
             Ask a Question

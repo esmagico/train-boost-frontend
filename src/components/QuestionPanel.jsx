@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import AnswerSection from './AnswerSection';
+import { useDispatch } from 'react-redux';
+import { setIsQuestionMode } from '@/store/features/videoSlice';
 
 
 const QuestionPanel = ({ onClose,answer }) => {
   const [question, setQuestion] = useState('');
   const [showAnswer, setShowAnswer] = useState(false);
+  const dispatch = useDispatch();
 
   const handleSubmit = () => {
     if (question.trim()) {
@@ -33,7 +36,7 @@ const QuestionPanel = ({ onClose,answer }) => {
         
         <div className="flex justify-end space-x-3">
           <button
-            onClick={onClose}
+            onClick={() => dispatch(setIsQuestionMode(false))}
             className="cursor-pointer px-6 py-2 border border-gray-300 rounded-full font-medium text-gray-700 hover:bg-gray-50 transition-colors"
           >
             Cancel

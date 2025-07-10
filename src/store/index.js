@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { questionsApi } from './api/questionsApi';
-import questionsReducer from './features/questionsSlice';
+import videoReducer from './features/videoSlice';
 
 export const store = configureStore({
   reducer: {
     [questionsApi.reducerPath]: questionsApi.reducer,
-    questions: questionsReducer,
+    video: videoReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(questionsApi.middleware),

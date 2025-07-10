@@ -1,4 +1,9 @@
+import {
+  setCurrentSlide,
+  setCurrentVideoIndex,
+} from "@/store/features/videoSlice";
 import React, { useState, useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const dummyVideos = [
   {
@@ -48,17 +53,19 @@ const dummyVideos = [
   },
 ];
 
-const VideoPanel = ({ videos = dummyVideos, setCurrentSlide , currentVideoIndex , setCurrentVideoIndex}) => {
- 
+const VideoPanel = ({ videos = dummyVideos }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const videoRef = useRef(null);
+  const dispatch = useDispatch();
+  const { currentVideoIndex } = useSelector((state) => state.video);
 
   // Handle video end
   const handleVideoEnd = () => {
     if (currentVideoIndex < videos.length - 1) {
-      setCurrentVideoIndex((prev) => prev + 1);
+      dispatch(setCurrentVideoIndex(currentVideoIndex + 1));
+      dispatch(setCurrentSlide(videos[currentVideoIndex + 1].slide));
     }
   };
 
@@ -83,7 +90,7 @@ const VideoPanel = ({ videos = dummyVideos, setCurrentSlide , currentVideoIndex 
 
   // Handle transcript item click
   const handleTranscriptClick = (index) => {
-    setCurrentVideoIndex(index);
+    dispatch(setCurrentVideoIndex(index));
     setIsPlaying(true);
   };
 
@@ -166,7 +173,7 @@ const VideoPanel = ({ videos = dummyVideos, setCurrentSlide , currentVideoIndex 
         <h3 className="font-medium mb-3">
           Video Playlist ({videos.length} videos)
         </h3>
-        <div className="space-y-3 text-sm max-h-[calc(100vh-520px)] overflow-y-auto">
+        <div className="space-y-3 text-sm max-h-[calc(100vh-497px)] overflow-y-auto">
           {videos.map((video, index) => (
             <div
               key={index}
@@ -177,7 +184,7 @@ const VideoPanel = ({ videos = dummyVideos, setCurrentSlide , currentVideoIndex 
               }`}
               onClick={() => {
                 handleTranscriptClick(index);
-                setCurrentSlide(video.slide);
+                dispatch(setCurrentSlide(video.slide));
               }}
             >
               <img
