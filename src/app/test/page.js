@@ -13,9 +13,7 @@ export default function TestPage() {
   const [showResult, setShowResult] = useState(false);
   
   // Fetch quiz data
-  const { data, isLoading, isError } = useGetQuizQuery();
-  const quizData = data?.data;
-  console.log("quizData", quizData)
+  const { data: quizData, isLoading, isError } = useGetQuizQuery();
   
   // Show loading state while fetching data
   if (isLoading) {

@@ -186,7 +186,7 @@ const VideoPanel = ({videos=[], loading = true}) => {
             onTimeUpdate={(e) => setCurrentTime(e.target.currentTime)}
             onLoadedMetadata={(e) => setDuration(e.target.duration)}
             onClick={togglePlayPause}
-            poster={videos?.[currentVideoIndex]?.thumb}
+            poster={videos?.[currentVideoIndex]?.thumbnail}
             autoPlay={true}
             controls={true}
           />
@@ -212,12 +212,12 @@ const VideoPanel = ({videos=[], loading = true}) => {
               }}
             >
               <img
-                src={video?.thumb}
+                src={video?.thumbnail}
                 alt="Thumbnail"
                 className="w-16 h-12 object-cover rounded mr-3"
               />
               <div className="flex-1 min-w-0">
-                <p className="font-medium truncate">{video?.title}</p>
+                <p className="font-medium truncate">{video?.title || "Video " + (index + 1)}</p>
               </div>
             </div>
           ))}

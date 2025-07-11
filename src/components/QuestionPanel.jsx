@@ -22,11 +22,11 @@ const QuestionPanel = () => {
     try {
       // Submit the question and get the response
       const response = await submitQuestion({ question }).unwrap();
-      console.log(response)
+      console.log(response,"response")
       // Store the answer from the response
-      setAnswer(response?.data?.answer || "No answer received");
-      setAudioLink(response?.data?.audio_url || "");
-      dispatch(setQuestionPanelPptSlide(response?.data?.primary_jump_target));
+      setAnswer(response?.answer || "No answer received");
+      setAudioLink(response?.audio_url || "");
+      dispatch(setQuestionPanelPptSlide(response?.primary_jump_target));
       setShowAnswer(true);
       setQuestion("");
     } catch (error) {
@@ -65,7 +65,7 @@ const QuestionPanel = () => {
             onClick={() => dispatch(setIsQuestionMode(false))}
             className="cursor-pointer px-6 py-2 border border-gray-300 rounded-full font-medium text-gray-700 hover:bg-gray-50 transition-colors"
           >
-            Cancel
+            Back
           </button>
           <button
             onClick={handleSubmit}

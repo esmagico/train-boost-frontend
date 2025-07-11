@@ -18,7 +18,7 @@ const Home = () => {
           {!isQuestionMode ? (
             <div className="flex w-full h-full gap-6">
               <VideoPanel videos={videos} loading={isLoading}/>
-              <PPTSection loading={isLoading} />
+              <PPTSection loading={isLoading} presentationUrl="https://docs.google.com/presentation/d/1yyZtqREBI0fS6zZ2HlKMwGnrUwO6VXab/edit?slide=id.p1#slide=id.p1" />
             </div>
           ) : (
             <div className="flex w-full h-full gap-6 transition-all duration-300">

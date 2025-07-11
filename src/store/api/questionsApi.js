@@ -23,7 +23,7 @@ export const questionsApi = createApi({
     }),
 
     getAllVideo: builder.query({
-      query: () => `video/${PRESENTATION_ID}`,
+      query: () => `presentations/${PRESENTATION_ID}/slides`,
       providesTags: ['Question'],
     }),
     

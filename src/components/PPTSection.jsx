@@ -27,6 +27,7 @@ const PPTSection = ({
   };
 
   const presentationId = extractPresentationId(presentationUrl);
+  // const presentationId = "1yyZtqREBI0fS6zZ2HlKMwGnrUwO6VXab"
   // const getSlideUrl = () => {
   //   if (!presentationId) return "";
   //   return `https://docs.google.com/presentation/d/${presentationId}/embed?start=true&loop=true&delayms=${autoPlayDelay}&slide=${currentSlide}`;
