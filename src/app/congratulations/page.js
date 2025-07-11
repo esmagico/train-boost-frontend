@@ -46,7 +46,7 @@ export default function CongratulationsPage() {
           
           <div className="bg-blue-50 p-4 rounded-lg mb-8">
             <p className="text-blue-700">
-              You've successfully completed the training and passed the assessment with flying colors!
+              You&apos;ve successfully completed the training and passed the assessment with flying colors!
             </p>
           </div>
           
