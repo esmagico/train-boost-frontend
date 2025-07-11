@@ -7,8 +7,37 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from 'next/navigation';
 import { useGetAllVideoQuery } from "@/store/api/questionsApi";
 
+// Skeleton Loader Component
+const VideoSkeleton = () => (
+  <div className="flex flex-col w-[30%] h-full">
+    {/* Video Player Skeleton */}
+    <div className="p-4 bg-white rounded-xl border border-gray-200">
+      <div className="relative w-full pt-[56.25%] bg-gray-100 rounded-lg overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-16 h-16 rounded-full bg-gray-200 animate-pulse"></div>
+        </div>
+      </div>
+    </div>
 
-const VideoPanel = () => {
+    {/* Playlist Skeleton */}
+    <div className="mt-4 p-4 bg-white rounded-xl border border-gray-200 flex-1">
+      <div className="h-6 w-1/3 bg-gray-200 rounded mb-4"></div>
+      <div className="space-y-3">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="flex items-center p-2">
+            <div className="w-16 h-12 bg-gray-100 rounded mr-3 animate-pulse"></div>
+            <div className="flex-1">
+              <div className="h-4 bg-gray-100 rounded w-3/4 mb-1"></div>
+              <div className="h-3 bg-gray-50 rounded w-1/2"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+const VideoPanel = ({videos=[], loading = true}) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -19,48 +48,26 @@ const VideoPanel = () => {
   const [showRedirectPopup, setShowRedirectPopup] = useState(false);
   const [countdown, setCountdown] = useState(10);
 
-  const { data, isLoading, isError } = useGetAllVideoQuery();
-  const videos = data?.data;
-  console.log("data", videos)
-
-  // Handle video end
-  const handleVideoEnd = () => {
-    if (currentVideoIndex < videos?.length - 1) {
-      dispatch(setCurrentVideoIndex(currentVideoIndex + 1));
-      dispatch(setCurrentSlide(videos[currentVideoIndex + 1].slide));
-    } else {
-      // All videos finished, show redirect popup
-      setShowRedirectPopup(true);
-    }
-  };
-
   // Handle countdown and redirect
-useEffect(() => {
-  if (!showRedirectPopup) return;
+  useEffect(() => {
+    if (!showRedirectPopup) return;
 
-  const timer = setInterval(() => {
-    setCountdown((prev) => {
-      if (prev <= 1) {
-        clearInterval(timer);
-        return 0;
-      }
-      return prev - 1;
-    });
-  }, 1000);
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
 
-  // Handle the navigation in a separate effect
-  if (countdown === 0) {
-    router.push('/test');
-  }
+    if (countdown === 0) {
+      router.push('/test');
+    }
 
-  return () => clearInterval(timer);
-}, [showRedirectPopup, countdown, router]);
-
-  // Close popup handler
-  const handleClosePopup = () => {
-    setShowRedirectPopup(false);
-    setCountdown(10);
-  };
+    return () => clearInterval(timer);
+  }, [showRedirectPopup, countdown, router]);
 
   // Play the current video when index changes
   useEffect(() => {
@@ -73,6 +80,27 @@ useEffect(() => {
       }
     }
   }, [currentVideoIndex]);
+
+  // Show skeleton while loading
+  if (loading || !videos) {
+    return <VideoSkeleton />;
+  }
+
+  // Handle video end
+  const handleVideoEnd = () => {
+    if (currentVideoIndex < videos?.length - 1) {
+      dispatch(setCurrentVideoIndex(currentVideoIndex + 1));
+      dispatch(setCurrentSlide(videos[currentVideoIndex + 1]?.slide));
+    } else {
+      setShowRedirectPopup(true);
+    }
+  };
+
+  // Close popup handler
+  const handleClosePopup = () => {
+    setShowRedirectPopup(false);
+    setCountdown(10);
+  };
 
   // Format time in MM:SS
   const formatTime = (timeInSeconds) => {
@@ -184,12 +212,12 @@ useEffect(() => {
               }}
             >
               <img
-                src={video.thumb}
+                src={video?.thumb}
                 alt="Thumbnail"
                 className="w-16 h-12 object-cover rounded mr-3"
               />
               <div className="flex-1 min-w-0">
-                <p className="font-medium truncate">{video.title}</p>
+                <p className="font-medium truncate">{video?.title}</p>
               </div>
             </div>
           ))}

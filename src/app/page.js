@@ -4,9 +4,12 @@ import VideoPanel from "@/components/VideoPanel";
 import PPTSection from "@/components/PPTSection";
 import QuestionPanel from "@/components/QuestionPanel";
 import { useSelector } from "react-redux";
+import { useGetAllVideoQuery } from "@/store/api/questionsApi";
 
 const Home = () => {
   const isQuestionMode = useSelector((state) => state.video.isQuestionMode);
+  const { data, isLoading, isError } = useGetAllVideoQuery();
+  const videos = data?.data;
 
   return (
     <div className="relative flex size-full min-h-screen flex-col bg-white overflow-x-hidden">
@@ -14,8 +17,8 @@ const Home = () => {
         <div className="flex flex-1 p-6 overflow-hidden">
           {!isQuestionMode ? (
             <div className="flex w-full h-full gap-6">
-              <VideoPanel />
-              <PPTSection />
+              <VideoPanel videos={videos} loading={isLoading}/>
+              <PPTSection loading={isLoading} />
             </div>
           ) : (
             <div className="flex w-full h-full gap-6 transition-all duration-300">
