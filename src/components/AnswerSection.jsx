@@ -39,10 +39,6 @@ const AnswerSection = ({ answer, loading, audioLink ="" }) => {
 
   const handleAudioEnd = () => {
     setIsPlaying(false);
-    // Only close after audio has finished playing
-    setTimeout(() => {
-      dispatch(setIsQuestionMode(false));
-    }, 1000); // Short delay after audio ends before closing
   };
 
   if (loading) {

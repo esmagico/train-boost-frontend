@@ -9,7 +9,7 @@ import { useGetAllVideoQuery } from "@/store/api/questionsApi";
 const Home = () => {
   const isQuestionMode = useSelector((state) => state.video.isQuestionMode);
   const { data, isLoading, isError } = useGetAllVideoQuery();
-  const videos = data?.data;
+  const videos = data?.data?.filter((video) => video?.trainer_video && video?.trainer_video?.trim() !== "");
 
   return (
     <div className="relative flex size-full min-h-screen flex-col bg-white overflow-x-hidden">
