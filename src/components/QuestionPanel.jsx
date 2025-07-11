@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 import AnswerSection from "./AnswerSection";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setCurrentSlide,
   setIsQuestionMode,
+  setQuestion,
   setQuestionPanelPptSlide,
 } from "@/store/features/videoSlice";
 import { useSubmitQuestionMutation } from "@/store/api/questionsApi";
 
 const QuestionPanel = () => {
-  const [question, setQuestion] = useState("");
+
   const [answer, setAnswer] = useState("");
   const [showAnswer, setShowAnswer] = useState(false);
   const [audioLink, setAudioLink] = useState("");
   const dispatch = useDispatch();
+  const {question} = useSelector((state) => state.video);
   const [submitQuestion, { isLoading, isError, error }] =
     useSubmitQuestionMutation();
 
@@ -28,7 +30,7 @@ const QuestionPanel = () => {
       setAudioLink(response?.audio_url || "");
       dispatch(setQuestionPanelPptSlide(response?.primary_jump_target));
       setShowAnswer(true);
-      setQuestion("");
+      dispatch(setQuestion(""));
     } catch (error) {
       console.log("Error submitting question:", error);
       // Optionally show an error message to the user
@@ -53,7 +55,7 @@ const QuestionPanel = () => {
           <h3 className="font-medium mb-2">Your Question</h3>
           <textarea
             value={question}
-            onChange={(e) => setQuestion(e.target.value)}
+            onChange={(e) => dispatch(setQuestion(e.target.value))}
             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
             rows={4}
             placeholder="Type your question here..."

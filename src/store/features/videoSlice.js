@@ -5,6 +5,7 @@ const initialState = {
   currentSlide: 1,
   isQuestionMode: false,
   questionPanelPptSlide: 1,
+  question: "",
 };
 
 const videoSlice = createSlice({
@@ -23,9 +24,12 @@ const videoSlice = createSlice({
     setQuestionPanelPptSlide: (state, action) => {
       state.questionPanelPptSlide = action.payload;
     },
+    setQuestion: (state, action) => {
+      state.question = action.payload;
+    },
   },
 });
 
-export const { setCurrentVideoIndex, setCurrentSlide, setIsQuestionMode, setQuestionPanelPptSlide } =
+export const { setCurrentVideoIndex, setCurrentSlide, setIsQuestionMode, setQuestionPanelPptSlide, setQuestion } =
   videoSlice.actions;
 export default videoSlice.reducer;
