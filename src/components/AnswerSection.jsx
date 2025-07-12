@@ -63,7 +63,7 @@ const AnswerSection = ({ answer, audioLink = "", loading }) => {
         <div className="flex items-center space-x-2 mb-1">
           <button
             onClick={toggleAudio}
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 hover:bg-blue-200"
+            className="cursor-pointer w-7 h-7 flex items-center justify-center rounded-full bg-blue-100 hover:bg-blue-200"
             title={isPlaying ? 'Pause' : 'Play'}
           >
             {isPlaying ? (
@@ -72,7 +72,8 @@ const AnswerSection = ({ answer, audioLink = "", loading }) => {
               <span className="text-blue-600">▶️</span>
             )}
           </button>
-          <span className="text-sm text-gray-500">Listen to answer</span>
+        { isPlaying && <div className="inline-block w-6 h-6 bg-blue-600 rounded-full animate-[pulse_1.5s_infinite]"></div>}
+          <span className="text-sm text-gray-500">{isPlaying ? "Playing answer..." : "Listen to answer"}</span>
           <audio
             ref={audioRef}
             src={audioLink}

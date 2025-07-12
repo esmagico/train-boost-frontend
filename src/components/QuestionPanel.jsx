@@ -72,13 +72,13 @@ const QuestionPanel = () => {
           {conversation.map((item, index) => (
             <div key={index} className="mb-4">
               {item.type === 'question' && (
-                <div className="mb-2 p-3 bg-blue-50 rounded-lg">
+                <div className="mb-2 p-3 bg-blue-100 rounded-lg">
                   <p className="font-medium text-blue-800">Question:</p>
                   <p>{item.content}</p>
                 </div>
               )}
               {item.type === 'answer' && (
-                <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                <div className="mb-4 p-3 bg-gray-100 rounded-lg">
                   <AnswerSection 
                     answer={item.content} 
                     audioLink={item.audioLink} 
@@ -116,20 +116,30 @@ const QuestionPanel = () => {
           <div className="flex justify-between">
             <button
               onClick={() => dispatch(setIsQuestionMode(false))}
-              className="px-6 py-2 border border-gray-300 rounded-full font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              className="cursor-pointer px-4 py-2 border border-gray-300 rounded-md font-medium text-gray-700 hover:bg-gray-50 transition-colors"
             >
               Back
             </button>
             <button
               onClick={handleSubmit}
               disabled={!question.trim() || isLoading}
-              className={`px-6 py-2 rounded-full font-medium transition-colors ${
+              className={`px-4 py-2 rounded-md font-medium transition-colors ${
                 !question.trim() || isLoading
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                   : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
               }`}
             >
-              {isLoading ? "Submitting..." : "Submit Question"}
+              {isLoading ? (
+                <>
+                  <svg className="inline mr-2 w-5 h-5 text-gray-500 animate-spin" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                  </svg>
+                  Submitting...
+                </>
+              ) : (
+                "Submit Question"
+              )}
             </button>
           </div>
         </div>

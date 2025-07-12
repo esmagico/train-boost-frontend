@@ -160,13 +160,13 @@ const VideoPanel = ({videos=[], loading = true}) => {
             <div className="mt-6 flex justify-end space-x-3">
               <button
                 onClick={handleClosePopup}
-                className="cursor-pointer px-4 py-2 rounded-full text-gray-600 hover:text-gray-800 bg-gray-100 hover:bg-gray-200"
+                className="cursor-pointer px-4 py-2 rounded-md text-gray-600 hover:text-gray-800 bg-gray-100 hover:bg-gray-200"
               >
                 Close
               </button>
               <button
                 onClick={() => router.push('/test')}
-                className="cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700"
+                className="cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
               >
                 Go to Test Now
               </button>
