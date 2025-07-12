@@ -174,7 +174,7 @@ const VideoPanel = ({videos=[], loading = true}) => {
           </div>
         </div>
       )}
-      <div className="p-4 bg-white rounded-xl border border-gray-200">
+      <div className="p-4 pb-1 bg-white rounded-xl border border-gray-200">
         <div className="relative w-full pt-[56.25%] bg-black rounded-lg overflow-hidden">
           {" "}
           {/* 16:9 Aspect Ratio */}
@@ -190,6 +190,10 @@ const VideoPanel = ({videos=[], loading = true}) => {
             autoPlay={true}
             controls={true}
           />
+        </div>
+        {/* Time display below video */}
+        <div className="flex justify-start mt-2 text-sm text-gray-600">
+          <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
         </div>
       </div>
 
