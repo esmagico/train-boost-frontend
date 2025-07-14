@@ -4,15 +4,25 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const AnswerSection = ({ answer, audioLink = "", loading }) => {
-  const { isPlaying } = useSelector((state) => state.video);
+  const { currentPlayingAudioId } = useSelector((state) => state.video);
   const audioRef = useRef(null);
   const dispatch = useDispatch();
+  const audioId = useRef(`audio-${Math.random().toString(36).substr(2, 9)}`);
+  const isPlaying = currentPlayingAudioId === audioId.current;
 
   useEffect(() => {
     if (audioRef.current) {
-      const handlePlay = () => dispatch(setIsPlaying(true));
-      const handlePause = () => dispatch(setIsPlaying(false));
-      const handleEnd = () => dispatch(setIsPlaying(false));
+      const handlePlay = () => {
+        // Pause any other playing audio
+        document.querySelectorAll('audio').forEach(audio => {
+          if (audio !== audioRef.current && !audio.paused) {
+            audio.pause();
+          }
+        });
+        dispatch(setIsPlaying({ playing: true, audioId: audioId.current }));
+      };
+      const handlePause = () => dispatch(setIsPlaying({ playing: false, audioId: null }));
+      const handleEnd = () => dispatch(setIsPlaying({ playing: false, audioId: null }));
 
       audioRef.current.addEventListener("play", handlePlay);
       audioRef.current.addEventListener("pause", handlePause);
@@ -46,6 +56,12 @@ const AnswerSection = ({ answer, audioLink = "", loading }) => {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
+        // Pause any other playing audio before playing this one
+        document.querySelectorAll('audio').forEach(audio => {
+          if (audio !== audioRef.current && !audio.paused) {
+            audio.pause();
+          }
+        });
         audioRef.current.play();
       }
     }
