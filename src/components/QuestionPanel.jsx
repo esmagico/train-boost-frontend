@@ -2,7 +2,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import AnswerSection from "./AnswerSection";
 import { useDispatch, useSelector } from "react-redux";
-import { setIsQuestionMode, setQuestion, setQuestionPanelPptSlide } from "@/store/features/videoSlice";
+import {
+  setIsQuestionMode,
+  setQuestion,
+  setQuestionPanelPptSlide,
+} from "@/store/features/videoSlice";
 import { useSubmitQuestionMutation } from "@/store/api/questionsApi";
 
 const QuestionPanel = () => {
@@ -11,7 +15,7 @@ const QuestionPanel = () => {
   const [currentQuestion, setCurrentQuestion] = useState("");
   const messagesEndRef = useRef(null);
   const dispatch = useDispatch();
-  const { question } = useSelector((state) => state.video);
+  const { question, isPlaying } = useSelector((state) => state.video);
   const [submitQuestion] = useSubmitQuestionMutation();
 
   const scrollToBottom = () => {
@@ -19,7 +23,7 @@ const QuestionPanel = () => {
       const container = messagesEndRef.current.parentElement;
       container.scrollTo({
         top: messagesEndRef.current.offsetTop,
-        behavior: 'smooth'
+        behavior: "smooth",
       });
     }
   };
@@ -30,35 +34,39 @@ const QuestionPanel = () => {
 
   const handleSubmit = async () => {
     if (!question.trim()) return;
-    
+
     const userQuestion = question.trim();
     setCurrentQuestion(userQuestion);
     dispatch(setQuestion(""));
     setIsLoading(true);
 
     // Add user question to conversation
-    setConversation(prev => [...prev, { type: 'question', content: userQuestion }]);
+    setConversation((prev) => [
+      ...prev,
+      { type: "question", content: userQuestion },
+    ]);
 
     try {
-      const response = await submitQuestion({ question: userQuestion }).unwrap();
+      const response = await submitQuestion({
+        question: userQuestion,
+      }).unwrap();
       dispatch(setQuestionPanelPptSlide(response?.primary_jump_target));
-      setConversation(prev => [
-        ...prev, 
-        { 
-          type: 'answer', 
+      setConversation((prev) => [
+        ...prev,
+        {
+          type: "answer",
           content: response?.answer || "No answer received",
-          audioLink: response?.audio_url || ""
-        }
+          audioLink: response?.audio_url || "",
+        },
       ]);
-  
     } catch (error) {
       console.log("Error submitting question:", error);
-      setConversation(prev => [
-        ...prev, 
-        { 
-          type: 'error', 
-          content: "Failed to load answer. Please try again." 
-        }
+      setConversation((prev) => [
+        ...prev,
+        {
+          type: "error",
+          content: "Failed to load answer. Please try again.",
+        },
       ]);
     } finally {
       setIsLoading(false);
@@ -68,24 +76,27 @@ const QuestionPanel = () => {
   return (
     <div className="flex flex-col w-[30%] h-full">
       <div className="bg-white rounded-xl border border-gray-200 p-4 h-[calc(100vh-120px)] flex flex-col">
-        <div className="flex-1 overflow-y-auto mb-4" style={{ maxHeight: 'calc(100vh - 250px)', minHeight: '200px' }}>
+        <div
+          className="flex-1 overflow-y-auto mb-4"
+          style={{ maxHeight: "calc(100vh - 250px)", minHeight: "200px" }}
+        >
           {conversation.map((item, index) => (
             <div key={index} className="mb-4">
-              {item.type === 'question' && (
+              {item.type === "question" && (
                 <div className="mb-2 p-3 bg-blue-100 rounded-lg">
                   <p className="font-medium text-blue-800">Question:</p>
                   <p>{item.content}</p>
                 </div>
               )}
-              {item.type === 'answer' && (
+              {item.type === "answer" && (
                 <div className="mb-4 p-3 bg-gray-100 rounded-lg">
-                  <AnswerSection 
-                    answer={item.content} 
-                    audioLink={item.audioLink} 
+                  <AnswerSection
+                    answer={item.content}
+                    audioLink={item.audioLink}
                   />
                 </div>
               )}
-              {item.type === 'error' && (
+              {item.type === "error" && (
                 <div className="text-red-500 p-2 bg-red-50 rounded">
                   {item.content}
                 </div>
@@ -110,7 +121,14 @@ const QuestionPanel = () => {
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
               rows={3}
               placeholder="Type your question here..."
-              onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSubmit()}
+              onKeyPress={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault(); // Prevent new line
+                  if (!isPlaying) {
+                    handleSubmit();
+                  }
+                }
+              }}
             />
           </div>
           <div className="flex justify-between">
@@ -122,18 +140,33 @@ const QuestionPanel = () => {
             </button>
             <button
               onClick={handleSubmit}
-              disabled={!question.trim() || isLoading}
+              disabled={!question.trim() || isLoading || isPlaying}
               className={`px-4 py-2 rounded-md font-medium transition-colors ${
-                !question.trim() || isLoading
+                !question.trim() || isLoading || isPlaying
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                   : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
               }`}
             >
               {isLoading ? (
                 <>
-                  <svg className="inline mr-2 w-5 h-5 text-gray-500 animate-spin" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                  <svg
+                    className="inline mr-2 w-5 h-5 text-gray-500 animate-spin"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    />
                   </svg>
                   Submitting...
                 </>
