@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
-export default function Result() {
+// Separate component for the result content
+function ResultContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [score, setScore] = useState(null);
@@ -11,7 +12,7 @@ export default function Result() {
   useEffect(() => {
     const scoreParam = searchParams.get("score");
     if (scoreParam) {
-      setScore(Number(scoreParam));
+      setScore(Math.round(Number(scoreParam)));
     }
   }, [searchParams]);
 
@@ -24,7 +25,7 @@ export default function Result() {
   if (score === null) return null;
 
   return (
-    <div className="min-h-[calc(100vh-70px)] flex items-center justify-center bg-gray-50 p-4">
+    <div className="min-h-[calc(100vh-70px)] flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <div className="max-w-xl w-full bg-white rounded-2xl shadow-lg overflow-hidden mt-[-120px]">
         <div className="p-8">
           {/* Score Circle */}
@@ -167,5 +168,26 @@ export default function Result() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Loading component
+function ResultLoading() {
+  return (
+    <div className="min-h-[calc(100vh-70px)] flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <div className="text-center">
+        <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-gray-600">Loading result...</p>
+      </div>
+    </div>
+  );
+}
+
+// Main Result page component
+export default function Result() {
+  return (
+    <Suspense fallback={<ResultLoading />}>
+      <ResultContent />
+    </Suspense>
   );
 }
