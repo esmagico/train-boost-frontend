@@ -24,7 +24,7 @@ export default function Result() {
   if (score === null) return null;
 
   return (
-    <div className="min-h-[calc(100vh-70px)] flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-[calc(100vh-70px)] flex items-center justify-center bg-gray-50 p-4">
       <div className="max-w-xl w-full bg-white rounded-2xl shadow-lg overflow-hidden mt-[-120px]">
         <div className="p-8">
           {/* Score Circle */}
