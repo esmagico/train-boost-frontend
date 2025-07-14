@@ -7,6 +7,7 @@ const initialState = {
   questionPanelPptSlide: 1,
   question: "",
   isPlaying: false,
+  currentPlayingAudioId: null,
 };
 
 const videoSlice = createSlice({
@@ -29,7 +30,8 @@ const videoSlice = createSlice({
       state.question = action.payload;
     },
     setIsPlaying: (state, action) => {
-      state.isPlaying = action.payload;
+      state.isPlaying = action.payload.playing;
+      state.currentPlayingAudioId = action.payload.audioId || null;
     },
   },
 });
