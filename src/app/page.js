@@ -9,7 +9,10 @@ import { useGetAllVideoQuery } from "@/store/api/questionsApi";
 const Home = () => {
   const isQuestionMode = useSelector((state) => state.video.isQuestionMode);
   const { data, isLoading, isError } = useGetAllVideoQuery();
-  const videos = data?.data?.filter((video) => video?.trainer_video && video?.trainer_video?.trim() !== "");
+  const videos = data?.data?.filter(
+    (video) => video?.trainer_video && video?.trainer_video?.trim() !== ""
+  );
+  const presentationUrl = process.env.NEXT_PUBLIC_PRESENTATION_URL;
 
   return (
     <div className="relative flex size-full min-h-screen flex-col bg-white overflow-x-hidden">
@@ -20,7 +23,8 @@ const Home = () => {
               <VideoPanel videos={videos} loading={isLoading} />
               <PPTSection
                 loading={isLoading}
-                presentationUrl="https://docs.google.com/presentation/d/1yyZtqREBI0fS6zZ2HlKMwGnrUwO6VXab/edit?slide=id.p1#slide=id.p1"
+                // presentationUrl="https://docs.google.com/presentation/d/1yyZtqREBI0fS6zZ2HlKMwGnrUwO6VXab/edit?slide=id.p1#slide=id.p1"
+                presentationUrl={presentationUrl}
               />
             </div>
           ) : (
@@ -28,7 +32,8 @@ const Home = () => {
               <div className="flex flex-col w-[70%] h-full">
                 <div className="bg-white rounded-xl h-[calc(100vh-120px)] transition-all duration-300">
                   <PPTSection
-                    presentationUrl="https://docs.google.com/presentation/d/1yyZtqREBI0fS6zZ2HlKMwGnrUwO6VXab/edit?slide=id.p1#slide=id.p1"
+                    presentationUrl={presentationUrl}
+                    // presentationUrl="https://docs.google.com/presentation/d/1yyZtqREBI0fS6zZ2HlKMwGnrUwO6VXab/edit?slide=id.p1#slide=id.p1"
                     removeAskQuestionButton={true}
                     isQuestionMode={true}
                     height="calc(100vh - 120px)"
