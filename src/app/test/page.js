@@ -101,7 +101,7 @@ export default function TestPage() {
         correct++;
       }
     });
-    return (correct / quizData?.questions?.length) * 100;
+    return Math.round((correct / quizData?.questions?.length) * 100);
   };
 
   const handleSubmit = () => {
