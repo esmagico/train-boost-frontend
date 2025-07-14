@@ -52,7 +52,7 @@ const QuestionPanel = () => {
       ]);
   
     } catch (error) {
-      console.error("Error submitting question:", error);
+      console.log("Error submitting question:", error);
       setConversation(prev => [
         ...prev, 
         { 

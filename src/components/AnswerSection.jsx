@@ -20,7 +20,7 @@ const AnswerSection = ({ answer, audioLink = "", loading }) => {
         try {
           await audioRef.current.play();
         } catch (error) {
-          console.error('Error playing audio:', error);
+          console.log('Error playing audio:', error);
         }
       };
       
