@@ -41,6 +41,7 @@ const VideoPanel = ({videos=[], loading = true}) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [autoPlayEnabled, setAutoPlayEnabled] = useState(false);
   const videoRef = useRef(null);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -73,13 +74,13 @@ const VideoPanel = ({videos=[], loading = true}) => {
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.load();
-      if (isPlaying) {
+      if (isPlaying && autoPlayEnabled) {
         videoRef.current.play().catch((error) => {
-          console.error("Error playing video:", error);
+          console.log("Error playing video:", error);
         });
       }
     }
-  }, [currentVideoIndex]);
+  }, [currentVideoIndex, autoPlayEnabled]);
 
   // Show skeleton while loading
   if (loading || !videos) {
@@ -89,10 +90,12 @@ const VideoPanel = ({videos=[], loading = true}) => {
   // Handle video end
   const handleVideoEnd = () => {
     if (currentVideoIndex < videos?.length - 1) {
+      setAutoPlayEnabled(true); // Enable autoplay for next video
       dispatch(setCurrentVideoIndex(currentVideoIndex + 1));
       dispatch(setCurrentSlide(videos[currentVideoIndex + 1]?.slide));
     } else {
       setShowRedirectPopup(true);
+      setAutoPlayEnabled(false);
     }
   };
 
@@ -111,8 +114,9 @@ const VideoPanel = ({videos=[], loading = true}) => {
 
   // Handle transcript item click
   const handleTranscriptClick = (index) => {
+    setAutoPlayEnabled(false); // Disable autoplay when manually selecting video
     dispatch(setCurrentVideoIndex(index));
-    setIsPlaying(true);
+    setIsPlaying(false);
   };
 
   // Toggle play/pause
@@ -122,7 +126,7 @@ const VideoPanel = ({videos=[], loading = true}) => {
         videoRef.current.pause();
       } else {
         videoRef.current.play().catch((error) => {
-          console.error("Error playing video:", error);
+          console.log("Error playing video:", error);
         });
       }
       setIsPlaying(!isPlaying);
@@ -160,13 +164,13 @@ const VideoPanel = ({videos=[], loading = true}) => {
             <div className="mt-6 flex justify-end space-x-3">
               <button
                 onClick={handleClosePopup}
-                className="cursor-pointer px-4 py-2 rounded-full text-gray-600 hover:text-gray-800 bg-gray-100 hover:bg-gray-200"
+                className="cursor-pointer px-4 py-2 rounded-md text-gray-600 hover:text-gray-800 bg-gray-100 hover:bg-gray-200"
               >
                 Close
               </button>
               <button
                 onClick={() => router.push('/test')}
-                className="cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700"
+                className="cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
               >
                 Go to Test Now
               </button>
@@ -174,7 +178,7 @@ const VideoPanel = ({videos=[], loading = true}) => {
           </div>
         </div>
       )}
-      <div className="p-4 bg-white rounded-xl border border-gray-200">
+      <div className="p-4 pb-1 bg-white rounded-xl border border-gray-200">
         <div className="relative w-full pt-[56.25%] bg-black rounded-lg overflow-hidden">
           {" "}
           {/* 16:9 Aspect Ratio */}
@@ -187,9 +191,13 @@ const VideoPanel = ({videos=[], loading = true}) => {
             onLoadedMetadata={(e) => setDuration(e.target.duration)}
             onClick={togglePlayPause}
             poster={videos?.[currentVideoIndex]?.thumbnail}
-            autoPlay={true}
+            autoPlay={autoPlayEnabled}
             controls={true}
           />
+        </div>
+        {/* Time display below video */}
+        <div className="flex justify-start mt-2 text-sm text-gray-600">
+          <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
         </div>
       </div>
 
