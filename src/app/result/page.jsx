@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/components/common/Button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 
@@ -142,26 +143,27 @@ function ResultContent() {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
-              <button
+              <Button
                 onClick={() =>
                   router.push(isPerfectScore ? "/congratulations" : "/")
                 }
-                className={`cursor-pointer px-4 py-2 rounded-lg font-medium text-white transition-colors ${
+                variant={"primary"}
+                className={`${
                   isPerfectScore
                     ? "bg-green-600 hover:bg-green-700"
                     : "bg-blue-600 hover:bg-blue-700"
                 }`}
               >
                 {isPerfectScore ? "View Certificate" : "Restart Training"}
-              </button>
+              </Button>
 
               {!isPerfectScore && (
-                <button
+                <Button
                   onClick={handleRetry}
-                  className="cursor-pointer px-4 py-2 rounded-lg font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
+                  variant="secondary"
                 >
                   Try Again
-                </button>
+                </Button>
               )}
             </div>
           </div>
