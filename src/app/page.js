@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import VideoPanel from "@/components/VideoPanel";
-import PPTSection from "@/components/PPTSection";
-import QuestionPanel from "@/components/QuestionPanel";
+import VideoPanel from "@/components/sections/VideoPanel";
+import PPTSection from "@/components/sections/PPTSection";
+import QuestionPanel from "@/components/sections/QuestionPanel";
 import { useSelector } from "react-redux";
 import { useGetAllVideoQuery } from "@/store/api/questionsApi";
 
