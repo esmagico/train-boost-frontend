@@ -43,6 +43,7 @@ const VideoPanel = ({videos=[], loading = true}) => {
   const [duration, setDuration] = useState(0);
   const [autoPlayEnabled, setAutoPlayEnabled] = useState(false);
   const videoRef = useRef(null);
+  const activeVideoRef = useRef(null);
   const router = useRouter();
   const dispatch = useDispatch();
   const { currentVideoIndex } = useSelector((state) => state.video);
@@ -81,6 +82,16 @@ const VideoPanel = ({videos=[], loading = true}) => {
       }
     }
   }, [currentVideoIndex, autoPlayEnabled]);
+
+  // Add effect to scroll active video into view
+  useEffect(() => {
+    if (activeVideoRef.current) {
+      activeVideoRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      });
+    }
+  }, [currentVideoIndex]);
 
   // Show skeleton while loading
   if (loading || !videos) {
@@ -193,6 +204,7 @@ const VideoPanel = ({videos=[], loading = true}) => {
             poster={videos?.[currentVideoIndex]?.thumbnail}
             autoPlay={autoPlayEnabled}
             controls={true}
+            controlsList="nodownload"
           />
         </div>
         {/* Time display below video */}
@@ -209,6 +221,7 @@ const VideoPanel = ({videos=[], loading = true}) => {
           {videos?.map((video, index) => (
             <div
               key={index}
+              ref={currentVideoIndex === index ? activeVideoRef : null}
               className={`flex items-center p-2 rounded cursor-pointer transition-colors ${
                 currentVideoIndex === index
                   ? "bg-blue-50 border-l-4 border-blue-500"
@@ -224,8 +237,24 @@ const VideoPanel = ({videos=[], loading = true}) => {
                 alt="Thumbnail"
                 className="w-16 h-12 object-cover rounded mr-3"
               />
-              <div className="flex-1 min-w-0">
-                <p className="font-medium truncate">{video?.title || "Video " + (index + 1)}</p>
+              <div className="flex-1 min-w-0 relative group">
+                <p className="font-medium truncate" title={video?.title || `Video ${index + 1}`}>
+                  {video?.title || `Video ${index + 1}`}
+                </p>
+                <div 
+                  className={`absolute z-100 invisible group-hover:visible bg-gray-800 text-white text-xs rounded py-1 px-2 left-1/2 transform -translate-x-1/2 whitespace-nowrap ${
+                    index === 0 
+                      ? 'top-full mt-1' 
+                      : 'bottom-full mb-2'
+                  }`}
+                >
+                  {video?.title || `Video ${index + 1}`}
+                  <div className={`absolute ${
+                    index === 0 
+                      ? 'bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-b-4 border-b-gray-800'
+                      : 'top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-t-4 border-t-gray-800'
+                  }`}></div>
+                </div>
               </div>
             </div>
           ))}
