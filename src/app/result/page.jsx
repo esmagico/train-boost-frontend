@@ -1,14 +1,17 @@
 "use client";
 
 import Button from "@/components/common/Button";
+import { setCurrentVideoIndex } from "@/store/features/videoSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
+import { useDispatch } from "react-redux";
 
 // Separate component for the result content
 function ResultContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [score, setScore] = useState(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const scoreParam = searchParams.get("score");
@@ -22,6 +25,11 @@ function ResultContent() {
   const handleRetry = () => {
     router.push("/test");
   };
+
+  const handleRestartTraining = () => {
+    router.push(isPerfectScore ? "/congratulations" : "/")
+    dispatch(setCurrentVideoIndex(0));
+  }
 
   if (score === null) return null;
 
@@ -144,9 +152,7 @@ function ResultContent() {
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
               <Button
-                onClick={() =>
-                  router.push(isPerfectScore ? "/congratulations" : "/")
-                }
+                onClick={handleRestartTraining}
                 variant={"primary"}
                 className={`${
                   isPerfectScore

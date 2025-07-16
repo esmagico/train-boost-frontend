@@ -125,7 +125,7 @@ const VideoPanel = ({videos=[], loading = true}) => {
 
   // Handle transcript item click
   const handleTranscriptClick = (index) => {
-    setAutoPlayEnabled(false); // Disable autoplay when manually selecting video
+    setAutoPlayEnabled(true);
     dispatch(setCurrentVideoIndex(index));
     setIsPlaying(false);
   };
