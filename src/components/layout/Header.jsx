@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const navigation = [
   { name: 'Home', href: '/' },
@@ -12,6 +13,7 @@ const navigation = [
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const router = useRouter();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -28,10 +30,9 @@ const Header = () => {
   }, []);
 
   const handleLogout = () => {
-    // Add your logout logic here
-    console.log('Logging out...');
-    // For example: signOut(), clear session, redirect, etc.
+    localStorage.removeItem('isTrainBoostLogin');
     setIsDropdownOpen(false);
+    router.push('/login');
   };
 
   return (
@@ -83,8 +84,8 @@ const Header = () => {
           {isDropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
               <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
-                <div className="font-medium">John Doe</div>
-                <div className="text-gray-500 truncate">john@example.com</div>
+                <div className="font-medium">Admin User</div>
+                <div className="text-gray-500 truncate">admin@esmagico.in</div>
               </div>
               <button
                 onClick={handleLogout}
