@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useGetQuizQuery } from '@/store/api/questionsApi';
+import Button from '@/components/common/Button';
 
 export default function TestPage() {
   const router = useRouter();
@@ -154,42 +155,45 @@ export default function TestPage() {
           </div>
           
           <div className="flex justify-between pt-4 border-t">
-            <button
+            <Button
               onClick={handlePrevious}
               disabled={currentQuestionIndex === 0}
-              className={`px-4 py-2 rounded-md ${
+              variant="secondary"
+              className={`${
                 currentQuestionIndex === 0 
                   ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
                   : 'bg-gray-200 text-gray-800 hover:bg-gray-300 cursor-pointer'
               }`}
             >
               Previous
-            </button>
+            </Button>
             
             {isLastQuestion ? (
-              <button
+              <Button
                 onClick={handleSubmit}
                 disabled={!answers[currentQuestion.question_id]}
-                className={`px-4 py-2 rounded-md font-medium ${
+                variant="primary"
+                className={`${
                   !answers[currentQuestion.question_id]
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     : 'bg-green-600 text-white hover:bg-green-700 cursor-pointer'
                 }`}
               >
                 Submit Test
-              </button>
+              </Button>
             ) : (
-              <button
+              <Button
                 onClick={handleNext}
                 disabled={!answers[currentQuestion.question_id]}
-                className={`px-4 py-2 rounded-md font-medium ${
+                variant="primary"
+                className={`${
                   !answers[currentQuestion.question_id]
                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                     : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
                 }`}
               >
                 Next
-              </button>
+              </Button>
             )}
           </div>
         </div>

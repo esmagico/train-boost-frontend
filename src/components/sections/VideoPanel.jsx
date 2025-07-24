@@ -1,6 +1,8 @@
 import {
   setCurrentSlide,
   setCurrentVideoIndex,
+  setCurrentVideoTime,
+  setIsVideoPlaying,
 } from "@/store/features/videoSlice";
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -125,7 +127,7 @@ const VideoPanel = ({videos=[], loading = true}) => {
 
   // Handle transcript item click
   const handleTranscriptClick = (index) => {
-    setAutoPlayEnabled(false); // Disable autoplay when manually selecting video
+    setAutoPlayEnabled(true);
     dispatch(setCurrentVideoIndex(index));
     setIsPlaying(false);
   };
@@ -198,8 +200,19 @@ const VideoPanel = ({videos=[], loading = true}) => {
             src={videos?.[currentVideoIndex]?.trainer_video}
             className="absolute top-0 left-0 w-full h-full object-cover"
             onEnded={handleVideoEnd}
-            onTimeUpdate={(e) => setCurrentTime(e.target.currentTime)}
+            onTimeUpdate={(e) => {
+              setCurrentTime(e.target.currentTime);
+              dispatch(setCurrentVideoTime(e.target.currentTime));
+            }}
             onLoadedMetadata={(e) => setDuration(e.target.duration)}
+            onPlay={() => {
+              setIsPlaying(true);
+              dispatch(setIsVideoPlaying(true));
+            }}
+            onPause={() => {
+              setIsPlaying(false);
+              dispatch(setIsVideoPlaying(false));
+            }}
             onClick={togglePlayPause}
             poster={videos?.[currentVideoIndex]?.thumbnail}
             autoPlay={autoPlayEnabled}

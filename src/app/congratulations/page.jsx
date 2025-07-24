@@ -49,16 +49,6 @@ export default function CongratulationsPage() {
               You&apos;ve successfully completed the training and passed the assessment with flying colors!
             </p>
           </div>
-          
-          {/* <div className="text-sm text-gray-500 mt-8">
-            <p>Redirecting you to the home page in 5 seconds...</p>
-            <button 
-              onClick={() => router.push('/')}
-              className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Go to Home Now
-            </button>
-          </div> */}
         </div>
       </div>
     </div>

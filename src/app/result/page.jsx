@@ -1,13 +1,17 @@
 "use client";
 
+import Button from "@/components/common/Button";
+import { setCurrentVideoIndex } from "@/store/features/videoSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
+import { useDispatch } from "react-redux";
 
 // Separate component for the result content
 function ResultContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [score, setScore] = useState(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const scoreParam = searchParams.get("score");
@@ -21,6 +25,11 @@ function ResultContent() {
   const handleRetry = () => {
     router.push("/test");
   };
+
+  const handleRestartTraining = () => {
+    router.push(isPerfectScore ? "/congratulations" : "/")
+    dispatch(setCurrentVideoIndex(0));
+  }
 
   if (score === null) return null;
 
@@ -142,26 +151,25 @@ function ResultContent() {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
-              <button
-                onClick={() =>
-                  router.push(isPerfectScore ? "/congratulations" : "/")
-                }
-                className={`cursor-pointer px-4 py-2 rounded-lg font-medium text-white transition-colors ${
+              <Button
+                onClick={handleRestartTraining}
+                variant={"primary"}
+                className={`${
                   isPerfectScore
                     ? "bg-green-600 hover:bg-green-700"
                     : "bg-blue-600 hover:bg-blue-700"
                 }`}
               >
                 {isPerfectScore ? "View Certificate" : "Restart Training"}
-              </button>
+              </Button>
 
               {!isPerfectScore && (
-                <button
+                <Button
                   onClick={handleRetry}
-                  className="cursor-pointer px-4 py-2 rounded-lg font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
+                  variant="secondary"
                 >
                   Try Again
-                </button>
+                </Button>
               )}
             </div>
           </div>

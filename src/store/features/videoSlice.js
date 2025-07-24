@@ -8,6 +8,8 @@ const initialState = {
   question: "",
   isPlaying: false,
   currentPlayingAudioId: null,
+  currentVideoTime: 0,
+  isVideoPlaying: false,
 };
 
 const videoSlice = createSlice({
@@ -33,6 +35,12 @@ const videoSlice = createSlice({
       state.isPlaying = action.payload.playing;
       state.currentPlayingAudioId = action.payload.audioId || null;
     },
+    setCurrentVideoTime: (state, action) => {
+      state.currentVideoTime = action.payload;
+    },
+    setIsVideoPlaying: (state, action) => {
+      state.isVideoPlaying = action.payload;
+    },
   },
 });
 
@@ -43,5 +51,7 @@ export const {
   setQuestionPanelPptSlide,
   setQuestion,
   setIsPlaying,
+  setCurrentVideoTime,
+  setIsVideoPlaying,
 } = videoSlice.actions;
 export default videoSlice.reducer;

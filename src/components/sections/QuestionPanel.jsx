@@ -8,6 +8,7 @@ import {
   setQuestionPanelPptSlide,
 } from "@/store/features/videoSlice";
 import { useSubmitQuestionMutation } from "@/store/api/questionsApi";
+import Button from "@/components/common/Button";
 
 const QuestionPanel = () => {
   const [conversation, setConversation] = useState([]);
@@ -132,20 +133,16 @@ const QuestionPanel = () => {
             />
           </div>
           <div className="flex justify-between">
-            <button
+          <Button
               onClick={() => dispatch(setIsQuestionMode(false))}
-              className="cursor-pointer px-4 py-2 border border-gray-300 rounded-md font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              variant="secondary"
             >
               Back
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleSubmit}
               disabled={!question.trim() || isLoading || isPlaying}
-              className={`px-4 py-2 rounded-md font-medium transition-colors ${
-                !question.trim() || isLoading || isPlaying
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
-              }`}
+              variant="primary"
             >
               {isLoading ? (
                 <>
@@ -173,7 +170,7 @@ const QuestionPanel = () => {
               ) : (
                 "Submit Question"
               )}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
