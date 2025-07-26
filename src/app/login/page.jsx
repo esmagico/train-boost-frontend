@@ -25,7 +25,7 @@ const LoginPage = () => {
     setIsLoading(true);
 
     // Hardcoded credentials
-    const validEmail = "admin@esmagico.in";
+    const validEmail = "admin@trainboost.com";
     const validPassword = "test123";
 
     // Simulate loading delay
@@ -178,7 +178,7 @@ const LoginPage = () => {
                 Demo Credentials
               </p>
               <p className="text-xs text-blue-600">
-                Email: admin@esmagico.in
+                Email: admin@trainboost.com
                 <br />
                 Password: test123
               </p>

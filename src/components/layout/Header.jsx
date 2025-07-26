@@ -85,7 +85,7 @@ const Header = () => {
             <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
               <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
                 <div className="font-medium">Admin User</div>
-                <div className="text-gray-500 truncate">admin@esmagico.in</div>
+                <div className="text-gray-500 truncate">admin@trainboost.com</div>
               </div>
               <button
                 onClick={handleLogout}

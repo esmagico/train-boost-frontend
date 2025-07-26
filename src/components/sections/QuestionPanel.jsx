@@ -75,11 +75,11 @@ const QuestionPanel = () => {
   };
 
   return (
-    <div className="flex flex-col w-[30%] h-full">
-      <div className="bg-white rounded-xl border border-gray-200 p-4 h-[calc(100vh-120px)] flex flex-col">
+    <div className="flex flex-col w-[100%] h-full">
+      <div className="bg-white rounded-xl border border-gray-200 p-4 h-[calc(100vh-620px)] flex flex-col">
         <div
           className="flex-1 overflow-y-auto mb-4"
-          style={{ maxHeight: "calc(100vh - 250px)", minHeight: "200px" }}
+          style={{ maxHeight: "200px", minHeight: "200px" }}
         >
           {conversation.map((item, index) => (
             <div key={index} className="mb-4">

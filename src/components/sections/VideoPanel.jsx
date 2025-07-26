@@ -6,8 +6,9 @@ import {
 } from "@/store/features/videoSlice";
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { useGetAllVideoQuery } from "@/store/api/questionsApi";
+import QuestionPanel from "./QuestionPanel";
 
 // Skeleton Loader Component
 const VideoSkeleton = () => (
@@ -39,7 +40,7 @@ const VideoSkeleton = () => (
   </div>
 );
 
-const VideoPanel = ({videos=[], loading = true}) => {
+const VideoPanel = ({ videos = [], loading = true }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -67,7 +68,7 @@ const VideoPanel = ({videos=[], loading = true}) => {
     }, 1000);
 
     if (countdown === 0) {
-      router.push('/test');
+      router.push("/test");
     }
 
     return () => clearInterval(timer);
@@ -77,20 +78,24 @@ const VideoPanel = ({videos=[], loading = true}) => {
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.load();
+      // Update slide when video changes
+      if (videos?.[currentVideoIndex]?.slide) {
+        dispatch(setCurrentSlide(videos[currentVideoIndex].slide));
+      }
       if (isPlaying && autoPlayEnabled) {
         videoRef.current.play().catch((error) => {
           console.log("Error playing video:", error);
         });
       }
     }
-  }, [currentVideoIndex, autoPlayEnabled]);
+  }, [currentVideoIndex, autoPlayEnabled, videos, dispatch]);
 
   // Add effect to scroll active video into view
   useEffect(() => {
     if (activeVideoRef.current) {
       activeVideoRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest'
+        behavior: "smooth",
+        block: "nearest",
       });
     }
   }, [currentVideoIndex]);
@@ -159,7 +164,7 @@ const VideoPanel = ({videos=[], loading = true}) => {
   };
 
   return (
-    <div className="flex flex-col w-[30%] h-full relative">
+    <div className="flex flex-col w-[33%] h-full relative">
       {/* Redirect Popup */}
       {showRedirectPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -169,8 +174,8 @@ const VideoPanel = ({videos=[], loading = true}) => {
               Redirecting to Test Page in {countdown} seconds...
             </p>
             <div className="w-full bg-gray-200 rounded-full h-2.5">
-              <div 
-                className="bg-blue-600 h-2.5 rounded-full" 
+              <div
+                className="bg-blue-600 h-2.5 rounded-full"
                 style={{ width: `${(10 - countdown) * 10}%` }}
               ></div>
             </div>
@@ -182,7 +187,7 @@ const VideoPanel = ({videos=[], loading = true}) => {
                 Close
               </button>
               <button
-                onClick={() => router.push('/test')}
+                onClick={() => router.push("/test")}
                 className="cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
               >
                 Go to Test Now
@@ -191,7 +196,7 @@ const VideoPanel = ({videos=[], loading = true}) => {
           </div>
         </div>
       )}
-      <div className="p-4 pb-1 bg-white rounded-xl border border-gray-200">
+      <div className=" bg-white rounded-xl border border-gray-200">
         <div className="relative w-full pt-[56.25%] bg-black rounded-lg overflow-hidden">
           {" "}
           {/* 16:9 Aspect Ratio */}
@@ -201,8 +206,9 @@ const VideoPanel = ({videos=[], loading = true}) => {
             className="absolute top-0 left-0 w-full h-full object-cover"
             onEnded={handleVideoEnd}
             onTimeUpdate={(e) => {
-              setCurrentTime(e.target.currentTime);
-              dispatch(setCurrentVideoTime(e.target.currentTime));
+              const time = e.target.currentTime;
+              setCurrentTime(time);
+              dispatch(setCurrentVideoTime(time));
             }}
             onLoadedMetadata={(e) => setDuration(e.target.duration)}
             onPlay={() => {
@@ -221,58 +227,11 @@ const VideoPanel = ({videos=[], loading = true}) => {
           />
         </div>
         {/* Time display below video */}
-        <div className="flex justify-start mt-2 text-sm text-gray-600">
+        {/* <div className="flex justify-start mt-2 text-sm text-gray-600">
           <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
-        </div>
+        </div> */}
       </div>
-
-      <div className="mt-4 p-4 bg-white rounded-xl border border-gray-200 flex-1">
-        <h3 className="font-medium mb-3">
-          Video Playlist ({videos?.length} videos)
-        </h3>
-        <div className="space-y-3 text-sm max-h-[calc(100vh-497px)] overflow-y-auto">
-          {videos?.map((video, index) => (
-            <div
-              key={index}
-              ref={currentVideoIndex === index ? activeVideoRef : null}
-              className={`flex items-center p-2 rounded cursor-pointer transition-colors ${
-                currentVideoIndex === index
-                  ? "bg-blue-50 border-l-4 border-blue-500"
-                  : "hover:bg-gray-50 border-l-4 border-transparent"
-              }`}
-              onClick={() => {
-                handleTranscriptClick(index);
-                dispatch(setCurrentSlide(video.slide));
-              }}
-            >
-              <img
-                src={video?.thumbnail}
-                alt="Thumbnail"
-                className="w-16 h-12 object-cover rounded mr-3"
-              />
-              <div className="flex-1 min-w-0 relative group">
-                <p className="font-medium truncate" title={video?.title || `Video ${index + 1}`}>
-                  {video?.title || `Video ${index + 1}`}
-                </p>
-                <div 
-                  className={`absolute z-100 invisible group-hover:visible bg-gray-800 text-white text-xs rounded py-1 px-2 left-1/2 transform -translate-x-1/2 whitespace-nowrap ${
-                    index === 0 
-                      ? 'top-full mt-1' 
-                      : 'bottom-full mb-2'
-                  }`}
-                >
-                  {video?.title || `Video ${index + 1}`}
-                  <div className={`absolute ${
-                    index === 0 
-                      ? 'bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-b-4 border-b-gray-800'
-                      : 'top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-t-4 border-t-gray-800'
-                  }`}></div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <QuestionPanel />
     </div>
   );
 };

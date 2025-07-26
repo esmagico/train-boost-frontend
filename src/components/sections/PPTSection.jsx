@@ -1,159 +1,117 @@
-import {
-  setIsQuestionMode,
-  setQuestionPanelPptSlide,
-} from "@/store/features/videoSlice";
-import React, { useState, useRef, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useGetAllVideoQuery } from "@/store/api/questionsApi";
+import React, { useRef, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
-// TranscriptSection component to display the current transcript based on video time
-const TranscriptSection = () => {
-  const { data, isLoading } = useGetAllVideoQuery();
-  const { currentVideoIndex, currentVideoTime, isVideoPlaying } = useSelector(
-    (state) => state.video
-  );
-  const [currentTranscript, setCurrentTranscript] = useState(null);
-  const [previousTranscript, setPreviousTranscript] = useState(null);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+// SlideVideoSection component to display synchronized slide video
+const SlideVideoSection = ({ videos, currentVideoIndex }) => {
+  const slideVideoRef = useRef(null);
+  const { currentVideoTime, isVideoPlaying } = useSelector((state) => state.video);
+  const [isVideoLoading, setIsVideoLoading] = useState(true);
 
+  // Sync slide video with trainer video time
   useEffect(() => {
-    if (isLoading || !data?.data || !data.data[currentVideoIndex]?.transcript)
-      return;
-
-    const transcriptItems = data.data[currentVideoIndex].transcript;
-
-    // Find the transcript item that matches the current time
-    const activeTranscript = transcriptItems.find(
-      (item) => currentVideoTime >= item.start && currentVideoTime <= item.end
-    );
-
-    // Only update if the transcript has changed
-    if (activeTranscript?.text !== currentTranscript?.text) {
-      if (currentTranscript) {
-        setPreviousTranscript(currentTranscript);
-        setIsTransitioning(true);
-
-        // Reset transition state after animation completes
-        setTimeout(() => {
-          setIsTransitioning(false);
-        }, 1000); // Match this with the animation duration
+    if (slideVideoRef.current && videos?.[currentVideoIndex]?.slide_video) {
+      const slideVideo = slideVideoRef.current;
+      const timeDifference = Math.abs(slideVideo.currentTime - currentVideoTime);
+      
+      // Only sync if there's a significant time difference (more than 0.3 seconds)
+      // and the video is loaded and ready
+      if (timeDifference > 0.3 && slideVideo.readyState >= 2) {
+        try {
+          slideVideo.currentTime = currentVideoTime;
+        } catch (error) {
+          console.warn("Failed to sync slide video time:", error);
+        }
       }
-
-      setCurrentTranscript(activeTranscript);
     }
-  }, [data, currentVideoIndex, currentVideoTime, isLoading, currentTranscript]);
+  }, [currentVideoTime, videos, currentVideoIndex]);
+
+  // Sync play/pause state with trainer video
+  useEffect(() => {
+    if (slideVideoRef.current) {
+      const slideVideo = slideVideoRef.current;
+      
+      if (isVideoPlaying && slideVideo.paused) {
+        slideVideo.play().catch(console.error);
+      } else if (!isVideoPlaying && !slideVideo.paused) {
+        slideVideo.pause();
+      }
+    }
+  }, [isVideoPlaying]);
+
+  // Load new video when index changes
+  useEffect(() => {
+    if (slideVideoRef.current && videos?.[currentVideoIndex]?.slide_video) {
+      const slideVideo = slideVideoRef.current;
+      slideVideo.load();
+      
+      // Reset time to 0 when loading new video
+      slideVideo.currentTime = 0;
+    }
+  }, [currentVideoIndex, videos]);
+
+  if (!videos?.[currentVideoIndex]?.slide_video) {
+    return (
+      <div className="w-full h-full bg-gray-100 rounded-xl flex items-center justify-center">
+        <p className="text-gray-500">No slide video available</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-[70%] bg-white rounded-md overflow-hidden">
-      <style jsx>{`
-        @keyframes slideInFromLeft {
-          0% {
-            transform: translateX(-100%);
-            opacity: 0;
+    <div className="w-full h-full bg-black rounded-xl overflow-hidden relative">
+      {/* Loading overlay */}
+      {isVideoLoading && (
+        <div className="absolute inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-10">
+          <div className="text-white text-center">
+            <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+            <p className="text-sm">Loading slide video...</p>
+          </div>
+        </div>
+      )}
+      
+      <video
+        ref={slideVideoRef}
+        src={videos[currentVideoIndex].slide_video}
+        className="w-full h-full object-contain"
+        muted
+        playsInline
+        onLoadStart={() => setIsVideoLoading(true)}
+        onLoadedData={() => {
+          // Sync initial time when video loads
+          if (slideVideoRef.current) {
+            slideVideoRef.current.currentTime = currentVideoTime;
           }
-          100% {
-            transform: translateX(0);
-            opacity: 1;
+          setIsVideoLoading(false);
+        }}
+        onError={(e) => {
+          console.error("Error loading slide video:", e);
+          setIsVideoLoading(false);
+        }}
+        onCanPlay={() => {
+          // Ensure sync when video is ready to play
+          if (slideVideoRef.current) {
+            slideVideoRef.current.currentTime = currentVideoTime;
           }
-        }
-
-        @keyframes slideOutToRight {
-          0% {
-            transform: translateX(0);
-            opacity: 1;
-          }
-          100% {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-        }
-
-        .transcript-container {
-          position: relative;
-          min-height: 4rem;
-          overflow: hidden;
-        }
-
-        .transcript-text {
-          position: absolute;
-          width: 100%;
-          top: 0;
-          left: 0;
-        }
-
-        .slide-in {
-          animation: slideInFromLeft 1s ease-out forwards;
-        }
-
-        .slide-out {
-          animation: slideOutToRight 1s ease-out forwards;
-        }
-      `}</style>
-
-      <div className="p-3 ml-4 transcript-container">
-        {!isVideoPlaying ? (
-          // Show nothing when video is paused
-          <div className="transcript-text"></div>
-        ) : isLoading || !currentTranscript ? (
-          <p className="text-lg text-gray-700 font-bold leading-relaxed transcript-text">
-            No transcript available for this moment
-          </p>
-        ) : (
-          <>
-            {/* Previous transcript that slides out */}
-            {isTransitioning && previousTranscript && (
-              <p className="text-lg text-gray-700 font-bold leading-relaxed transcript-text slide-out">
-                {previousTranscript.text}
-              </p>
-            )}
-
-            {/* Current transcript that slides in */}
-            <p
-              className={`text-lg text-gray-700 font-bold leading-relaxed transcript-text ${
-                isTransitioning ? "slide-in" : ""
-              }`}
-            >
-              {currentTranscript.text}
-            </p>
-          </>
-        )}
-      </div>
+        }}
+      />
+      
+      {/* Video title overlay */}
+      {videos[currentVideoIndex]?.title && !isVideoLoading && (
+        <div className="absolute bottom-4 left-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-md text-sm">
+          {videos[currentVideoIndex].title}
+        </div>
+      )}
     </div>
   );
 };
 
 const PPTSection = ({
+  videos = [],
   loading = false,
-  removeAskQuestionButton = false,
-  isQuestionMode = false,
   height = "calc(100vh - 220px)",
   width = "70%",
-  autoPlayDelay = 3000,
-  presentationUrl = "https://docs.google.com/presentation/d/1h2O6645kWV0kWihwFF--DKx82RykKc1L/edit?usp=drive_link&ouid=112603893642491756794&rtpof=true&sd=true", // new prop
 }) => {
-  const iframeRef = useRef(null);
-  const { currentSlide, questionPanelPptSlide } = useSelector(
-    (state) => state.video
-  );
-  const dispatch = useDispatch();
-  const slideNumber = isQuestionMode ? questionPanelPptSlide : currentSlide;
-
-  const extractPresentationId = (url) => {
-    const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
-    return match ? match[1] : null;
-  };
-
-  const presentationId = extractPresentationId(presentationUrl);
-  // const presentationId = "1yyZtqREBI0fS6zZ2HlKMwGnrUwO6VXab"
-  // const getSlideUrl = () => {
-  //   if (!presentationId) return "";
-  //   return `https://docs.google.com/presentation/d/${presentationId}/embed?start=true&loop=true&delayms=${autoPlayDelay}&slide=${currentSlide}`;
-  // };
-
-  const getSlideUrl = () => {
-    if (!presentationId) return "";
-    return `https://docs.google.com/presentation/d/${presentationId}/embed?start=false&loop=false&delayms=${autoPlayDelay}&rm=minimal&slide=${slideNumber}`;
-  };
+  const { currentVideoIndex } = useSelector((state) => state.video);
 
   if (loading) {
     return (
@@ -169,11 +127,6 @@ const PPTSection = ({
             </div>
           </div>
         </div>
-        {!removeAskQuestionButton && (
-          <div className="flex justify-center mt-4">
-            <div className="h-10 w-40 bg-gray-200 rounded-full"></div>
-          </div>
-        )}
       </div>
     );
   }
@@ -184,37 +137,11 @@ const PPTSection = ({
         className="p-4 bg-white rounded-xl border border-gray-200 min-h-[500px] relative"
         style={{ height }}
       >
-        {presentationId ? (
-          <iframe
-            ref={iframeRef}
-            src={getSlideUrl()}
-            className="w-full h-full rounded-xl pointer-events-none"
-            allowFullScreen
-            allow="autoplay"
-            title="Presentation Slides"
-            frameBorder="0"
-            sandbox="allow-same-origin allow-scripts allow-popups allow-presentation"
-          />
-        ) : (
-          <div className="text-red-500 text-center">
-            Invalid Google Drive Presentation URL
-          </div>
-        )}
+        <SlideVideoSection 
+          videos={videos} 
+          currentVideoIndex={currentVideoIndex} 
+        />
       </div>
-      {!removeAskQuestionButton && (
-        <div className="flex mt-4 justify-between items-start">
-          <TranscriptSection />
-          <button
-            onClick={() => {
-              dispatch(setIsQuestionMode(true));
-              dispatch(setQuestionPanelPptSlide(currentSlide));
-            }}
-            className="max-h-[40px] min-w-[150px] cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-colors"
-          >
-            Ask a Question
-          </button>
-        </div>
-      )}
     </div>
   );
 };
