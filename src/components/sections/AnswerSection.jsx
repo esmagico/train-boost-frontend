@@ -14,15 +14,17 @@ const AnswerSection = ({ answer, audioLink = "", loading }) => {
     if (audioRef.current) {
       const handlePlay = () => {
         // Pause any other playing audio
-        document.querySelectorAll('audio').forEach(audio => {
+        document.querySelectorAll("audio").forEach((audio) => {
           if (audio !== audioRef.current && !audio.paused) {
             audio.pause();
           }
         });
         dispatch(setIsPlaying({ playing: true, audioId: audioId.current }));
       };
-      const handlePause = () => dispatch(setIsPlaying({ playing: false, audioId: null }));
-      const handleEnd = () => dispatch(setIsPlaying({ playing: false, audioId: null }));
+      const handlePause = () =>
+        dispatch(setIsPlaying({ playing: false, audioId: null }));
+      const handleEnd = () =>
+        dispatch(setIsPlaying({ playing: false, audioId: null }));
 
       audioRef.current.addEventListener("play", handlePlay);
       audioRef.current.addEventListener("pause", handlePause);
@@ -57,7 +59,7 @@ const AnswerSection = ({ answer, audioLink = "", loading }) => {
         audioRef.current.pause();
       } else {
         // Pause any other playing audio before playing this one
-        document.querySelectorAll('audio').forEach(audio => {
+        document.querySelectorAll("audio").forEach((audio) => {
           if (audio !== audioRef.current && !audio.paused) {
             audio.pause();
           }

@@ -1,23 +1,101 @@
-// Updated QuestionPanel.jsx
+// Updated QuestionPanel.jsx with Speech-to-Text
 import React, { useState, useRef, useEffect } from "react";
 import AnswerSection from "./AnswerSection";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  setIsQuestionMode,
   setQuestion,
   setQuestionPanelPptSlide,
 } from "@/store/features/videoSlice";
 import { useSubmitQuestionMutation } from "@/store/api/questionsApi";
-import Button from "@/components/common/Button";
 
 const QuestionPanel = () => {
   const [conversation, setConversation] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentQuestion, setCurrentQuestion] = useState("");
+  const [isListening, setIsListening] = useState(false);
+  const [speechSupported, setSpeechSupported] = useState(false);
+  const [startingText, setStartingText] = useState("");
   const messagesEndRef = useRef(null);
+  const recognitionRef = useRef(null);
   const dispatch = useDispatch();
   const { question, isPlaying } = useSelector((state) => state.video);
   const [submitQuestion] = useSubmitQuestionMutation();
+
+  // Initialize speech recognition
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      
+      if (SpeechRecognition) {
+        setSpeechSupported(true);
+        recognitionRef.current = new SpeechRecognition();
+        
+        // Configure speech recognition
+        recognitionRef.current.continuous = false;
+        recognitionRef.current.interimResults = true;
+        recognitionRef.current.lang = 'en-US';
+        
+        // Handle speech recognition results
+        recognitionRef.current.onresult = (event) => {
+          // Get only the current interim transcript (not cumulative)
+          let currentTranscript = '';
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            currentTranscript += event.results[i][0].transcript;
+          }
+          
+          // Combine starting text with current speech transcript
+          const combinedText = startingText + (startingText && currentTranscript ? ' ' : '') + currentTranscript;
+          dispatch(setQuestion(combinedText));
+          
+          // If final result, update starting text and stop listening
+          if (event.results[event.results.length - 1].isFinal) {
+            setStartingText(combinedText);
+            setIsListening(false);
+          }
+        };
+        
+        // Handle speech recognition end
+        recognitionRef.current.onend = () => {
+          setIsListening(false);
+          // Keep the combined text as the new starting point for next speech session
+          setStartingText(question);
+        };
+        
+        // Handle speech recognition errors
+        recognitionRef.current.onerror = (event) => {
+          console.error('Speech recognition error:', event.error);
+          setIsListening(false);
+          
+          // Show user-friendly error message
+          let errorMessage = 'Speech recognition failed. ';
+          switch (event.error) {
+            case 'no-speech':
+              errorMessage += 'No speech was detected.';
+              break;
+            case 'audio-capture':
+              errorMessage += 'No microphone was found.';
+              break;
+            case 'not-allowed':
+              errorMessage += 'Microphone permission denied.';
+              break;
+            case 'network':
+              errorMessage += 'Network error occurred.';
+              break;
+            default:
+              errorMessage += 'Please try again.';
+          }
+          
+          // You could show this error in a toast or alert
+          console.warn(errorMessage);
+        };
+      }
+    }
+    
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort();
+      }
+    };
+  }, [dispatch]);
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -37,7 +115,6 @@ const QuestionPanel = () => {
     if (!question.trim()) return;
 
     const userQuestion = question.trim();
-    setCurrentQuestion(userQuestion);
     dispatch(setQuestion(""));
     setIsLoading(true);
 
@@ -74,12 +151,37 @@ const QuestionPanel = () => {
     }
   };
 
+  const toggleSpeechRecognition = () => {
+    if (!speechSupported) {
+      alert('Speech recognition is not supported in your browser.');
+      return;
+    }
+
+    if (isListening) {
+      // Stop listening
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      // Store the current text before starting speech recognition
+      setStartingText(question);
+      
+      // Start listening
+      try {
+        recognitionRef.current.start();
+        setIsListening(true);
+      } catch (error) {
+        console.error('Error starting speech recognition:', error);
+        setIsListening(false);
+      }
+    }
+  };
+
   return (
-    <div className="flex flex-col w-[100%] h-full">
-      <div className="bg-white rounded-xl border border-gray-200 p-4 h-[calc(100vh-620px)] flex flex-col">
+    <div className="flex flex-col w-[100%] h-full mt-4">
+      <div className="bg-white rounded-xl h-[calc(100vh-370px)] flex flex-col">
         <div
           className="flex-1 overflow-y-auto mb-4"
-          style={{ maxHeight: "200px", minHeight: "200px" }}
+          style={{ minHeight: "200px" }}
         >
           {conversation.map((item, index) => (
             <div key={index} className="mb-4">
@@ -114,63 +216,115 @@ const QuestionPanel = () => {
         </div>
 
         <div className="mt-auto">
-          <div className="mb-4">
-            <h3 className="font-medium mb-2">Your Question</h3>
+          {/* Question Input Section */}
+          <div className="relative">
             <textarea
               value={question}
               onChange={(e) => dispatch(setQuestion(e.target.value))}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-3 pr-20 text-gray-700 bg-white border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[52px] max-h-32"
+              placeholder={isListening ? "Listening..." : "Ask Trainboost..."}
               rows={3}
-              placeholder="Type your question here..."
-              onKeyPress={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault(); // Prevent new line
-                  if (!isPlaying) {
+                  e.preventDefault();
+                  if (!isPlaying && question.trim()) {
                     handleSubmit();
                   }
+                } else if (e.key === "Enter" && e.shiftKey) {
+                  // Allow new line with Shift+Enter
                 }
               }}
+              onInput={(e) => {
+                // Auto-resize textarea
+                e.target.style.height = 'auto';
+                e.target.style.height = Math.min(e.target.scrollHeight, 128) + 'px';
+              }}
+              disabled={isListening}
             />
-          </div>
-          <div className="flex justify-between">
-          <Button
-              onClick={() => dispatch(setIsQuestionMode(false))}
-              variant="secondary"
-            >
-              Back
-            </Button>
-            <Button
-              onClick={handleSubmit}
-              disabled={!question.trim() || isLoading || isPlaying}
-              variant="primary"
-            >
-              {isLoading ? (
-                <>
+
+            {/* Speech Recognition Button */}
+            {speechSupported && (
+              <button
+                onClick={toggleSpeechRecognition}
+                disabled={isLoading || isPlaying}
+                className={`absolute right-2 top-3 p-2 rounded-full transition-colors ${
+                  isListening
+                    ? "bg-red-500 text-white hover:bg-red-600"
+                    : isLoading || isPlaying
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-300"
+                }`}
+                title={isListening ? "Stop listening" : "Start voice input"}
+              >
+                {isListening ? (
                   <svg
-                    className="inline mr-2 w-5 h-5 text-gray-500 animate-spin"
+                    className="w-5 h-5 animate-pulse"
+                    fill="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                      fill="none"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                    />
+                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
                   </svg>
-                  Submitting...
-                </>
+                ) : (
+                  <svg
+                    className="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                  </svg>
+                )}
+              </button>
+            )}
+
+            {/* Submit Button */}
+            <button
+              onClick={handleSubmit}
+              disabled={!question.trim() || isLoading || isPlaying}
+              className={`absolute right-2 top-14 p-2 rounded-full transition-colors ${
+                !question.trim() || isLoading || isPlaying
+                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-300"
+              }`}
+              title="Submit question"
+            >
+              {isLoading ? (
+                <svg
+                  className="w-5 h-5 animate-spin"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  />
+                </svg>
               ) : (
-                "Submit Question"
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                  />
+                </svg>
               )}
-            </Button>
+            </button>
           </div>
         </div>
       </div>

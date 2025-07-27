@@ -36,7 +36,7 @@ const Header = () => {
   };
 
   return (
-    <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f1f2f4] px-10 py-3">
+    <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f1f2f4] px-10 py-2">
       <div className="flex items-center gap-4 text-[#121416]">
         <div className="size-4">
           <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
