@@ -3,7 +3,7 @@ import React, { useState, useRef } from "react";
 import VideoPanel from "@/components/sections/VideoPanel";
 import PPTSection from "@/components/sections/PPTSection";
 import { useGetAllVideoQuery } from "@/store/api/questionsApi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setIsPlaying } from "@/store/features/videoSlice";
 
 const Home = () => {
@@ -13,6 +13,7 @@ const Home = () => {
   );
   const videoPanelRef = useRef(null);
   const dispatch = useDispatch();
+  const { pptVideoIndex } = useSelector((state) => state.video);
 
   // Shared video state for synchronization
   const [videoState, setVideoState] = useState({
@@ -55,7 +56,7 @@ const Home = () => {
             <PPTSection
               videos={videos}
               loading={isLoading}
-              currentVideoIndex={videoState.currentVideoIndex}
+              currentVideoIndex={pptVideoIndex}
               currentVideoTime={videoState.currentTime}
               isVideoPlaying={videoState.isPlaying}
               videoDuration={videoState.duration}

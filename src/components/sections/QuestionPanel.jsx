@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setQuestion,
   setQuestionPanelPptSlide,
+  jumpPptToVideoEnd,
 } from "@/store/features/videoSlice";
 import { useSubmitQuestionMutation } from "@/store/api/questionsApi";
 import mic from "@/assets/svg/mic.svg";
@@ -13,7 +14,7 @@ import submit from "@/assets/svg/submit.svg";
 import submitActive from "@/assets/svg/submit-active.svg";
 import noConversation from "@/assets/svg/noConversation.svg";
 
-const QuestionPanel = ({ onPauseVideo }) => {
+const QuestionPanel = ({ onPauseVideo, videos = [] }) => {
   const [conversation, setConversation] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
@@ -46,17 +47,30 @@ const QuestionPanel = ({ onPauseVideo }) => {
           // Get the latest result (the most recent speech)
           const lastResult = event.results[event.results.length - 1];
           const transcript = lastResult[0].transcript;
-          
-          console.log("Speech result - startingTextRef:", startingTextRef.current, "transcript:", transcript, "isFinal:", lastResult.isFinal);
-          
+
+          console.log(
+            "Speech result - startingTextRef:",
+            startingTextRef.current,
+            "transcript:",
+            transcript,
+            "isFinal:",
+            lastResult.isFinal
+          );
+
           // Always combine with the starting text that was captured when speech began
-          const combinedText = startingTextRef.current + (startingTextRef.current && transcript ? " " : "") + transcript;
+          const combinedText =
+            startingTextRef.current +
+            (startingTextRef.current && transcript ? " " : "") +
+            transcript;
           console.log("Combined text:", combinedText);
           dispatch(setQuestion(combinedText));
 
           // If this is a final result, update startingText for the next speech session
           if (lastResult.isFinal) {
-            console.log("Final result - updating startingText to:", combinedText);
+            console.log(
+              "Final result - updating startingText to:",
+              combinedText
+            );
             setStartingText(combinedText);
             startingTextRef.current = combinedText;
             setIsListening(false);
@@ -120,8 +134,6 @@ const QuestionPanel = ({ onPauseVideo }) => {
     scrollToBottom();
   }, [conversation]);
 
-
-
   const handleSubmit = async () => {
     if (!question.trim()) return;
 
@@ -146,13 +158,40 @@ const QuestionPanel = ({ onPauseVideo }) => {
       const response = await submitQuestion({
         question: userQuestion,
       }).unwrap();
-      dispatch(setQuestionPanelPptSlide(response?.primary_jump_target));
+
+      // Handle primary_jump_target - jump to specific video and show end part
+      if (response?.primary_jump_target) {
+        dispatch(setQuestionPanelPptSlide(response.primary_jump_target));
+
+        // Jump to the target video (assuming primary_jump_target is 1-based, convert to 0-based index)
+        const targetVideoIndex = response.primary_jump_target - 1;
+
+        // Validate that the target video exists
+        if (
+          videos &&
+          targetVideoIndex >= 0 &&
+          targetVideoIndex < videos.length
+        ) {
+          dispatch(jumpPptToVideoEnd({ videoIndex: targetVideoIndex }));
+          console.log(
+            `Jumping to video ${response.primary_jump_target} (index ${targetVideoIndex}) and seeking to end`
+          );
+        } else {
+          console.warn(
+            `Invalid jump target: ${
+              response.primary_jump_target
+            }. Available videos: ${videos?.length || 0}`
+          );
+        }
+      }
+
       setConversation((prev) => [
         ...prev,
         {
           type: "answer",
           content: response?.answer || "No answer received",
           audioLink: response?.audio_url || "",
+          jumpTarget: response?.primary_jump_target, // Store for reference
         },
       ]);
     } catch (error) {
@@ -201,7 +240,7 @@ const QuestionPanel = ({ onPauseVideo }) => {
       }
     }
   };
-  console.log(conversation, "conversation");
+
   return (
     <div className="flex flex-col w-[100%] h-full mt-4">
       <div className="bg-white rounded-xl h-[calc(100vh-385px)] flex flex-col">
@@ -220,6 +259,26 @@ const QuestionPanel = ({ onPauseVideo }) => {
                 )}
                 {item.type === "answer" && (
                   <div className="mb-4 p-3 bg-gray-100 rounded-lg">
+                    {item.jumpTarget && (
+                      <div className="mb-2 p-2 bg-blue-50 border border-blue-200 rounded-md">
+                        <div className="flex items-center text-sm text-blue-700">
+                          <svg
+                            className="w-4 h-4 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                          Jumped to Video {item.jumpTarget} (end section)
+                        </div>
+                      </div>
+                    )}
                     <AnswerSection
                       answer={item.content}
                       audioLink={item.audioLink}

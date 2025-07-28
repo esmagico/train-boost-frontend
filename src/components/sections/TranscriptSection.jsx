@@ -59,7 +59,7 @@ const TranscriptSection = ({
   }, [currentVideoIndex]);
 
   return (
-    <div className="w-full bg-white rounded-lg p-4 pl-1 mt-2 ">
+    <div className="w-full bg-white rounded-lg p-4 pl-1 mt-2">
       <div className="flex items-center">
         <span className="font-lato font-bold text-base leading-none tracking-[0.02em] bg-clip-text text-transparent bg-gradient-to-b from-[#685EDD] to-[#DA8BFF]">
           Captions
@@ -172,7 +172,7 @@ const TranscriptSection = ({
         `}</style>
 
         <div className="relative h-[100px] w-full">
-          {!isVideoPlaying ? (
+          {/* {!isVideoPlaying ? (
             <p className="text-gray-500 text-sm">
               Play the video to see captions
             </p>
@@ -180,7 +180,7 @@ const TranscriptSection = ({
             <p className="text-gray-500 text-sm">
               No captions available for this moment
             </p>
-          ) : (
+          ) : ( */}
             <>
               {isTransitioning && previousTranscript && (
                 <p className="caption-text animate-out font-lato font-bold text-xl leading-[30px] tracking-[0.02em] text-gray-800">
@@ -197,7 +197,7 @@ const TranscriptSection = ({
                 </p>
               )}
             </>
-          )}
+          {/* )} */}
         </div>
       </div>
     </div>

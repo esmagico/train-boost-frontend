@@ -3,6 +3,7 @@ import {
   setCurrentVideoIndex,
   setCurrentVideoTime,
   setIsVideoPlaying,
+  syncPptToVideoPanel,
 } from "@/store/features/videoSlice";
 import React, {
   useState,
@@ -268,6 +269,15 @@ const VideoPanel = forwardRef(
       }
     }, [currentTime, duration, currentVideoIndex, videos, preloadedVideoIndex]);
 
+    // Sync PPT to video panel when video starts playing
+    useEffect(() => {
+      if (isPlaying) {
+        // When video panel starts playing, sync PPT to the same video
+        dispatch(syncPptToVideoPanel());
+        console.log(`Syncing PPT to video panel's current video: ${currentVideoIndex + 1}`);
+      }
+    }, [isPlaying, currentVideoIndex, dispatch]);
+
     // Cleanup preload video element on unmount
     useEffect(() => {
       return () => {
@@ -482,7 +492,7 @@ const VideoPanel = forwardRef(
             </span>
           </div>
         </div>
-        <QuestionPanel onPauseVideo={pauseVideo} />
+        <QuestionPanel onPauseVideo={pauseVideo} videos={videos} />
       </div>
     );
   }
