@@ -157,7 +157,7 @@ const TranscriptSection = ({
           }
 
           .animate-out {
-            animation: slideUpAndFadeOut 0.5s ease forwards;
+            animation: slideUpAndFadeOut 1s ease forwards;
           }
 
           .animate-in {

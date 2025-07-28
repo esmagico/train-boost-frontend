@@ -5,7 +5,7 @@ import SlideVideoSection from "./SlideVideoSection";
 const PPTSection = ({
   videos = [],
   loading = false,
-  height = "calc(100vh - 280px)", // Increased height to match VideoPanel
+  height = "calc(100vh - 240px)", // Increased height to match VideoPanel
   width = "70%",
   currentVideoIndex = 0,
   currentVideoTime = 0,
@@ -40,7 +40,7 @@ const PPTSection = ({
 
   return (
     <div
-      className="flex flex-col h-[calc(100vh-120px)] pr-5 border-r border-gray-300 flex-shrink-0"
+      className="flex flex-col h-[calc(100vh-100px)] pr-5 border-r border-gray-300 flex-shrink-0"
       style={{ width }}
     >
       {/* Video Section */}

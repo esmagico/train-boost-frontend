@@ -11,6 +11,7 @@ import mic from "@/assets/svg/mic.svg";
 import micActive from "@/assets/svg/mic-active.svg";
 import submit from "@/assets/svg/submit.svg";
 import submitActive from "@/assets/svg/submit-active.svg";
+import noConversation from "@/assets/svg/noConversation.svg";
 
 const QuestionPanel = ({ onPauseVideo }) => {
   const [conversation, setConversation] = useState([]);
@@ -26,74 +27,78 @@ const QuestionPanel = ({ onPauseVideo }) => {
 
   // Initialize speech recognition
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      
+    if (typeof window !== "undefined") {
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+
       if (SpeechRecognition) {
         setSpeechSupported(true);
         recognitionRef.current = new SpeechRecognition();
-        
+
         // Configure speech recognition
         recognitionRef.current.continuous = false;
         recognitionRef.current.interimResults = true;
-        recognitionRef.current.lang = 'en-US';
-        
+        recognitionRef.current.lang = "en-US";
+
         // Handle speech recognition results
         recognitionRef.current.onresult = (event) => {
           // Get only the current interim transcript (not cumulative)
-          let currentTranscript = '';
+          let currentTranscript = "";
           for (let i = event.resultIndex; i < event.results.length; i++) {
             currentTranscript += event.results[i][0].transcript;
           }
-          
+
           // Combine starting text with current speech transcript
-          const combinedText = startingText + (startingText && currentTranscript ? ' ' : '') + currentTranscript;
+          const combinedText =
+            startingText +
+            (startingText && currentTranscript ? " " : "") +
+            currentTranscript;
           dispatch(setQuestion(combinedText));
-          
+
           // If final result, update starting text and stop listening
           if (event.results[event.results.length - 1].isFinal) {
             setStartingText(combinedText);
             setIsListening(false);
           }
         };
-        
+
         // Handle speech recognition end
         recognitionRef.current.onend = () => {
           setIsListening(false);
           // Keep the combined text as the new starting point for next speech session
           setStartingText(question);
         };
-        
+
         // Handle speech recognition errors
         recognitionRef.current.onerror = (event) => {
-          console.error('Speech recognition error:', event.error);
+          console.error("Speech recognition error:", event.error);
           setIsListening(false);
-          
+
           // Show user-friendly error message
-          let errorMessage = 'Speech recognition failed. ';
+          let errorMessage = "Speech recognition failed. ";
           switch (event.error) {
-            case 'no-speech':
-              errorMessage += 'No speech was detected.';
+            case "no-speech":
+              errorMessage += "No speech was detected.";
               break;
-            case 'audio-capture':
-              errorMessage += 'No microphone was found.';
+            case "audio-capture":
+              errorMessage += "No microphone was found.";
               break;
-            case 'not-allowed':
-              errorMessage += 'Microphone permission denied.';
+            case "not-allowed":
+              errorMessage += "Microphone permission denied.";
               break;
-            case 'network':
-              errorMessage += 'Network error occurred.';
+            case "network":
+              errorMessage += "Network error occurred.";
               break;
             default:
-              errorMessage += 'Please try again.';
+              errorMessage += "Please try again.";
           }
-          
+
           // You could show this error in a toast or alert
           console.warn(errorMessage);
         };
       }
     }
-    
+
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.abort();
@@ -162,7 +167,7 @@ const QuestionPanel = ({ onPauseVideo }) => {
 
   const toggleSpeechRecognition = () => {
     if (!speechSupported) {
-      alert('Speech recognition is not supported in your browser.');
+      alert("Speech recognition is not supported in your browser.");
       return;
     }
 
@@ -178,18 +183,18 @@ const QuestionPanel = ({ onPauseVideo }) => {
 
       // Store the current text before starting speech recognition
       setStartingText(question);
-      
+
       // Start listening
       try {
         recognitionRef.current.start();
         setIsListening(true);
       } catch (error) {
-        console.error('Error starting speech recognition:', error);
+        console.error("Error starting speech recognition:", error);
         setIsListening(false);
       }
     }
   };
-
+  console.log(conversation, "conversation");
   return (
     <div className="flex flex-col w-[100%] h-full mt-4">
       <div className="bg-white rounded-xl h-[calc(100vh-385px)] flex flex-col">
@@ -197,29 +202,42 @@ const QuestionPanel = ({ onPauseVideo }) => {
           className="flex-1 overflow-y-auto mb-4"
           style={{ minHeight: "200px" }}
         >
-          {conversation.map((item, index) => (
-            <div key={index} className="mb-4">
-              {item.type === "question" && (
-                <div className="mb-2 p-3 bg-blue-100 rounded-lg">
-                  <p className="font-medium text-blue-800">Question:</p>
-                  <p>{item.content}</p>
-                </div>
-              )}
-              {item.type === "answer" && (
-                <div className="mb-4 p-3 bg-gray-100 rounded-lg">
-                  <AnswerSection
-                    answer={item.content}
-                    audioLink={item.audioLink}
-                  />
-                </div>
-              )}
-              {item.type === "error" && (
-                <div className="text-red-500 p-2 bg-red-50 rounded">
-                  {item.content}
-                </div>
-              )}
+          {conversation.length > 0 ? (
+            conversation.map((item, index) => (
+              <div key={index} className="mb-4">
+                {item.type === "question" && (
+                  <div className="mb-2 p-3 bg-blue-100 rounded-lg">
+                    <p className="font-medium text-blue-800">Question:</p>
+                    <p>{item.content}</p>
+                  </div>
+                )}
+                {item.type === "answer" && (
+                  <div className="mb-4 p-3 bg-gray-100 rounded-lg">
+                    <AnswerSection
+                      answer={item.content}
+                      audioLink={item.audioLink}
+                    />
+                  </div>
+                )}
+                {item.type === "error" && (
+                  <div className="text-red-500 p-2 bg-red-50 rounded">
+                    {item.content}
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full">
+              <img className="w-12 h-12" src={noConversation.src} alt="" />
+              <p className="font-lato font-bold text-base leading-none tracking-[0.02em] text-center align-middle text-gray-500 mt-3">
+                Ask Anything
+              </p>
+              <p className="text-gray-500 mt-1 w-[276px] text-center text-[12px] leading-[16px] font-normal font-lato">
+                our presentation is ready. Just type a question to get quick,
+                accurate answers.
+              </p>
             </div>
-          ))}
+          )}
           {isLoading && (
             <div className="animate-pulse p-3">
               <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
@@ -250,8 +268,9 @@ const QuestionPanel = ({ onPauseVideo }) => {
               }}
               onInput={(e) => {
                 // Auto-resize textarea
-                e.target.style.height = 'auto';
-                e.target.style.height = Math.min(e.target.scrollHeight, 128) + 'px';
+                e.target.style.height = "auto";
+                e.target.style.height =
+                  Math.min(e.target.scrollHeight, 128) + "px";
               }}
               disabled={isListening}
             />
@@ -262,14 +281,18 @@ const QuestionPanel = ({ onPauseVideo }) => {
                 onClick={toggleSpeechRecognition}
                 disabled={isLoading || isPlaying}
                 className={`absolute right-2 top-2 p-2 rounded-full transition-colors ${
-                 isLoading || isPlaying || isListening
+                  isLoading || isPlaying || isListening
                     ? "cursor-not-allowed"
                     : "cursor-pointer"
                 }`}
                 title={isListening ? "Stop listening" : "Start voice input"}
               >
                 {isListening ? (
-                  <img src={micActive.src} alt="Mic Active" className="w-[30px] h-[30px]" />
+                  <img
+                    src={micActive.src}
+                    alt="Mic Active"
+                    className="w-[30px] h-[30px]"
+                  />
                 ) : (
                   <img src={mic.src} alt="Mic" className="w-[30px] h-[30px]" />
                 )}
@@ -288,9 +311,17 @@ const QuestionPanel = ({ onPauseVideo }) => {
               title="Submit question"
             >
               {isLoading || question.trim() === "" ? (
-                <img src={submit.src} alt="Submit Active" className="w-[30px] h-[30px]" />
+                <img
+                  src={submit.src}
+                  alt="Submit Active"
+                  className="w-[30px] h-[30px]"
+                />
               ) : (
-                <img src={submitActive.src} alt="Submit" className="w-[30px] h-[30px]" />
+                <img
+                  src={submitActive.src}
+                  alt="Submit"
+                  className="w-[30px] h-[30px]"
+                />
               )}
             </button>
           </div>
