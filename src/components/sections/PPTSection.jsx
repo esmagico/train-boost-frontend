@@ -40,7 +40,7 @@ const PPTSection = ({
 
   return (
     <div
-      className="flex flex-col h-[calc(100vh-100px)] pr-5 border-r border-gray-300 flex-shrink-0"
+      className="flex flex-col h-[calc(100vh-120px)] pr-5 border-r border-gray-300 flex-shrink-0"
       style={{ width }}
     >
       {/* Video Section */}

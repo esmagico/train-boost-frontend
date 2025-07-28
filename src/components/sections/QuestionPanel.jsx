@@ -19,6 +19,7 @@ const QuestionPanel = ({ onPauseVideo }) => {
   const [isListening, setIsListening] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
   const [startingText, setStartingText] = useState("");
+  const startingTextRef = useRef("");
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
   const dispatch = useDispatch();
@@ -42,22 +43,22 @@ const QuestionPanel = ({ onPauseVideo }) => {
 
         // Handle speech recognition results
         recognitionRef.current.onresult = (event) => {
-          // Get only the current interim transcript (not cumulative)
-          let currentTranscript = "";
-          for (let i = event.resultIndex; i < event.results.length; i++) {
-            currentTranscript += event.results[i][0].transcript;
-          }
-
-          // Combine starting text with current speech transcript
-          const combinedText =
-            startingText +
-            (startingText && currentTranscript ? " " : "") +
-            currentTranscript;
+          // Get the latest result (the most recent speech)
+          const lastResult = event.results[event.results.length - 1];
+          const transcript = lastResult[0].transcript;
+          
+          console.log("Speech result - startingTextRef:", startingTextRef.current, "transcript:", transcript, "isFinal:", lastResult.isFinal);
+          
+          // Always combine with the starting text that was captured when speech began
+          const combinedText = startingTextRef.current + (startingTextRef.current && transcript ? " " : "") + transcript;
+          console.log("Combined text:", combinedText);
           dispatch(setQuestion(combinedText));
 
-          // If final result, update starting text and stop listening
-          if (event.results[event.results.length - 1].isFinal) {
+          // If this is a final result, update startingText for the next speech session
+          if (lastResult.isFinal) {
+            console.log("Final result - updating startingText to:", combinedText);
             setStartingText(combinedText);
+            startingTextRef.current = combinedText;
             setIsListening(false);
           }
         };
@@ -65,8 +66,7 @@ const QuestionPanel = ({ onPauseVideo }) => {
         // Handle speech recognition end
         recognitionRef.current.onend = () => {
           setIsListening(false);
-          // Keep the combined text as the new starting point for next speech session
-          setStartingText(question);
+          // Don't update startingText here - it should retain the final result
         };
 
         // Handle speech recognition errors
@@ -120,6 +120,8 @@ const QuestionPanel = ({ onPauseVideo }) => {
     scrollToBottom();
   }, [conversation]);
 
+
+
   const handleSubmit = async () => {
     if (!question.trim()) return;
 
@@ -130,6 +132,8 @@ const QuestionPanel = ({ onPauseVideo }) => {
 
     const userQuestion = question.trim();
     dispatch(setQuestion(""));
+    setStartingText(""); // Reset starting text when question is submitted
+    startingTextRef.current = "";
     setIsLoading(true);
 
     // Add user question to conversation
@@ -181,8 +185,11 @@ const QuestionPanel = ({ onPauseVideo }) => {
         onPauseVideo();
       }
 
-      // Store the current text before starting speech recognition
+      // Store the current question text as starting point for speech recognition
+      console.log("Starting speech recognition. Current question:", question);
       setStartingText(question);
+      startingTextRef.current = question;
+      console.log("Set startingText to:", question);
 
       // Start listening
       try {
@@ -252,7 +259,15 @@ const QuestionPanel = ({ onPauseVideo }) => {
           <div className="relative">
             <textarea
               value={question}
-              onChange={(e) => dispatch(setQuestion(e.target.value))}
+              onChange={(e) => {
+                const newValue = e.target.value;
+                dispatch(setQuestion(newValue));
+                // Update startingText only when not listening (manual typing)
+                if (!isListening) {
+                  setStartingText(newValue);
+                  startingTextRef.current = newValue;
+                }
+              }}
               className="w-full px-4 py-3 pr-20 text-gray-700 bg-white border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[52px] max-h-32"
               placeholder={isListening ? "Listening..." : "Ask Trainboost..."}
               rows={3}
