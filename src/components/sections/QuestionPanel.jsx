@@ -7,6 +7,11 @@ import {
   setQuestionPanelPptSlide,
 } from "@/store/features/videoSlice";
 import { useSubmitQuestionMutation } from "@/store/api/questionsApi";
+import mic from "@/assets/svg/mic.svg";
+import micActive from "@/assets/svg/mic-active.svg";
+import submit from "@/assets/svg/submit.svg";
+import submitActive from "@/assets/svg/submit-active.svg";
+import star from "@/assets/svg/star.svg";
 
 const QuestionPanel = () => {
   const [conversation, setConversation] = useState([]);
@@ -178,7 +183,7 @@ const QuestionPanel = () => {
 
   return (
     <div className="flex flex-col w-[100%] h-full mt-4">
-      <div className="bg-white rounded-xl h-[calc(100vh-370px)] flex flex-col">
+      <div className="bg-white rounded-xl h-[calc(100vh-385px)] flex flex-col">
         <div
           className="flex-1 overflow-y-auto mb-4"
           style={{ minHeight: "200px" }}
@@ -247,33 +252,17 @@ const QuestionPanel = () => {
               <button
                 onClick={toggleSpeechRecognition}
                 disabled={isLoading || isPlaying}
-                className={`absolute right-2 top-3 p-2 rounded-full transition-colors ${
-                  isListening
-                    ? "bg-red-500 text-white hover:bg-red-600"
-                    : isLoading || isPlaying
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-300"
+                className={`absolute right-2 top-2 p-2 rounded-full transition-colors ${
+                 isLoading || isPlaying || isListening
+                    ? "cursor-not-allowed"
+                    : "cursor-pointer"
                 }`}
                 title={isListening ? "Stop listening" : "Start voice input"}
               >
                 {isListening ? (
-                  <svg
-                    className="w-5 h-5 animate-pulse"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
-                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
-                  </svg>
+                  <img src={micActive.src} alt="Mic Active" className="w-[30px] h-[30px]" />
                 ) : (
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
-                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
-                  </svg>
+                  <img src={mic.src} alt="Mic" className="w-[30px] h-[30px]" />
                 )}
               </button>
             )}
@@ -282,47 +271,17 @@ const QuestionPanel = () => {
             <button
               onClick={handleSubmit}
               disabled={!question.trim() || isLoading || isPlaying}
-              className={`absolute right-2 top-14 p-2 rounded-full transition-colors ${
+              className={`absolute right-2 top-12 p-2 rounded-full transition-colors ${
                 !question.trim() || isLoading || isPlaying
-                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-300"
+                  ? "cursor-not-allowed"
+                  : "cursor-pointer"
               }`}
               title="Submit question"
             >
               {isLoading ? (
-                <svg
-                  className="w-5 h-5 animate-spin"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                  />
-                </svg>
+                <img src={submit.src} alt="Submit Active" className="w-[30px] h-[30px]" />
               ) : (
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                  />
-                </svg>
+                <img src={submitActive.src} alt="Submit" className="w-[30px] h-[30px]" />
               )}
             </button>
           </div>

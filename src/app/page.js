@@ -24,10 +24,10 @@ const Home = () => {
   };
 
   return (
-    <div className="relative flex size-full h-[calc(100vh-80px)] flex-col bg-white overflow-x-hidden">
+    <div className="relative flex size-full h-[calc(100vh-55px)] flex-col bg-[#F9F9F9] overflow-x-hidden">
       <div className="layout-container flex h-full grow flex-col">
-        <div className="flex flex-1 p-6 overflow-hidden">
-          <div className="flex w-full h-full min-w-0">
+        <div className="flex flex-1 px-6 py-5 overflow-hidden">
+          <div className="flex w-full h-full min-w-0 bg-white py-3 px-4">
             <PPTSection
               videos={videos}
               loading={isLoading}

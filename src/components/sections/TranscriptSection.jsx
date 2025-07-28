@@ -52,12 +52,12 @@ const TranscriptSection = ({
   }, [currentVideoIndex]);
 
   return (
-    <div className="w-full bg-white rounded-lg p-4 mt-4 border border-gray-200">
-      <div className="flex items-center mb-3">
+    <div className="w-full bg-white rounded-lg p-4 pl-1 mt-2 ">
+      <div className="flex items-center">
         <span className="text-base font-semibold text-gray-600">Captions ✨</span>
       </div>
       
-      <div className="relative min-h-[60px] overflow-hidden">
+      <div className="relative overflow-hidden">
         <style jsx>{`
           @keyframes fadeInFromBottom {
             0% {
@@ -83,7 +83,6 @@ const TranscriptSection = ({
 
           .transcript-container {
             position: relative;
-            min-height: 60px;
             overflow: visible;
           }
 
@@ -113,13 +112,13 @@ const TranscriptSection = ({
 
         <div className="transcript-container">
           {!isVideoPlaying ? (
-            <div className="transcript-text transcript-static flex items-center h-[60px]">
+            <div className="transcript-text transcript-static flex items-center">
               <p className="text-gray-500 text-sm leading-relaxed">
                 Play the video to see captions
               </p>
             </div>
           ) : !currentTranscript && !previousTranscript ? (
-            <div className="transcript-text transcript-static flex items-center h-[60px]">
+            <div className="transcript-text transcript-static flex items-center">
               <p className="text-gray-500 text-sm leading-relaxed">
                 No captions available for this moment
               </p>
@@ -128,7 +127,7 @@ const TranscriptSection = ({
             <>
               {/* Previous transcript that fades up and out */}
               {isTransitioning && previousTranscript && (
-                <p className="text-sm text-gray-800 leading-relaxed transcript-text fade-up">
+                <p className="font-lato font-bold text-xl leading-[30px] tracking-[0.02em] text-gray-800 transcript-text fade-up">
                   {previousTranscript.text}
                 </p>
               )}
@@ -136,7 +135,7 @@ const TranscriptSection = ({
               {/* Current transcript that fades in from bottom */}
               {currentTranscript && (
                 <p
-                  className={`text-sm text-gray-800 leading-relaxed transcript-text ${
+                  className={`font-lato font-bold text-xl leading-[30px] tracking-[0.02em] text-gray-800 transcript-text ${
                     isTransitioning ? "fade-in" : "transcript-static"
                   }`}
                 >

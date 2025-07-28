@@ -274,26 +274,34 @@ const SlideVideoSection = ({
         muted
         playsInline
         onLoadStart={() => {
-          console.log("Slide video loading started...");
-          setIsVideoLoading(true);
-          setCanPlay(false);
+          if (!isVideoLoading) {
+            console.log("Slide video loading started...");
+            setIsVideoLoading(true);
+            setCanPlay(false);
+          }
         }}
         onLoadedData={() => {
-          console.log("Slide video loaded");
-          setIsVideoLoading(false);
-          setIsLoadingNewVideo(false);
+          if (isVideoLoading) {
+            console.log("Slide video loaded");
+            setIsVideoLoading(false);
+            setIsLoadingNewVideo(false);
+          }
         }}
         onCanPlay={() => {
-          console.log("Slide video can play");
-          setCanPlay(true);
-          // Ensure sync when video is ready to play
-          if (slideVideoRef.current) {
-            slideVideoRef.current.currentTime = currentVideoTime;
+          if (!canPlay) {
+            console.log("Slide video can play");
+            setCanPlay(true);
+            // Ensure sync when video is ready to play
+            if (slideVideoRef.current) {
+              slideVideoRef.current.currentTime = currentVideoTime;
+            }
           }
         }}
         onCanPlayThrough={() => {
-          console.log("Slide video can play through");
-          setCanPlay(true);
+          if (!canPlay) {
+            console.log("Slide video can play through");
+            setCanPlay(true);
+          }
         }}
         onError={(e) => {
           console.warn("Error loading slide video:", {

@@ -302,7 +302,7 @@ const VideoPanel = ({
 
   return (
     <div
-      className="flex flex-col h-full relative flex-shrink-0 px-4"
+      className="flex flex-col h-full relative flex-shrink-0 pl-4"
       style={{ width }}
     >
       {/* Redirect Popup */}
@@ -336,7 +336,7 @@ const VideoPanel = ({
           </div>
         </div>
       )}
-      <div className=" bg-white rounded-xl border border-gray-200">
+      <div className="p-1 bg-white rounded-xl border border-gray-200">
         <div className="relative w-full pt-[56.25%] bg-black rounded-lg overflow-hidden">
           {" "}
           {/* 16:9 Aspect Ratio */}
@@ -420,9 +420,10 @@ const VideoPanel = ({
           )} */}
         </div>
         {/* Time display below video */}
-        {/* <div className="flex justify-start mt-2 text-sm text-gray-600">
+        <div className=" px-1 flex justify-between mt-2 text-sm text-gray-600">
           <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
-        </div> */}
+          <span>{currentVideoIndex+1}/{videos?.length}</span>
+        </div>
       </div>
       <QuestionPanel />
     </div>
