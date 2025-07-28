@@ -1,14 +1,18 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import VideoPanel from "@/components/sections/VideoPanel";
 import PPTSection from "@/components/sections/PPTSection";
 import { useGetAllVideoQuery } from "@/store/api/questionsApi";
+import { useDispatch } from "react-redux";
+import { setIsPlaying } from "@/store/features/videoSlice";
 
 const Home = () => {
   const { data, isLoading } = useGetAllVideoQuery();
   const videos = data?.data?.filter(
     (video) => video?.trainer_video && video?.trainer_video?.trim() !== ""
   );
+  const videoPanelRef = useRef(null);
+  const dispatch = useDispatch();
 
   // Shared video state for synchronization
   const [videoState, setVideoState] = useState({
@@ -21,6 +25,26 @@ const Home = () => {
   // Handle video state changes from VideoPanel
   const handleVideoStateChange = (newState) => {
     setVideoState(newState);
+  };
+
+  // Handle video pause from question panel
+  const handlePauseVideo = () => {
+    if (videoPanelRef.current && videoPanelRef.current.pauseVideo) {
+      videoPanelRef.current.pauseVideo();
+    }
+  };
+
+  // Handle pausing answer audio when video plays
+  const handlePauseAnswerAudio = () => {
+    // Reset Redux audio state
+    dispatch(setIsPlaying({ playing: false, audioId: null }));
+    
+    // Pause all audio elements in the document
+    document.querySelectorAll("audio").forEach((audio) => {
+      if (!audio.paused) {
+        audio.pause();
+      }
+    });
   };
 
   return (
@@ -38,9 +62,12 @@ const Home = () => {
               width="70%"
             />
             <VideoPanel
+              ref={videoPanelRef}
               videos={videos}
               loading={isLoading}
               onVideoStateChange={handleVideoStateChange}
+              onPauseVideo={handlePauseVideo}
+              onPauseAnswerAudio={handlePauseAnswerAudio}
               width="30%"
             />
           </div>

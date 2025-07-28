@@ -4,11 +4,18 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const AnswerSection = ({ answer, audioLink = "", loading }) => {
-  const { currentPlayingAudioId } = useSelector((state) => state.video);
+  const { currentPlayingAudioId, isVideoPlaying } = useSelector((state) => state.video);
   const audioRef = useRef(null);
   const dispatch = useDispatch();
   const audioId = useRef(`audio-${Math.random().toString(36).substr(2, 9)}`);
   const isPlaying = currentPlayingAudioId === audioId.current;
+
+  // Effect to pause audio when video starts playing
+  useEffect(() => {
+    if (isVideoPlaying && audioRef.current && !audioRef.current.paused) {
+      audioRef.current.pause();
+    }
+  }, [isVideoPlaying]);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -51,7 +58,7 @@ const AnswerSection = ({ answer, audioLink = "", loading }) => {
         }
       };
     }
-  }, [audioLink]);
+  }, [audioLink, dispatch]);
 
   const toggleAudio = () => {
     if (audioRef.current) {

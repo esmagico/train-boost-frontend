@@ -11,9 +11,8 @@ import mic from "@/assets/svg/mic.svg";
 import micActive from "@/assets/svg/mic-active.svg";
 import submit from "@/assets/svg/submit.svg";
 import submitActive from "@/assets/svg/submit-active.svg";
-import star from "@/assets/svg/star.svg";
 
-const QuestionPanel = () => {
+const QuestionPanel = ({ onPauseVideo }) => {
   const [conversation, setConversation] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
@@ -119,6 +118,11 @@ const QuestionPanel = () => {
   const handleSubmit = async () => {
     if (!question.trim()) return;
 
+    // Pause video when submitting question
+    if (onPauseVideo) {
+      onPauseVideo();
+    }
+
     const userQuestion = question.trim();
     dispatch(setQuestion(""));
     setIsLoading(true);
@@ -167,6 +171,11 @@ const QuestionPanel = () => {
       recognitionRef.current.stop();
       setIsListening(false);
     } else {
+      // Pause video when starting speech recognition
+      if (onPauseVideo) {
+        onPauseVideo();
+      }
+
       // Store the current text before starting speech recognition
       setStartingText(question);
       
@@ -278,7 +287,7 @@ const QuestionPanel = () => {
               }`}
               title="Submit question"
             >
-              {isLoading ? (
+              {isLoading || question.trim() === "" ? (
                 <img src={submit.src} alt="Submit Active" className="w-[30px] h-[30px]" />
               ) : (
                 <img src={submitActive.src} alt="Submit" className="w-[30px] h-[30px]" />

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import star from "@/assets/svg/star.svg";
 
 const TranscriptSection = ({
   videos,
@@ -42,7 +43,13 @@ const TranscriptSection = ({
       setPreviousTranscript(null);
       setIsTransitioning(false);
     }
-  }, [videos, currentVideoIndex, currentVideoTime, isVideoPlaying, currentTranscript]);
+  }, [
+    videos,
+    currentVideoIndex,
+    currentVideoTime,
+    isVideoPlaying,
+    currentTranscript,
+  ]);
 
   // Reset transcript when video changes
   useEffect(() => {
@@ -54,90 +61,137 @@ const TranscriptSection = ({
   return (
     <div className="w-full bg-white rounded-lg p-4 pl-1 mt-2 ">
       <div className="flex items-center">
-        <span className="text-base font-semibold text-gray-600">Captions ✨</span>
+        <span className="font-lato font-bold text-base leading-none tracking-[0.02em] bg-clip-text text-transparent bg-gradient-to-b from-[#685EDD] to-[#DA8BFF]">
+          Captions
+        </span>
+        <img src={star.src} alt="star" className="w-5 h-5 ml-1" />
       </div>
-      
-      <div className="relative overflow-hidden">
+
+      {/* <div className="relative overflow-hidden min-h-[60px] mt-3">
+  <style jsx>{`
+    @keyframes slideUpAndFadeOut {
+      0% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+    }
+
+    @keyframes slideInFromBottom {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-out {
+      animation: slideUpAndFadeOut 0.5s ease forwards;
+    }
+
+    .animate-in {
+      animation: slideInFromBottom 0.5s ease forwards;
+    }
+
+    .caption-text {
+      position: absolute;
+      width: 100%;
+      text-align: left;
+    }
+  `}</style>
+
+  <div className="relative h-[60px] w-full">
+    {!isVideoPlaying ? (
+      <p className="text-gray-500 text-sm">Play the video to see captions</p>
+    ) : !currentTranscript && !previousTranscript ? (
+      <p className="text-gray-500 text-sm">No captions available for this moment</p>
+    ) : (
+      <>
+        {isTransitioning && previousTranscript && (
+          <p className="caption-text animate-out font-lato font-bold text-xl leading-[30px] tracking-[0.02em] text-gray-800">
+            {previousTranscript.text}
+          </p>
+        )}
+        {currentTranscript && (
+          <p
+            className={`caption-text ${
+              isTransitioning ? "animate-in" : ""
+            } font-lato font-bold text-xl leading-[30px] tracking-[0.02em] text-gray-800`}
+          >
+            {currentTranscript.text}
+          </p>
+        )}
+      </>
+    )}
+  </div>
+</div> */}
+
+      <div className="relative overflow-hidden min-h-[100px] mt-3">
         <style jsx>{`
-          @keyframes fadeInFromBottom {
+          @keyframes slideUpAndFadeOut {
             0% {
-              transform: translateY(20px);
-              opacity: 0;
+              opacity: 1;
+              transform: translateY(0);
             }
             100% {
-              transform: translateY(0);
-              opacity: 1;
+              opacity: 0;
+              transform: translateY(-40px);
             }
           }
 
-          @keyframes fadeUpAndOut {
+          @keyframes slideInFromBottom {
             0% {
-              transform: translateY(0);
-              opacity: 1;
+              opacity: 0;
+              transform: translateY(40px);
             }
             100% {
-              transform: translateY(-20px);
-              opacity: 0;
+              opacity: 1;
+              transform: translateY(0);
             }
           }
 
-          .transcript-container {
-            position: relative;
-            overflow: visible;
+          .animate-out {
+            animation: slideUpAndFadeOut 0.5s ease forwards;
           }
 
-          .transcript-text {
+          .animate-in {
+            animation: slideInFromBottom 0.5s ease forwards;
+          }
+
+          .caption-text {
             position: absolute;
             width: 100%;
-            top: 0;
-            left: 0;
-            padding: 8px 0;
-            transition: all 0.3s ease-out;
-          }
-
-          .fade-in {
-            animation: fadeInFromBottom 0.5s ease-out forwards;
-          }
-
-          .fade-up {
-            animation: fadeUpAndOut 0.5s ease-out forwards;
-          }
-
-          .transcript-static {
-            position: relative;
-            opacity: 1;
-            transform: translateY(0);
+            text-align: left;
           }
         `}</style>
 
-        <div className="transcript-container">
+        <div className="relative h-[100px] w-full">
           {!isVideoPlaying ? (
-            <div className="transcript-text transcript-static flex items-center">
-              <p className="text-gray-500 text-sm leading-relaxed">
-                Play the video to see captions
-              </p>
-            </div>
+            <p className="text-gray-500 text-sm">
+              Play the video to see captions
+            </p>
           ) : !currentTranscript && !previousTranscript ? (
-            <div className="transcript-text transcript-static flex items-center">
-              <p className="text-gray-500 text-sm leading-relaxed">
-                No captions available for this moment
-              </p>
-            </div>
+            <p className="text-gray-500 text-sm">
+              No captions available for this moment
+            </p>
           ) : (
             <>
-              {/* Previous transcript that fades up and out */}
               {isTransitioning && previousTranscript && (
-                <p className="font-lato font-bold text-xl leading-[30px] tracking-[0.02em] text-gray-800 transcript-text fade-up">
+                <p className="caption-text animate-out font-lato font-bold text-xl leading-[30px] tracking-[0.02em] text-gray-800">
                   {previousTranscript.text}
                 </p>
               )}
-
-              {/* Current transcript that fades in from bottom */}
               {currentTranscript && (
                 <p
-                  className={`font-lato font-bold text-xl leading-[30px] tracking-[0.02em] text-gray-800 transcript-text ${
-                    isTransitioning ? "fade-in" : "transcript-static"
-                  }`}
+                  className={`caption-text ${
+                    isTransitioning ? "animate-in" : ""
+                  } font-lato font-bold text-xl leading-[30px] tracking-[0.02em] text-gray-800`}
                 >
                   {currentTranscript.text}
                 </p>
