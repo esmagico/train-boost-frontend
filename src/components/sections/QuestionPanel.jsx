@@ -259,7 +259,7 @@ const QuestionPanel = ({ onPauseVideo, videos = [] }) => {
                 )}
                 {item.type === "answer" && (
                   <div className="mb-4 p-3 bg-gray-100 rounded-lg">
-                    {item.jumpTarget && (
+                    {/* {item.jumpTarget && (
                       <div className="mb-2 p-2 bg-blue-50 border border-blue-200 rounded-md">
                         <div className="flex items-center text-sm text-blue-700">
                           <svg
@@ -278,7 +278,7 @@ const QuestionPanel = ({ onPauseVideo, videos = [] }) => {
                           Jumped to Video {item.jumpTarget} (end section)
                         </div>
                       </div>
-                    )}
+                    )} */}
                     <AnswerSection
                       answer={item.content}
                       audioLink={item.audioLink}

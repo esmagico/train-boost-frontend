@@ -52,7 +52,7 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+      <div className="max-w-md w-full space-y-8 mt-[-80px]">
         <div>
           <div className="flex justify-center">
             <div className="flex items-center gap-4 text-[#121416]">
@@ -170,19 +170,6 @@ const LoginPage = () => {
                 "Sign in"
               )}
             </Button>
-          </div>
-
-          <div className="text-center">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-sm text-blue-800 font-medium mb-2">
-                Demo Credentials
-              </p>
-              <p className="text-xs text-blue-600">
-                Email: admin@trainboost.com
-                <br />
-                Password: test123
-              </p>
-            </div>
           </div>
         </form>
       </div>
