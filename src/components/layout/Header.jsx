@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import trainBoostLogo from "@/assets/svg/train-boost-logo.svg";
 
 const navigation = [
@@ -12,9 +12,10 @@ const navigation = [
 ];
 
 const Header = () => {
+  const router = useRouter();
+  const pathname = usePathname();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const router = useRouter();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -38,7 +39,9 @@ const Header = () => {
 
   return (
     <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f1f2f4] px-10 py-2">
-      <div className="flex items-center gap-1 text-[#121416]">
+      <div className="flex items-center gap-1 text-[#121416] cursor-pointer"
+      onClick={() => router.push("/")}
+      >
         <img
           className="w-6 h-6"
           src={trainBoostLogo.src}
@@ -48,17 +51,24 @@ const Header = () => {
           Train Boost
         </h2>
       </div>
-      <div className="flex flex-1 justify-end gap-8">
-        <nav className="flex items-center gap-7.5">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className="font-lato font-semibold text-[12px] leading-[100%] tracking-[0.02em] text-[#1A1C29] hover:text-blue-600"
-            >
-              {item.name}
-            </Link>
-          ))}
+      <div className="flex flex-1 justify-end gap-10">
+        <nav className="flex items-center gap-5">
+          {navigation.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`font-lato font-semibold text-[13px] leading-[100%] tracking-[0.02em] ${
+                  isActive 
+                    ? 'text-blue-600 ' 
+                    : 'text-[#1A1C29] hover:text-blue-600'
+                }`}
+              >
+                {item.name}
+              </Link>
+            );
+          })}
         </nav>
         {/* <button className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 bg-[#f1f2f4] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5">
           <div data-icon="Bell" data-size="20px" data-weight="regular">

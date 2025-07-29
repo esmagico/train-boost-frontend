@@ -264,7 +264,8 @@ const VideoPanel = forwardRef(
           // Optional: Preload poster/thumbnail
           if (videos[nextVideoIndex]?.thumbnail) {
             const img = new Image();
-            img.src = videos[nextVideoIndex].thumbnail;
+            // img.src = videos[nextVideoIndex].thumbnail;
+            img.src = "https://cdn-api.epic.dev.esmagico.in/trainboost/slides/thumb.png";
           }
         }
       }
@@ -476,7 +477,8 @@ const VideoPanel = forwardRef(
                 console.log("Trainer video can play");
               }}
               onClick={togglePlayPause}
-              poster={videos?.[currentVideoIndex]?.thumbnail}
+              // poster={videos?.[currentVideoIndex]?.thumbnail}
+              poster={"https://cdn-api.epic.dev.esmagico.in/trainboost/slides/thumb.png"}
               autoPlay={autoPlayEnabled}
               controls={true}
               controlsList="nodownload"
