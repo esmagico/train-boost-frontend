@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import VideoPanel from "@/components/sections/VideoPanel";
 import PPTSection from "@/components/sections/PPTSection";
 import { useGetAllVideoQuery } from "@/store/api/questionsApi";
@@ -23,9 +23,23 @@ const Home = () => {
     duration: 0,
   });
 
+  // Separate state for PPT synchronization (only when video panel actually plays)
+  const [pptSyncState, setPptSyncState] = useState({
+    shouldSync: false,
+    currentTime: 0,
+    isPlaying: false,
+  });
+
   // Handle video state changes from VideoPanel
   const handleVideoStateChange = (newState) => {
     setVideoState(newState);
+    
+    // Update PPT sync state only when video panel video actually plays
+    setPptSyncState({
+      shouldSync: newState.isPlaying,
+      currentTime: newState.currentTime,
+      isPlaying: newState.isPlaying,
+    });
   };
 
   // Handle video pause from question panel
@@ -57,8 +71,8 @@ const Home = () => {
               videos={videos}
               loading={isLoading}
               currentVideoIndex={pptVideoIndex}
-              currentVideoTime={videoState.currentTime}
-              isVideoPlaying={videoState.isPlaying}
+              currentVideoTime={pptSyncState.currentTime}
+              isVideoPlaying={pptSyncState.isPlaying}
               videoDuration={videoState.duration}
               width="70%"
             />

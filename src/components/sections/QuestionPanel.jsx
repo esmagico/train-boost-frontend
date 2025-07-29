@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setQuestion,
   setQuestionPanelPptSlide,
-  jumpPptToVideoEnd,
 } from "@/store/features/videoSlice";
 import { useSubmitQuestionMutation } from "@/store/api/questionsApi";
 import mic from "@/assets/svg/mic.svg";
@@ -159,30 +158,9 @@ const QuestionPanel = ({ onPauseVideo, videos = [] }) => {
         question: userQuestion,
       }).unwrap();
 
-      // Handle primary_jump_target - jump to specific video and show end part
+      // Handle primary_jump_target if present
       if (response?.primary_jump_target) {
         dispatch(setQuestionPanelPptSlide(response.primary_jump_target));
-
-        // Jump to the target video (assuming primary_jump_target is 1-based, convert to 0-based index)
-        const targetVideoIndex = response.primary_jump_target - 1;
-
-        // Validate that the target video exists
-        if (
-          videos &&
-          targetVideoIndex >= 0 &&
-          targetVideoIndex < videos.length
-        ) {
-          dispatch(jumpPptToVideoEnd({ videoIndex: targetVideoIndex }));
-          console.log(
-            `Jumping to video ${response.primary_jump_target} (index ${targetVideoIndex}) and seeking to end`
-          );
-        } else {
-          console.warn(
-            `Invalid jump target: ${
-              response.primary_jump_target
-            }. Available videos: ${videos?.length || 0}`
-          );
-        }
       }
 
       setConversation((prev) => [
@@ -191,7 +169,7 @@ const QuestionPanel = ({ onPauseVideo, videos = [] }) => {
           type: "answer",
           content: response?.answer || "No answer received",
           audioLink: response?.audio_url || "",
-          jumpTarget: response?.primary_jump_target, // Store for reference
+
         },
       ]);
     } catch (error) {
@@ -384,7 +362,7 @@ const QuestionPanel = ({ onPauseVideo, videos = [] }) => {
               }`}
               title="Submit question"
             >
-              {isLoading || question.trim() === "" ? (
+              {isLoading || isPlaying || question.trim() === "" ? (
                 <img
                   src={submit.src}
                   alt="Submit Active"

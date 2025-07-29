@@ -11,7 +11,6 @@ const initialState = {
   currentPlayingAudioId: null,
   currentVideoTime: 0,
   isVideoPlaying: false,
-  jumpToEnd: false,
 };
 
 const videoSlice = createSlice({
@@ -46,14 +45,7 @@ const videoSlice = createSlice({
     setPptVideoIndex: (state, action) => {
       state.pptVideoIndex = action.payload;
     },
-    jumpPptToVideoEnd: (state, action) => {
-      const { videoIndex } = action.payload;
-      state.pptVideoIndex = videoIndex;
-      state.jumpToEnd = true; // Flag to indicate PPT should jump to end
-    },
-    resetJumpFlag: (state) => {
-      state.jumpToEnd = false;
-    },
+
     syncPptToVideoPanel: (state) => {
       state.pptVideoIndex = state.currentVideoIndex;
     },
@@ -70,8 +62,6 @@ export const {
   setIsPlaying,
   setCurrentVideoTime,
   setIsVideoPlaying,
-  jumpPptToVideoEnd,
-  resetJumpFlag,
   syncPptToVideoPanel,
 } = videoSlice.actions;
 export default videoSlice.reducer;

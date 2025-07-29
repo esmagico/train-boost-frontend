@@ -1,6 +1,4 @@
 import React, { useRef, useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { resetJumpFlag } from "@/store/features/videoSlice";
 
 const SlideVideoSection = ({
   videos,
@@ -18,8 +16,6 @@ const SlideVideoSection = ({
   const [canPlay, setCanPlay] = useState(false);
   const [isLoadingNewVideo, setIsLoadingNewVideo] = useState(false);
   const playPromiseRef = useRef(null);
-  const dispatch = useDispatch();
-  const { jumpToEnd } = useSelector((state) => state.video);
 
   // Sync slide video with trainer video time
   useEffect(() => {
@@ -102,6 +98,7 @@ const SlideVideoSection = ({
         setIsLoadingNewVideo(true);
         setCanPlay(false);
         console.log(`Switching to slide video ${currentVideoIndex}...`);
+        console.log(`New slide video URL:`, newSrc);
 
         // Pause current video before switching
         if (!slideVideo.paused) {
@@ -230,28 +227,6 @@ const SlideVideoSection = ({
     preloadedSlideIndex,
     videoDuration,
   ]);
-
-  // Handle jump to end functionality for PPT
-  useEffect(() => {
-    if (jumpToEnd && slideVideoRef.current && slideVideoRef.current.duration > 0) {
-      const slideVideo = slideVideoRef.current;
-      const duration = slideVideo.duration;
-      
-      console.log("PPT jumping to end of slide video, duration:", duration);
-      
-      // Seek to 90% of video duration (near the end but not exactly at the end)
-      const seekTime = duration * 0.9;
-      slideVideo.currentTime = seekTime;
-      
-      // Pause the slide video (as requested)
-      slideVideo.pause();
-      
-      // Reset the jump flag
-      dispatch(resetJumpFlag());
-      
-      console.log(`PPT jumped to ${seekTime}s (90% of ${duration}s) in slide video ${currentVideoIndex + 1} and paused`);
-    }
-  }, [jumpToEnd, currentVideoIndex, dispatch]);
 
   // Cleanup preload slide video element on unmount
   useEffect(() => {
