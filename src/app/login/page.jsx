@@ -26,7 +26,7 @@ const LoginPage = () => {
 
     // Hardcoded credentials
     const validEmail = "admin@trainboost.com";
-    const validPassword = "test123";
+    const validPassword = "T9#kZ2!pQ8@rL6$vB1";
 
     // Simulate loading delay
     await new Promise((resolve) => setTimeout(resolve, 800));

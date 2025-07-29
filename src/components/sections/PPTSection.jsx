@@ -5,7 +5,7 @@ import SlideVideoSection from "./SlideVideoSection";
 const PPTSection = ({
   videos = [],
   loading = false,
-  height = "calc(100vh - 240px)", // Increased height to match VideoPanel
+  height = "calc(100vh - 240px)",
   width = "70%",
   currentVideoIndex = 0,
   currentVideoTime = 0,
@@ -56,7 +56,7 @@ const PPTSection = ({
           videoDuration={videoDuration}
         />
       </div>
-      <div className="mt-3 flex justify-between items-center">
+      <div className="mt-3 flex justify-between items-center pr-1">
         <p className="font-bold text-[20px] leading-[100%] tracking-[0.02em] font-lato">
           Corporate Finance
         </p>
@@ -67,12 +67,12 @@ const PPTSection = ({
       </div>
 
       {/* Transcript Section */}
-      <TranscriptSection
+      {/* <TranscriptSection
         videos={videos}
         currentVideoIndex={currentVideoIndex}
         currentVideoTime={currentVideoTime}
         isVideoPlaying={isVideoPlaying}
-      />
+      /> */}
     </div>
   );
 };
