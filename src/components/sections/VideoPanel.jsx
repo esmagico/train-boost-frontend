@@ -16,7 +16,7 @@ import React, {
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useGetAllVideoQuery } from "@/store/api/questionsApi";
-import QuestionPanel from "./QuestionPanel";
+import VideoPlaylist from "./VideoPlaylist";
 
 // Skeleton Loader Component
 const VideoSkeleton = ({ width = "30%" }) => (
@@ -501,7 +501,7 @@ const VideoPanel = forwardRef(
             </span>
           </div>
         </div>
-        <QuestionPanel onPauseVideo={pauseVideo} videos={videos} />
+        <VideoPlaylist videos={videos} loading={loading} />
       </div>
     );
   }

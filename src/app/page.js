@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import VideoPanel from "@/components/sections/VideoPanel";
 import PPTSection from "@/components/sections/PPTSection";
+import FloatingChatbot from "@/components/chat/FloatingChatbot";
 import { useGetAllVideoQuery } from "@/store/api/questionsApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsPlaying } from "@/store/features/videoSlice";
@@ -88,6 +89,12 @@ const Home = () => {
           </div>
         </div>
       </div>
+      
+      {/* Floating Chatbot */}
+      <FloatingChatbot 
+        onPauseVideo={handlePauseVideo}
+        videos={videos}
+      />
     </div>
   );
 };
