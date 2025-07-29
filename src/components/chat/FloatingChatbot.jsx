@@ -1,10 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setQuestion,
-  setAnswerPptIndex,
-} from "@/store/features/videoSlice";
+import { setQuestion, setAnswerPptIndex } from "@/store/features/videoSlice";
 import { useSubmitQuestionMutation } from "@/store/api/questionsApi";
 import AnswerSection from "@/components/sections/AnswerSection";
 import mic from "@/assets/svg/mic.svg";
@@ -223,10 +220,14 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {conversation.length === 0 && (
               <div className="text-center text-gray-500 mt-8">
-                <FiMessageCircle size={48} className="mx-auto mb-4 text-gray-300" />
+                <FiMessageCircle
+                  size={48}
+                  className="mx-auto mb-4 text-gray-300"
+                />
                 <p className="font-medium">Welcome to TrainBoost Assistant!</p>
                 <p className="text-sm mt-2">
-                  Ask me anything about the presentation and I'll help you find the answers.
+                  Ask me anything about the presentation and I'll help you find
+                  the answers.
                 </p>
               </div>
             )}
@@ -266,8 +267,14 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
                 <div className="bg-gray-100 p-3 rounded-lg">
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div
+                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      style={{ animationDelay: "0.1s" }}
+                    ></div>
+                    <div
+                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      style={{ animationDelay: "0.2s" }}
+                    ></div>
                   </div>
                 </div>
               </div>
@@ -307,7 +314,7 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
                 <button
                   onClick={toggleSpeechRecognition}
                   disabled={isLoading || isPlaying}
-                  className={`absolute right-2 top-2 p-2 rounded-full transition-colors ${
+                  className={`absolute right-2 top-0.5 p-2 rounded-full transition-colors ${
                     isLoading || isPlaying || isListening
                       ? "cursor-not-allowed"
                       : "cursor-pointer"
@@ -321,7 +328,11 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
                       className="w-[24px] h-[24px]"
                     />
                   ) : (
-                    <img src={mic.src} alt="Mic" className="w-[24px] h-[24px]" />
+                    <img
+                      src={mic.src}
+                      alt="Mic"
+                      className="w-[24px] h-[24px]"
+                    />
                   )}
                 </button>
               )}
@@ -330,7 +341,7 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
               <button
                 onClick={handleSubmit}
                 disabled={!question.trim() || isLoading || isPlaying}
-                className={`absolute right-2 top-10 p-2 rounded-full transition-colors ${
+                className={`absolute right-2 top-8 p-2 rounded-full transition-colors ${
                   !question.trim() || isLoading || isPlaying
                     ? "cursor-not-allowed"
                     : "cursor-pointer"
