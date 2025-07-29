@@ -108,25 +108,34 @@ const TranscriptSection = ({
         `}</style>
 
         <div className="relative h-[44px] w-full">
-          <div>
-            {isTransitioning && previousTranscript && (
-              <p className="caption-text animate-out font-lato font-normal text-[16px] leading-[24px] tracking-[0.02em] text-[#000000] ml-7 whitespace-nowrap overflow-hidden text-ellipsis w-[calc(100%-28px)]">
+          {isTransitioning && previousTranscript && (
+            <div className="flex items-center absolute w-[calc(100%-28px)]">
+              <img
+                src={speaker.src}
+                alt="speaker"
+                className="w-5 h-5 flex-shrink-0"
+              />
+              <p className="caption-text animate-out font-lato font-normal text-[16px] leading-[24px] tracking-[0.02em] text-[#000000] ml-7 whitespace-nowrap overflow-hidden text-ellipsis flex-1">
                 {previousTranscript.text}
               </p>
-            )}
-            {currentTranscript && (
-              <div className="flex items-center">
-                <img src={speaker.src} alt="speaker" className="w-5 h-5" />
-                <p
-                  className={`caption-text ${
-                    isTransitioning ? "animate-in" : ""
-                  } font-lato font-normal text-[16px] leading-[24px] tracking-[0.02em] text-[#000000] ml-7 whitespace-nowrap overflow-hidden text-ellipsis w-[calc(100%-28px)]`}
-                >
-                  {currentTranscript.text}
-                </p>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
+          {currentTranscript && (
+            <div className="flex items-center absolute w-[calc(100%-28px)]">
+              <img
+                src={speaker.src}
+                alt="speaker"
+                className="w-5 h-5 flex-shrink-0"
+              />
+              <p
+                className={`caption-text ${
+                  isTransitioning ? "animate-in" : ""
+                } font-lato font-normal text-[16px] leading-[24px] tracking-[0.02em] text-[#000000] ml-7 whitespace-nowrap overflow-hidden text-ellipsis flex-1`}
+              >
+                {currentTranscript.text}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
