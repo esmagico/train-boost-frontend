@@ -320,12 +320,12 @@ const QuestionPanel = ({ onPauseVideo, videos = [] }) => {
                   // Allow new line with Shift+Enter
                 }
               }}
-              onInput={(e) => {
-                // Auto-resize textarea
-                e.target.style.height = "auto";
-                e.target.style.height =
-                  Math.min(e.target.scrollHeight, 128) + "px";
-              }}
+              // onInput={(e) => {
+              //   // Auto-resize textarea
+              //   e.target.style.height = "auto";
+              //   e.target.style.height =
+              //     Math.min(e.target.scrollHeight, 128) + "px";
+              // }}
               disabled={isListening}
             />
 
