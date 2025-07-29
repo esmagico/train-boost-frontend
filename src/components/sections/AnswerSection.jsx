@@ -3,26 +3,40 @@ import { setIsPlaying } from "@/store/features/videoSlice";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const AnswerSection = ({ answer, audioLink = "", loading }) => {
-  const { currentPlayingAudioId } = useSelector((state) => state.video);
+const AnswerSection = ({ answer, audioLink = "", loading, onPauseVideo }) => {
+  const { currentPlayingAudioId, isVideoPlaying } = useSelector((state) => state.video);
   const audioRef = useRef(null);
   const dispatch = useDispatch();
   const audioId = useRef(`audio-${Math.random().toString(36).substr(2, 9)}`);
   const isPlaying = currentPlayingAudioId === audioId.current;
 
+  // Effect to pause audio when video starts playing
+  useEffect(() => {
+    if (isVideoPlaying && audioRef.current && !audioRef.current.paused) {
+      audioRef.current.pause();
+    }
+  }, [isVideoPlaying]);
+
   useEffect(() => {
     if (audioRef.current) {
       const handlePlay = () => {
+        // Pause video panel when answer audio starts playing
+        if (onPauseVideo) {
+          onPauseVideo();
+        }
+        
         // Pause any other playing audio
-        document.querySelectorAll('audio').forEach(audio => {
+        document.querySelectorAll("audio").forEach((audio) => {
           if (audio !== audioRef.current && !audio.paused) {
             audio.pause();
           }
         });
         dispatch(setIsPlaying({ playing: true, audioId: audioId.current }));
       };
-      const handlePause = () => dispatch(setIsPlaying({ playing: false, audioId: null }));
-      const handleEnd = () => dispatch(setIsPlaying({ playing: false, audioId: null }));
+      const handlePause = () =>
+        dispatch(setIsPlaying({ playing: false, audioId: null }));
+      const handleEnd = () =>
+        dispatch(setIsPlaying({ playing: false, audioId: null }));
 
       audioRef.current.addEventListener("play", handlePlay);
       audioRef.current.addEventListener("pause", handlePause);
@@ -49,15 +63,20 @@ const AnswerSection = ({ answer, audioLink = "", loading }) => {
         }
       };
     }
-  }, [audioLink]);
+  }, [audioLink, dispatch]);
 
   const toggleAudio = () => {
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
+        // Pause video panel when manually starting audio
+        if (onPauseVideo) {
+          onPauseVideo();
+        }
+        
         // Pause any other playing audio before playing this one
-        document.querySelectorAll('audio').forEach(audio => {
+        document.querySelectorAll("audio").forEach((audio) => {
           if (audio !== audioRef.current && !audio.paused) {
             audio.pause();
           }

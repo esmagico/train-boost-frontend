@@ -1,49 +1,91 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import VideoPanel from "@/components/sections/VideoPanel";
 import PPTSection from "@/components/sections/PPTSection";
-import QuestionPanel from "@/components/sections/QuestionPanel";
-import { useSelector } from "react-redux";
 import { useGetAllVideoQuery } from "@/store/api/questionsApi";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsPlaying } from "@/store/features/videoSlice";
 
 const Home = () => {
-  const isQuestionMode = useSelector((state) => state.video.isQuestionMode);
-  const { data, isLoading, isError } = useGetAllVideoQuery();
+  const { data, isLoading } = useGetAllVideoQuery();
   const videos = data?.data?.filter(
     (video) => video?.trainer_video && video?.trainer_video?.trim() !== ""
   );
-  const presentationUrl = process.env.NEXT_PUBLIC_PRESENTATION_URL;
+  const videoPanelRef = useRef(null);
+  const dispatch = useDispatch();
+  const { pptVideoIndex } = useSelector((state) => state.video);
+
+  // Shared video state for synchronization
+  const [videoState, setVideoState] = useState({
+    currentTime: 0,
+    isPlaying: false,
+    currentVideoIndex: 0,
+    duration: 0,
+  });
+
+  // Separate state for PPT synchronization (only when video panel actually plays)
+  const [pptSyncState, setPptSyncState] = useState({
+    shouldSync: false,
+    currentTime: 0,
+    isPlaying: false,
+  });
+
+  // Handle video state changes from VideoPanel
+  const handleVideoStateChange = (newState) => {
+    setVideoState(newState);
+    
+    // Update PPT sync state only when video panel video actually plays
+    setPptSyncState({
+      shouldSync: newState.isPlaying,
+      currentTime: newState.currentTime,
+      isPlaying: newState.isPlaying,
+    });
+  };
+
+  // Handle video pause from question panel
+  const handlePauseVideo = () => {
+    if (videoPanelRef.current && videoPanelRef.current.pauseVideo) {
+      videoPanelRef.current.pauseVideo();
+    }
+  };
+
+  // Handle pausing answer audio when video plays
+  const handlePauseAnswerAudio = () => {
+    // Reset Redux audio state
+    dispatch(setIsPlaying({ playing: false, audioId: null }));
+    
+    // Pause all audio elements in the document
+    document.querySelectorAll("audio").forEach((audio) => {
+      if (!audio.paused) {
+        audio.pause();
+      }
+    });
+  };
 
   return (
-    <div className="relative flex size-full min-h-screen flex-col bg-white overflow-x-hidden">
+    <div className="relative flex size-full h-[calc(100vh-55px)] flex-col bg-[#F9F9F9] overflow-x-hidden">
       <div className="layout-container flex h-full grow flex-col">
-        <div className="flex flex-1 p-6 overflow-hidden">
-          {!isQuestionMode ? (
-            <div className="flex w-full h-full gap-6">
-              <VideoPanel videos={videos} loading={isLoading} />
-              <PPTSection
-                loading={isLoading}
-                // presentationUrl="https://docs.google.com/presentation/d/1yyZtqREBI0fS6zZ2HlKMwGnrUwO6VXab/edit?slide=id.p1#slide=id.p1"
-                presentationUrl={presentationUrl}
-              />
-            </div>
-          ) : (
-            <div className="flex w-full h-full gap-6 transition-all duration-300">
-              <div className="flex flex-col w-[70%] h-full">
-                <div className="bg-white rounded-xl h-[calc(100vh-120px)] transition-all duration-300">
-                  <PPTSection
-                    presentationUrl={presentationUrl}
-                    // presentationUrl="https://docs.google.com/presentation/d/1yyZtqREBI0fS6zZ2HlKMwGnrUwO6VXab/edit?slide=id.p1#slide=id.p1"
-                    removeAskQuestionButton={true}
-                    isQuestionMode={true}
-                    height="calc(100vh - 120px)"
-                    width="100%"
-                  />
-                </div>
-              </div>
-              <QuestionPanel />
-            </div>
-          )}
+        <div className="flex flex-1 px-6 py-5 overflow-hidden">
+          <div className="flex w-full h-full min-w-0 bg-white py-3 px-4">
+            <PPTSection
+              videos={videos}
+              loading={isLoading}
+              currentVideoIndex={pptVideoIndex}
+              currentVideoTime={pptSyncState.currentTime}
+              isVideoPlaying={pptSyncState.isPlaying}
+              videoDuration={videoState.duration}
+              width="70%"
+            />
+            <VideoPanel
+              ref={videoPanelRef}
+              videos={videos}
+              loading={isLoading}
+              onVideoStateChange={handleVideoStateChange}
+              onPauseVideo={handlePauseVideo}
+              onPauseAnswerAudio={handlePauseAnswerAudio}
+              width="30%"
+            />
+          </div>
         </div>
       </div>
     </div>

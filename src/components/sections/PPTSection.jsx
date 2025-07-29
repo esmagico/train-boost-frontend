@@ -1,165 +1,22 @@
-import {
-  setIsQuestionMode,
-  setQuestionPanelPptSlide,
-} from "@/store/features/videoSlice";
-import React, { useState, useRef, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useGetAllVideoQuery } from "@/store/api/questionsApi";
-
-// TranscriptSection component to display the current transcript based on video time
-const TranscriptSection = () => {
-  const { data, isLoading } = useGetAllVideoQuery();
-  const { currentVideoIndex, currentVideoTime, isVideoPlaying } = useSelector(
-    (state) => state.video
-  );
-  const [currentTranscript, setCurrentTranscript] = useState(null);
-  const [previousTranscript, setPreviousTranscript] = useState(null);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-
-  useEffect(() => {
-    if (isLoading || !data?.data || !data.data[currentVideoIndex]?.transcript)
-      return;
-
-    const transcriptItems = data.data[currentVideoIndex].transcript;
-
-    // Find the transcript item that matches the current time
-    const activeTranscript = transcriptItems.find(
-      (item) => currentVideoTime >= item.start && currentVideoTime <= item.end
-    );
-
-    // Only update if the transcript has changed
-    if (activeTranscript?.text !== currentTranscript?.text) {
-      if (currentTranscript) {
-        setPreviousTranscript(currentTranscript);
-        setIsTransitioning(true);
-
-        // Reset transition state after animation completes
-        setTimeout(() => {
-          setIsTransitioning(false);
-        }, 1000); // Match this with the animation duration
-      }
-
-      setCurrentTranscript(activeTranscript);
-    }
-  }, [data, currentVideoIndex, currentVideoTime, isLoading, currentTranscript]);
-
-  return (
-    <div className="w-[70%] bg-white rounded-md overflow-hidden">
-      <style jsx>{`
-        @keyframes slideInFromLeft {
-          0% {
-            transform: translateX(-100%);
-            opacity: 0;
-          }
-          100% {
-            transform: translateX(0);
-            opacity: 1;
-          }
-        }
-
-        @keyframes slideOutToRight {
-          0% {
-            transform: translateX(0);
-            opacity: 1;
-          }
-          100% {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-        }
-
-        .transcript-container {
-          position: relative;
-          min-height: 4rem;
-          overflow: hidden;
-        }
-
-        .transcript-text {
-          position: absolute;
-          width: 100%;
-          top: 0;
-          left: 0;
-        }
-
-        .slide-in {
-          animation: slideInFromLeft 1s ease-out forwards;
-        }
-
-        .slide-out {
-          animation: slideOutToRight 1s ease-out forwards;
-        }
-      `}</style>
-
-      <div className="p-3 ml-4 transcript-container">
-        {!isVideoPlaying ? (
-          // Show nothing when video is paused
-          <div className="transcript-text"></div>
-        ) : isLoading || !currentTranscript ? (
-          <p className="text-lg text-gray-700 font-bold leading-relaxed transcript-text">
-            No transcript available for this moment
-          </p>
-        ) : (
-          <>
-            {/* Previous transcript that slides out */}
-            {isTransitioning && previousTranscript && (
-              <p className="text-lg text-gray-700 font-bold leading-relaxed transcript-text slide-out">
-                {previousTranscript.text}
-              </p>
-            )}
-
-            {/* Current transcript that slides in */}
-            <p
-              className={`text-lg text-gray-700 font-bold leading-relaxed transcript-text ${
-                isTransitioning ? "slide-in" : ""
-              }`}
-            >
-              {currentTranscript.text}
-            </p>
-          </>
-        )}
-      </div>
-    </div>
-  );
-};
+import React from "react";
+import TranscriptSection from "./TranscriptSection";
+import SlideVideoSection from "./SlideVideoSection";
 
 const PPTSection = ({
+  videos = [],
   loading = false,
-  removeAskQuestionButton = false,
-  isQuestionMode = false,
-  height = "calc(100vh - 220px)",
+  height = "calc(100vh - 240px)",
   width = "70%",
-  autoPlayDelay = 3000,
-  presentationUrl = "https://docs.google.com/presentation/d/1h2O6645kWV0kWihwFF--DKx82RykKc1L/edit?usp=drive_link&ouid=112603893642491756794&rtpof=true&sd=true", // new prop
+  currentVideoIndex = 0,
+  currentVideoTime = 0,
+  isVideoPlaying = false,
+  videoDuration = 0,
 }) => {
-  const iframeRef = useRef(null);
-  const { currentSlide, questionPanelPptSlide } = useSelector(
-    (state) => state.video
-  );
-  const dispatch = useDispatch();
-  const slideNumber = isQuestionMode ? questionPanelPptSlide : currentSlide;
-
-  const extractPresentationId = (url) => {
-    const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
-    return match ? match[1] : null;
-  };
-
-  const presentationId = extractPresentationId(presentationUrl);
-  // const presentationId = "1yyZtqREBI0fS6zZ2HlKMwGnrUwO6VXab"
-  // const getSlideUrl = () => {
-  //   if (!presentationId) return "";
-  //   return `https://docs.google.com/presentation/d/${presentationId}/embed?start=true&loop=true&delayms=${autoPlayDelay}&slide=${currentSlide}`;
-  // };
-
-  const getSlideUrl = () => {
-    if (!presentationId) return "";
-    return `https://docs.google.com/presentation/d/${presentationId}/embed?start=false&loop=false&delayms=${autoPlayDelay}&rm=minimal&slide=${slideNumber}`;
-  };
-
   if (loading) {
     return (
-      <div className={`flex flex-col w-[${width}] h-[calc(100vh-120px)]`}>
+      <div className="flex flex-col h-[calc(100vh-120px)]" style={{ width }}>
         <div
-          className="p-4 bg-white rounded-xl border border-gray-200 min-h-[500px] relative animate-pulse"
+          className="bg-white rounded-xl border border-gray-200 min-h-[400px] relative animate-pulse"
           style={{ height }}
         >
           <div className="w-full h-full bg-gray-200 rounded-xl flex items-center justify-center">
@@ -169,52 +26,53 @@ const PPTSection = ({
             </div>
           </div>
         </div>
-        {!removeAskQuestionButton && (
-          <div className="flex justify-center mt-4">
-            <div className="h-10 w-40 bg-gray-200 rounded-full"></div>
+
+        {/* Loading transcript skeleton */}
+        <div className="mt-4 p-6 bg-gray-50 rounded-lg animate-pulse">
+          <div className="flex items-center mb-4">
+            <div className="h-5 w-20 bg-gray-200 rounded"></div>
           </div>
-        )}
+          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={`flex flex-col w-[${width}] h-[calc(100vh-120px)]`}>
+    <div
+      className="flex flex-col h-[calc(100vh-120px)] pr-5 border-r border-gray-300 flex-shrink-0"
+      style={{ width }}
+    >
+      {/* Video Section */}
       <div
-        className="p-4 bg-white rounded-xl border border-gray-200 min-h-[500px] relative"
+        className="bg-white rounded-xl border border-gray-200 min-h-[400px] relative"
         style={{ height }}
       >
-        {presentationId ? (
-          <iframe
-            ref={iframeRef}
-            src={getSlideUrl()}
-            className="w-full h-full rounded-xl pointer-events-none"
-            allowFullScreen
-            allow="autoplay"
-            title="Presentation Slides"
-            frameBorder="0"
-            sandbox="allow-same-origin allow-scripts allow-popups allow-presentation"
-          />
-        ) : (
-          <div className="text-red-500 text-center">
-            Invalid Google Drive Presentation URL
-          </div>
-        )}
+        <SlideVideoSection
+          videos={videos}
+          currentVideoIndex={currentVideoIndex}
+          currentVideoTime={currentVideoTime + 0.1}
+          isVideoPlaying={isVideoPlaying}
+          videoDuration={videoDuration}
+        />
       </div>
-      {!removeAskQuestionButton && (
-        <div className="flex mt-4 justify-between items-start">
-          <TranscriptSection />
-          <button
-            onClick={() => {
-              dispatch(setIsQuestionMode(true));
-              dispatch(setQuestionPanelPptSlide(currentSlide));
-            }}
-            className="max-h-[40px] min-w-[150px] cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-colors"
-          >
-            Ask a Question
-          </button>
-        </div>
-      )}
+      <div className="mt-3 flex justify-between items-center pr-1">
+        <p className="font-bold text-[20px] leading-[100%] tracking-[0.02em] font-lato">
+          Corporate Finance
+        </p>
+
+        <p className="font-semibold text-[14px] leading-[100%] tracking-[0.02em] font-lato">
+          <span className="text-[#00000080]">By:</span> Bhagwan Chowdhry
+        </p>
+      </div>
+
+      {/* Transcript Section */}
+      {/* <TranscriptSection
+        videos={videos}
+        currentVideoIndex={currentVideoIndex}
+        currentVideoTime={currentVideoTime}
+        isVideoPlaying={isVideoPlaying}
+      /> */}
     </div>
   );
 };

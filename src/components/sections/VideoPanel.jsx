@@ -3,15 +3,24 @@ import {
   setCurrentVideoIndex,
   setCurrentVideoTime,
   setIsVideoPlaying,
+  syncPptToVideoPanel,
+  setAnswerPptIndex,
 } from "@/store/features/videoSlice";
-import React, { useState, useRef, useEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { useGetAllVideoQuery } from "@/store/api/questionsApi";
+import QuestionPanel from "./QuestionPanel";
 
 // Skeleton Loader Component
-const VideoSkeleton = () => (
-  <div className="flex flex-col w-[30%] h-full">
+const VideoSkeleton = ({ width = "30%" }) => (
+  <div className="flex flex-col h-full flex-shrink-0" style={{ width }}>
     {/* Video Player Skeleton */}
     <div className="p-4 bg-white rounded-xl border border-gray-200">
       <div className="relative w-full pt-[56.25%] bg-gray-100 rounded-lg overflow-hidden">
@@ -39,242 +48,463 @@ const VideoSkeleton = () => (
   </div>
 );
 
-const VideoPanel = ({videos=[], loading = true}) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [autoPlayEnabled, setAutoPlayEnabled] = useState(false);
-  const videoRef = useRef(null);
-  const activeVideoRef = useRef(null);
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const { currentVideoIndex } = useSelector((state) => state.video);
-  const [showRedirectPopup, setShowRedirectPopup] = useState(false);
-  const [countdown, setCountdown] = useState(10);
+const VideoPanel = forwardRef(
+  (
+    {
+      videos = [],
+      loading = true,
+      onVideoStateChange,
+      onPauseVideo,
+      onPauseAnswerAudio,
+      width = "30%",
+    },
+    ref
+  ) => {
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [hasInitialized, setHasInitialized] = useState(false);
+    const [lastVideoSrc, setLastVideoSrc] = useState("");
+    const [currentTime, setCurrentTime] = useState(0);
+    const [duration, setDuration] = useState(0);
+    const [autoPlayEnabled, setAutoPlayEnabled] = useState(false);
+    const videoRef = useRef(null);
+    const activeVideoRef = useRef(null);
+    const preloadVideoRef = useRef(null); // For preloading next video
+    const router = useRouter();
+    const dispatch = useDispatch();
+    const { currentVideoIndex } = useSelector((state) => state.video);
+    const [showRedirectPopup, setShowRedirectPopup] = useState(false);
+    const [countdown, setCountdown] = useState(10);
+    const [preloadedVideoIndex, setPreloadedVideoIndex] = useState(-1);
 
-  // Handle countdown and redirect
-  useEffect(() => {
-    if (!showRedirectPopup) return;
+    // Handle countdown and redirect
+    useEffect(() => {
+      if (!showRedirectPopup) return;
 
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      if (countdown === 0) {
+        router.push("/test");
+      }
+
+      return () => clearInterval(timer);
+    }, [showRedirectPopup, countdown, router]);
+
+    // Initialize video on first load
+    useEffect(() => {
+      if (videoRef.current && videos?.length > 0 && !hasInitialized) {
+        console.log("Initializing video player...");
+
+        // Update slide when video initializes
+        if (videos?.[currentVideoIndex]?.slide) {
+          dispatch(setCurrentSlide(videos[currentVideoIndex].slide));
         }
-        return prev - 1;
-      });
-    }, 1000);
 
-    if (countdown === 0) {
-      router.push('/test');
-    }
-
-    return () => clearInterval(timer);
-  }, [showRedirectPopup, countdown, router]);
-
-  // Play the current video when index changes
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.load();
-      if (isPlaying && autoPlayEnabled) {
-        videoRef.current.play().catch((error) => {
-          console.log("Error playing video:", error);
-        });
+        setHasInitialized(true);
       }
-    }
-  }, [currentVideoIndex, autoPlayEnabled]);
+    }, [videos, currentVideoIndex, dispatch, hasInitialized]);
 
-  // Add effect to scroll active video into view
-  useEffect(() => {
-    if (activeVideoRef.current) {
-      activeVideoRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest'
-      });
-    }
-  }, [currentVideoIndex]);
-
-  // Show skeleton while loading
-  if (loading || !videos) {
-    return <VideoSkeleton />;
-  }
-
-  // Handle video end
-  const handleVideoEnd = () => {
-    if (currentVideoIndex < videos?.length - 1) {
-      setAutoPlayEnabled(true); // Enable autoplay for next video
-      dispatch(setCurrentVideoIndex(currentVideoIndex + 1));
-      dispatch(setCurrentSlide(videos[currentVideoIndex + 1]?.slide));
-    } else {
-      setShowRedirectPopup(true);
-      setAutoPlayEnabled(false);
-    }
-  };
-
-  // Close popup handler
-  const handleClosePopup = () => {
-    setShowRedirectPopup(false);
-    setCountdown(10);
-  };
-
-  // Format time in MM:SS
-  const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = Math.floor(timeInSeconds % 60);
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
-
-  // Handle transcript item click
-  const handleTranscriptClick = (index) => {
-    setAutoPlayEnabled(true);
-    dispatch(setCurrentVideoIndex(index));
-    setIsPlaying(false);
-  };
-
-  // Toggle play/pause
-  const togglePlayPause = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
+    // Handle pause video from external source (like question panel)
+    const pauseVideo = () => {
+      if (videoRef.current && !videoRef.current.paused) {
         videoRef.current.pause();
-      } else {
-        videoRef.current.play().catch((error) => {
-          console.log("Error playing video:", error);
+        setIsPlaying(false);
+        dispatch(setIsVideoPlaying(false));
+
+        // Notify parent about pause state change
+        if (onVideoStateChange) {
+          onVideoStateChange({
+            currentTime,
+            isPlaying: false,
+            currentVideoIndex,
+            duration,
+          });
+        }
+      }
+    };
+
+    // Expose pauseVideo method to parent component
+    useImperativeHandle(ref, () => ({
+      pauseVideo,
+    }));
+
+    // Handle video index changes (only when actually changing)
+    useEffect(() => {
+      if (videoRef.current && hasInitialized && videos?.length > 0) {
+        const currentVideo = videos[currentVideoIndex];
+        const newSrc = currentVideo?.trainer_video;
+
+        // Only reload if the source is actually different
+        if (newSrc && newSrc !== lastVideoSrc) {
+          setLastVideoSrc(newSrc);
+          console.log(`Switching to video ${currentVideoIndex}...`);
+
+          // Check if we have a preloaded video for this index
+          if (
+            preloadedVideoIndex === currentVideoIndex &&
+            preloadVideoRef.current &&
+            preloadVideoRef.current.readyState >= 2
+          ) {
+            console.log(`Using preloaded video for index ${currentVideoIndex}`);
+
+            try {
+              // Copy the preloaded video source to main video
+              videoRef.current.src = preloadVideoRef.current.src;
+              videoRef.current.load();
+
+              // Clean up the preloaded video
+              preloadVideoRef.current.src = "";
+              setPreloadedVideoIndex(-1);
+            } catch (error) {
+              console.error(
+                "Error using preloaded video, falling back to normal load:",
+                error
+              );
+              videoRef.current.load();
+              setPreloadedVideoIndex(-1);
+            }
+          } else {
+            // Load video normally if not preloaded or preload failed
+            videoRef.current.load();
+            if (preloadedVideoIndex === currentVideoIndex) {
+              setPreloadedVideoIndex(-1); // Reset if preload was attempted but failed
+            }
+          }
+
+          // Update slide when video changes
+          if (currentVideo?.slide) {
+            dispatch(setCurrentSlide(currentVideo.slide));
+          }
+
+          // Notify parent about video index change
+          if (onVideoStateChange) {
+            onVideoStateChange({
+              currentTime: 0,
+              isPlaying: autoPlayEnabled,
+              currentVideoIndex,
+              duration: 0,
+            });
+          }
+
+          if (autoPlayEnabled) {
+            // Pause any playing answer audio when video starts
+            if (onPauseAnswerAudio) {
+              onPauseAnswerAudio();
+            }
+
+            videoRef.current.play().catch((error) => {
+              console.log("Error playing video:", error);
+            });
+          }
+        }
+      }
+    }, [
+      currentVideoIndex,
+      videos,
+      dispatch,
+      preloadedVideoIndex,
+      hasInitialized,
+      autoPlayEnabled,
+    ]);
+
+    // Add effect to scroll active video into view
+    useEffect(() => {
+      if (activeVideoRef.current) {
+        activeVideoRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
         });
       }
-      setIsPlaying(!isPlaying);
+    }, [currentVideoIndex]);
+
+    // Preload next video when current video is near completion
+    useEffect(() => {
+      const preloadThreshold = 10; // Start preloading 10 seconds before video ends
+
+      if (duration > 0 && currentTime > 0) {
+        const timeRemaining = duration - currentTime;
+        const nextVideoIndex = currentVideoIndex + 1;
+
+        // Check if we should preload the next video
+        if (
+          timeRemaining <= preloadThreshold &&
+          nextVideoIndex < videos.length &&
+          preloadedVideoIndex !== nextVideoIndex &&
+          videos[nextVideoIndex]?.trainer_video
+        ) {
+          console.log(`Preloading video ${nextVideoIndex}...`);
+
+          // Create preload video element if it doesn't exist
+          if (!preloadVideoRef.current) {
+            preloadVideoRef.current = document.createElement("video");
+            preloadVideoRef.current.preload = "auto";
+            preloadVideoRef.current.style.display = "none";
+            document.body.appendChild(preloadVideoRef.current);
+          }
+
+          // Set source and start preloading
+          preloadVideoRef.current.src = videos[nextVideoIndex].trainer_video;
+          preloadVideoRef.current.onerror = (e) => {
+            console.error(`Failed to preload video ${nextVideoIndex}:`, e);
+            setPreloadedVideoIndex(-1);
+          };
+          preloadVideoRef.current.oncanplaythrough = () => {
+            console.log(`Video ${nextVideoIndex} preloaded successfully`);
+          };
+          preloadVideoRef.current.load();
+          setPreloadedVideoIndex(nextVideoIndex);
+
+          // Optional: Preload poster/thumbnail
+          if (videos[nextVideoIndex]?.thumbnail) {
+            const img = new Image();
+            img.src = videos[nextVideoIndex].thumbnail;
+          }
+        }
+      }
+    }, [currentTime, duration, currentVideoIndex, videos, preloadedVideoIndex]);
+
+    // Sync PPT to video panel when video starts playing
+    useEffect(() => {
+      if (isPlaying) {
+        // When video panel starts playing, sync PPT to the same video
+        dispatch(syncPptToVideoPanel());
+        console.log(`Syncing PPT to video panel's current video: ${currentVideoIndex + 1}`);
+      }
+    }, [isPlaying, currentVideoIndex, dispatch]);
+
+    // Cleanup preload video element on unmount
+    useEffect(() => {
+      return () => {
+        if (preloadVideoRef.current) {
+          document.body.removeChild(preloadVideoRef.current);
+          preloadVideoRef.current = null;
+        }
+      };
+    }, []);
+
+    // Show skeleton while loading
+    if (loading || !videos) {
+      return <VideoSkeleton width={width} />;
     }
-  };
 
-  const handleProgressBarClick = (e) => {
-    if (!videoRef.current) return;
+    // Handle video end
+    const handleVideoEnd = () => {
+      if (currentVideoIndex < videos?.length - 1) {
+        setAutoPlayEnabled(true); // Enable autoplay for next video
+        dispatch(setCurrentVideoIndex(currentVideoIndex + 1));
+        dispatch(setCurrentSlide(videos[currentVideoIndex + 1]?.slide));
+      } else {
+        setShowRedirectPopup(true);
+        setAutoPlayEnabled(false);
+      }
+    };
 
-    const progressBar = e.currentTarget;
-    const clickPosition = e.clientX - progressBar.getBoundingClientRect().left;
-    const progressBarWidth = progressBar.clientWidth;
-    const seekTime = (clickPosition / progressBarWidth) * duration;
+    // Close popup handler
+    const handleClosePopup = () => {
+      setShowRedirectPopup(false);
+      setCountdown(10);
+    };
 
-    videoRef.current.currentTime = seekTime;
-    setCurrentTime(seekTime);
-  };
+    // Format time in MM:SS
+    const formatTime = (timeInSeconds) => {
+      const minutes = Math.floor(timeInSeconds / 60);
+      const seconds = Math.floor(timeInSeconds % 60);
+      return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    };
 
-  return (
-    <div className="flex flex-col w-[30%] h-full relative">
-      {/* Redirect Popup */}
-      {showRedirectPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
-            <h3 className="text-xl font-semibold mb-4">Training Complete!</h3>
-            <p className="mb-6">
-              Redirecting to Test Page in {countdown} seconds...
-            </p>
-            <div className="w-full bg-gray-200 rounded-full h-2.5">
-              <div 
-                className="bg-blue-600 h-2.5 rounded-full" 
-                style={{ width: `${(10 - countdown) * 10}%` }}
-              ></div>
-            </div>
-            <div className="mt-6 flex justify-end space-x-3">
-              <button
-                onClick={handleClosePopup}
-                className="cursor-pointer px-4 py-2 rounded-md text-gray-600 hover:text-gray-800 bg-gray-100 hover:bg-gray-200"
-              >
-                Close
-              </button>
-              <button
-                onClick={() => router.push('/test')}
-                className="cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-              >
-                Go to Test Now
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      <div className="p-4 pb-1 bg-white rounded-xl border border-gray-200">
-        <div className="relative w-full pt-[56.25%] bg-black rounded-lg overflow-hidden">
-          {" "}
-          {/* 16:9 Aspect Ratio */}
-          <video
-            ref={videoRef}
-            src={videos?.[currentVideoIndex]?.trainer_video}
-            className="absolute top-0 left-0 w-full h-full object-cover"
-            onEnded={handleVideoEnd}
-            onTimeUpdate={(e) => {
-              setCurrentTime(e.target.currentTime);
-              dispatch(setCurrentVideoTime(e.target.currentTime));
-            }}
-            onLoadedMetadata={(e) => setDuration(e.target.duration)}
-            onPlay={() => {
-              setIsPlaying(true);
-              dispatch(setIsVideoPlaying(true));
-            }}
-            onPause={() => {
-              setIsPlaying(false);
-              dispatch(setIsVideoPlaying(false));
-            }}
-            onClick={togglePlayPause}
-            poster={videos?.[currentVideoIndex]?.thumbnail}
-            autoPlay={autoPlayEnabled}
-            controls={true}
-            controlsList="nodownload"
-          />
-        </div>
-        {/* Time display below video */}
-        <div className="flex justify-start mt-2 text-sm text-gray-600">
-          <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
-        </div>
-      </div>
+    // Handle transcript item click
+    const handleTranscriptClick = (index) => {
+      setAutoPlayEnabled(true);
+      dispatch(setCurrentVideoIndex(index));
+      setIsPlaying(false);
+    };
 
-      <div className="mt-4 p-4 bg-white rounded-xl border border-gray-200 flex-1">
-        <h3 className="font-medium mb-3">
-          Video Playlist ({videos?.length} videos)
-        </h3>
-        <div className="space-y-3 text-sm max-h-[calc(100vh-497px)] overflow-y-auto">
-          {videos?.map((video, index) => (
-            <div
-              key={index}
-              ref={currentVideoIndex === index ? activeVideoRef : null}
-              className={`flex items-center p-2 rounded cursor-pointer transition-colors ${
-                currentVideoIndex === index
-                  ? "bg-blue-50 border-l-4 border-blue-500"
-                  : "hover:bg-gray-50 border-l-4 border-transparent"
-              }`}
-              onClick={() => {
-                handleTranscriptClick(index);
-                dispatch(setCurrentSlide(video.slide));
-              }}
-            >
-              <img
-                src={video?.thumbnail}
-                alt="Thumbnail"
-                className="w-16 h-12 object-cover rounded mr-3"
-              />
-              <div className="flex-1 min-w-0 relative group">
-                <p className="font-medium truncate" title={video?.title || `Video ${index + 1}`}>
-                  {video?.title || `Video ${index + 1}`}
-                </p>
-                <div 
-                  className={`absolute z-100 invisible group-hover:visible bg-gray-800 text-white text-xs rounded py-1 px-2 left-1/2 transform -translate-x-1/2 whitespace-nowrap ${
-                    index === 0 
-                      ? 'top-full mt-1' 
-                      : 'bottom-full mb-2'
-                  }`}
+    // Toggle play/pause
+    const togglePlayPause = () => {
+      if (videoRef.current) {
+        if (isPlaying) {
+          videoRef.current.pause();
+        } else {
+          // Reset answerPptIndex when video starts playing
+          dispatch(setAnswerPptIndex(null));
+
+          // Pause any playing answer audio when video starts
+          if (onPauseAnswerAudio) {
+            onPauseAnswerAudio();
+          }
+
+          videoRef.current.play().catch((error) => {
+            console.log("Error playing video:", error);
+          });
+        }
+        setIsPlaying(!isPlaying);
+      }
+    };
+
+    const handleProgressBarClick = (e) => {
+      if (!videoRef.current) return;
+
+      const progressBar = e.currentTarget;
+      const clickPosition =
+        e.clientX - progressBar.getBoundingClientRect().left;
+      const progressBarWidth = progressBar.clientWidth;
+      const seekTime = (clickPosition / progressBarWidth) * duration;
+
+      videoRef.current.currentTime = seekTime;
+      setCurrentTime(seekTime);
+    };
+
+    return (
+      <div
+        className="flex flex-col h-full relative flex-shrink-0 pl-4"
+        style={{ width }}
+      >
+        {/* Redirect Popup */}
+        {showRedirectPopup && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
+              <h3 className="text-xl font-semibold mb-4">Training Complete!</h3>
+              <p className="mb-6">
+                Redirecting to Test Page in {countdown} seconds...
+              </p>
+              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div
+                  className="bg-blue-600 h-2.5 rounded-full"
+                  style={{ width: `${(10 - countdown) * 10}%` }}
+                ></div>
+              </div>
+              <div className="mt-6 flex justify-end space-x-3">
+                <button
+                  onClick={handleClosePopup}
+                  className="cursor-pointer px-4 py-2 rounded-md text-gray-600 hover:text-gray-800 bg-gray-100 hover:bg-gray-200"
                 >
-                  {video?.title || `Video ${index + 1}`}
-                  <div className={`absolute ${
-                    index === 0 
-                      ? 'bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-b-4 border-b-gray-800'
-                      : 'top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-t-4 border-t-gray-800'
-                  }`}></div>
-                </div>
+                  Close
+                </button>
+                <button
+                  onClick={() => router.push("/test")}
+                  className="cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                >
+                  Go to Test Now
+                </button>
               </div>
             </div>
-          ))}
+          </div>
+        )}
+        <div className="p-1 bg-white rounded-xl border border-gray-200">
+          <div className="relative w-full pt-[56.25%] bg-black rounded-lg overflow-hidden">
+            {" "}
+            {/* 16:9 Aspect Ratio */}
+            <video
+              key={`trainer-video-${currentVideoIndex}`}
+              ref={videoRef}
+              src={videos?.[currentVideoIndex]?.trainer_video}
+              className="absolute top-0 left-0 w-full h-full object-cover"
+              onEnded={handleVideoEnd}
+              onTimeUpdate={(e) => {
+                const time = e.target.currentTime;
+                setCurrentTime(time);
+                dispatch(setCurrentVideoTime(time));
+                // Pass video state to parent for PPT synchronization
+                if (onVideoStateChange) {
+                  onVideoStateChange({
+                    currentTime: time,
+                    isPlaying: !e.target.paused,
+                    currentVideoIndex,
+                    duration: e.target.duration || duration,
+                  });
+                }
+              }}
+              onLoadedMetadata={(e) => {
+                const newDuration = e.target.duration;
+                setDuration(newDuration);
+                // Notify parent about duration
+                if (onVideoStateChange) {
+                  onVideoStateChange({
+                    currentTime,
+                    isPlaying,
+                    currentVideoIndex,
+                    duration: newDuration,
+                  });
+                }
+              }}
+              onPlay={() => {
+                setIsPlaying(true);
+                dispatch(setIsVideoPlaying(true));
+
+                // Reset answerPptIndex when video starts playing
+                dispatch(setAnswerPptIndex(null));
+
+                // Pause any playing answer audio when video starts
+                if (onPauseAnswerAudio) {
+                  onPauseAnswerAudio();
+                }
+
+                // Notify parent about play state change
+                if (onVideoStateChange) {
+                  onVideoStateChange({
+                    currentTime,
+                    isPlaying: true,
+                    currentVideoIndex,
+                    duration,
+                  });
+                }
+              }}
+              onPause={() => {
+                setIsPlaying(false);
+                dispatch(setIsVideoPlaying(false));
+                // Notify parent about pause state change
+                if (onVideoStateChange) {
+                  onVideoStateChange({
+                    currentTime,
+                    isPlaying: false,
+                    currentVideoIndex,
+                    duration,
+                  });
+                }
+              }}
+              onLoadStart={() => {
+                console.log("Trainer video loading started...");
+              }}
+              onCanPlay={() => {
+                console.log("Trainer video can play");
+              }}
+              onClick={togglePlayPause}
+              poster={videos?.[currentVideoIndex]?.thumbnail}
+              autoPlay={autoPlayEnabled}
+              controls={true}
+              controlsList="nodownload"
+            />
+            {/* Preloading indicator */}
+            {/* {preloadedVideoIndex === currentVideoIndex + 1 && (
+            <div className="absolute top-4 right-4 bg-green-600 bg-opacity-80 text-white px-2 py-1 rounded-md text-xs flex items-center">
+              <div className="w-2 h-2 bg-white rounded-full animate-pulse mr-1"></div>
+              Next video ready
+            </div>
+          )} */}
+          </div>
+          {/* Time display below video */}
+          <div className=" px-1 flex justify-between mt-2 text-sm text-gray-600">
+            <span>
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </span>
+            <span>
+              {currentVideoIndex + 1}/{videos?.length}
+            </span>
+          </div>
         </div>
+        <QuestionPanel onPauseVideo={pauseVideo} videos={videos} />
       </div>
-    </div>
-  );
-};
+    );
+  }
+);
+
+VideoPanel.displayName = "VideoPanel";
 
 export default VideoPanel;

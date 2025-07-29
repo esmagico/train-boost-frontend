@@ -35,7 +35,7 @@ function ResultContent() {
 
   return (
     <div className="min-h-[calc(100vh-70px)] flex items-center justify-center bg-gray-50 p-4">
-      <div className="max-w-xl w-full bg-white rounded-2xl shadow-lg overflow-hidden mt-[-120px]">
+      <div className="max-w-xl w-full bg-white rounded-2xl overflow-hidden mt-[-120px]">
         <div className="p-8">
           {/* Score Circle */}
           <div className="relative w-32 h-32 mx-auto mb-8">
