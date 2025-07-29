@@ -171,7 +171,6 @@ const QuestionPanel = ({ onPauseVideo, videos = [] }) => {
           type: "answer",
           content: response?.answer || "No answer received",
           audioLink: response?.audio_url || "",
-
         },
       ]);
     } catch (error) {

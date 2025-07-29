@@ -56,6 +56,15 @@ const PPTSection = ({
           videoDuration={videoDuration}
         />
       </div>
+      <div className="mt-3 flex justify-between items-center">
+        <p className="font-bold text-[20px] leading-[100%] tracking-[0.02em] font-lato">
+          Corporate Finance
+        </p>
+
+        <p className="font-semibold text-[14px] leading-[100%] tracking-[0.02em] font-lato">
+          <span className="text-[#00000080]">By:</span> Bhagwan Chowdhry
+        </p>
+      </div>
 
       {/* Transcript Section */}
       <TranscriptSection
