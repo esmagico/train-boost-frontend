@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setQuestion,
   setQuestionPanelPptSlide,
+  setAnswerPptIndex,
 } from "@/store/features/videoSlice";
 import { useSubmitQuestionMutation } from "@/store/api/questionsApi";
 import mic from "@/assets/svg/mic.svg";
@@ -159,8 +160,9 @@ const QuestionPanel = ({ onPauseVideo, videos = [] }) => {
       }).unwrap();
 
       // Handle primary_jump_target if present
-      if (response?.primary_jump_target) {
-        dispatch(setQuestionPanelPptSlide(response.primary_jump_target));
+      if (response?.primary_jump_target !== undefined) {
+        // dispatch(setQuestionPanelPptSlide(response.primary_jump_target));
+        dispatch(setAnswerPptIndex(response.primary_jump_target));
       }
 
       setConversation((prev) => [
@@ -260,6 +262,7 @@ const QuestionPanel = ({ onPauseVideo, videos = [] }) => {
                     <AnswerSection
                       answer={item.content}
                       audioLink={item.audioLink}
+                      onPauseVideo={onPauseVideo}
                     />
                   </div>
                 )}

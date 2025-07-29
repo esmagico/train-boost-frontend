@@ -3,7 +3,7 @@ import { setIsPlaying } from "@/store/features/videoSlice";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const AnswerSection = ({ answer, audioLink = "", loading }) => {
+const AnswerSection = ({ answer, audioLink = "", loading, onPauseVideo }) => {
   const { currentPlayingAudioId, isVideoPlaying } = useSelector((state) => state.video);
   const audioRef = useRef(null);
   const dispatch = useDispatch();
@@ -20,6 +20,11 @@ const AnswerSection = ({ answer, audioLink = "", loading }) => {
   useEffect(() => {
     if (audioRef.current) {
       const handlePlay = () => {
+        // Pause video panel when answer audio starts playing
+        if (onPauseVideo) {
+          onPauseVideo();
+        }
+        
         // Pause any other playing audio
         document.querySelectorAll("audio").forEach((audio) => {
           if (audio !== audioRef.current && !audio.paused) {
@@ -65,6 +70,11 @@ const AnswerSection = ({ answer, audioLink = "", loading }) => {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
+        // Pause video panel when manually starting audio
+        if (onPauseVideo) {
+          onPauseVideo();
+        }
+        
         // Pause any other playing audio before playing this one
         document.querySelectorAll("audio").forEach((audio) => {
           if (audio !== audioRef.current && !audio.paused) {

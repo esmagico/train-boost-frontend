@@ -11,6 +11,7 @@ const initialState = {
   currentPlayingAudioId: null,
   currentVideoTime: 0,
   isVideoPlaying: false,
+  answerPptIndex: null,
 };
 
 const videoSlice = createSlice({
@@ -45,7 +46,9 @@ const videoSlice = createSlice({
     setPptVideoIndex: (state, action) => {
       state.pptVideoIndex = action.payload;
     },
-
+    setAnswerPptIndex: (state, action) => {
+      state.answerPptIndex = action.payload;
+    },
     syncPptToVideoPanel: (state) => {
       state.pptVideoIndex = state.currentVideoIndex;
     },
@@ -62,6 +65,7 @@ export const {
   setIsPlaying,
   setCurrentVideoTime,
   setIsVideoPlaying,
+  setAnswerPptIndex,
   syncPptToVideoPanel,
 } = videoSlice.actions;
 export default videoSlice.reducer;

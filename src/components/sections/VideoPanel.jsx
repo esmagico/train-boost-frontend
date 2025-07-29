@@ -4,6 +4,7 @@ import {
   setCurrentVideoTime,
   setIsVideoPlaying,
   syncPptToVideoPanel,
+  setAnswerPptIndex,
 } from "@/store/features/videoSlice";
 import React, {
   useState,
@@ -331,6 +332,9 @@ const VideoPanel = forwardRef(
         if (isPlaying) {
           videoRef.current.pause();
         } else {
+          // Reset answerPptIndex when video starts playing
+          dispatch(setAnswerPptIndex(null));
+
           // Pause any playing answer audio when video starts
           if (onPauseAnswerAudio) {
             onPauseAnswerAudio();
@@ -433,6 +437,9 @@ const VideoPanel = forwardRef(
               onPlay={() => {
                 setIsPlaying(true);
                 dispatch(setIsVideoPlaying(true));
+
+                // Reset answerPptIndex when video starts playing
+                dispatch(setAnswerPptIndex(null));
 
                 // Pause any playing answer audio when video starts
                 if (onPauseAnswerAudio) {
