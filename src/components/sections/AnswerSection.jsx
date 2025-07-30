@@ -7,7 +7,9 @@ import { useDispatch, useSelector } from "react-redux";
 const autoPlayedAudios = new Map();
 
 const AnswerSection = ({ answer, audioLink = "", loading, onPauseVideo }) => {
-  const { currentPlayingAudioId, isVideoPlaying } = useSelector((state) => state.video);
+  const { currentPlayingAudioId, isVideoPlaying } = useSelector(
+    (state) => state.video
+  );
   const audioRef = useRef(null);
   const dispatch = useDispatch();
   const audioId = useRef(`audio-${Math.random().toString(36).substr(2, 9)}`);
@@ -27,7 +29,7 @@ const AnswerSection = ({ answer, audioLink = "", loading, onPauseVideo }) => {
         if (onPauseVideo) {
           onPauseVideo();
         }
-        
+
         // Pause any other playing audio
         document.querySelectorAll("audio").forEach((audio) => {
           if (audio !== audioRef.current && !audio.paused) {
@@ -82,7 +84,7 @@ const AnswerSection = ({ answer, audioLink = "", loading, onPauseVideo }) => {
         if (onPauseVideo) {
           onPauseVideo();
         }
-        
+
         // Pause any other playing audio before playing this one
         document.querySelectorAll("audio").forEach((audio) => {
           if (audio !== audioRef.current && !audio.paused) {

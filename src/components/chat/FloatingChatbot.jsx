@@ -106,7 +106,9 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
   const [startingText, setStartingText] = useState("");
   const startingTextRef = useRef("");
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   const recognitionRef = useRef(null);
+  const lastAnswerRef = useRef(null);
   const dispatch = useDispatch();
   const { question, isPlaying } = useSelector((state) => state.video);
   const [submitQuestion] = useSubmitQuestionMutation();
@@ -142,6 +144,10 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
           }
         };
 
+        recognitionRef.current.onstart = () => {
+          setIsListening(true);
+        };
+
         recognitionRef.current.onend = () => {
           setIsListening(false);
         };
@@ -149,6 +155,18 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
         recognitionRef.current.onerror = (event) => {
           console.error("Speech recognition error:", event.error);
           setIsListening(false);
+
+          // Handle specific error cases
+          if (event.error === "aborted") {
+            // Recognition was aborted, this is normal
+            return;
+          }
+
+          if (event.error === "not-allowed") {
+            alert(
+              "Microphone access denied. Please allow microphone access and try again."
+            );
+          }
         };
       }
     }
@@ -161,17 +179,47 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
   }, [dispatch]);
 
   const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      const container = messagesEndRef.current.parentElement;
-      container.scrollTo({
+    if (messagesEndRef.current && messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
         top: messagesEndRef.current.offsetTop,
         behavior: "smooth",
       });
     }
   };
 
+  const scrollToLatestAnswer = () => {
+    if (lastAnswerRef.current && messagesContainerRef.current) {
+      // Scroll to show the top of the latest answer message
+      const answerElement = lastAnswerRef.current;
+      const container = messagesContainerRef.current;
+      
+      // Calculate the position to scroll to show the answer at the top
+      const containerRect = container.getBoundingClientRect();
+      const answerRect = answerElement.getBoundingClientRect();
+      const scrollTop = container.scrollTop + (answerRect.top - containerRect.top) - 20; // 20px padding from top
+      
+      container.scrollTo({
+        top: scrollTop,
+        behavior: "smooth",
+      });
+    }
+  };
+
   useEffect(() => {
-    scrollToBottom();
+    if (conversation.length > 0) {
+      const lastMessage = conversation[conversation.length - 1];
+      
+      // If the last message is an answer, scroll to show it at the top
+      if (lastMessage.type === "answer") {
+        // Use setTimeout to ensure the DOM is updated
+        setTimeout(() => {
+          scrollToLatestAnswer();
+        }, 100);
+      } else {
+        // For questions and other messages, scroll to bottom as usual
+        scrollToBottom();
+      }
+    }
   }, [conversation]);
 
   // Auto-scroll to bottom when chat is opened
@@ -186,6 +234,17 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
 
   const handleSubmit = async () => {
     if (!question.trim()) return;
+
+    // Stop speech recognition if it's currently listening
+    if (isListening && recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+        setIsListening(false);
+      } catch (error) {
+        console.error("Error stopping speech recognition on submit:", error);
+        setIsListening(false);
+      }
+    }
 
     if (onPauseVideo) {
       onPauseVideo();
@@ -214,7 +273,7 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
       const response = await submitQuestion({
         question: userQuestion,
         conversation: mappedConversation,
-        knowledge_source_ids: [2, 3, 4, 5, 6, 7, 8],
+        knowledge_source_ids: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
       }).unwrap();
 
       if (response?.primary_jump_target !== undefined) {
@@ -244,13 +303,17 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
   };
 
   const toggleSpeechRecognition = () => {
-    if (!speechSupported) {
+    if (!speechSupported || !recognitionRef.current) {
       alert("Speech recognition is not supported in your browser.");
       return;
     }
 
     if (isListening) {
-      recognitionRef.current.stop();
+      try {
+        recognitionRef.current.stop();
+      } catch (error) {
+        console.error("Error stopping speech recognition:", error);
+      }
       setIsListening(false);
     } else {
       if (onPauseVideo) {
@@ -261,11 +324,48 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
       startingTextRef.current = question;
 
       try {
-        recognitionRef.current.start();
-        setIsListening(true);
+        // Ensure recognition is not already running
+        if (recognitionRef.current.state === "listening") {
+          recognitionRef.current.stop();
+          // Wait a bit before starting again
+          setTimeout(() => {
+            try {
+              recognitionRef.current.start();
+              setIsListening(true);
+            } catch (error) {
+              console.error(
+                "Error starting speech recognition after stop:",
+                error
+              );
+              setIsListening(false);
+            }
+          }, 100);
+        } else {
+          recognitionRef.current.start();
+          setIsListening(true);
+        }
       } catch (error) {
         console.error("Error starting speech recognition:", error);
         setIsListening(false);
+
+        // If it fails because it's already started, try to stop and restart
+        if (error.message && error.message.includes("already started")) {
+          try {
+            recognitionRef.current.stop();
+            setTimeout(() => {
+              try {
+                recognitionRef.current.start();
+                setIsListening(true);
+              } catch (retryError) {
+                console.error("Error on retry:", retryError);
+                setIsListening(false);
+              }
+            }, 100);
+          } catch (stopError) {
+            console.error("Error stopping recognition:", stopError);
+            setIsListening(false);
+          }
+        }
       }
     }
   };
@@ -326,7 +426,7 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
           </div>
 
           {/* Chat Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
             {conversation.length === 0 && (
               <div className="text-center text-gray-500 mt-8">
                 <MessageCircleIcon
@@ -351,7 +451,10 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
                   </div>
                 )}
                 {item.type === "answer" && (
-                  <div className="flex justify-start mb-2">
+                  <div 
+                    ref={index === conversation.length - 1 ? lastAnswerRef : null}
+                    className="flex justify-start mb-2"
+                  >
                     <div className="bg-gray-100 p-3 rounded-lg max-w-[80%]">
                       <AnswerSection
                         answer={item.content}
@@ -411,6 +514,19 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
                     if (!isPlaying && question.trim()) {
+                      // Stop speech recognition if listening before submitting
+                      if (isListening && recognitionRef.current) {
+                        try {
+                          recognitionRef.current.stop();
+                          setIsListening(false);
+                        } catch (error) {
+                          console.error(
+                            "Error stopping speech recognition on Enter:",
+                            error
+                          );
+                          setIsListening(false);
+                        }
+                      }
                       handleSubmit();
                     }
                   }

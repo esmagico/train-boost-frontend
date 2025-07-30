@@ -69,14 +69,10 @@ const TranscriptSection = ({
       <p>
         This session explores three cornerstone concepts: Arbitrage – the art of
         risk-free profit generation through market inefficiencies;
-      </p>
-      <p>
-        <strong>Valuation</strong> – the science and art of determining what
+       Valuation – the science and art of determining what
         assets, projects, and companies are truly worth; and Capital Budgeting
         under
-      </p>
-      <p>
-        <strong>Certainty</strong> – making optimal investment decisions when
+        Certainty – making optimal investment decisions when
         outcomes are predictable.
       </p>
       <p>

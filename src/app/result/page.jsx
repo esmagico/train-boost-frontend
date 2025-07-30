@@ -27,7 +27,7 @@ function ResultContent() {
   };
 
   const handleRestartTraining = () => {
-    router.push(isPerfectScore ? "/congratulations" : "/")
+    router.push("/")
     dispatch(setCurrentVideoIndex(0));
   }
 
@@ -160,7 +160,7 @@ function ResultContent() {
                     : "bg-blue-600 hover:bg-blue-700"
                 }`}
               >
-                {isPerfectScore ? "View Certificate" : "Restart Training"}
+                {isPerfectScore ? "Ok" : "Restart Training"}
               </Button>
 
               {!isPerfectScore && (
