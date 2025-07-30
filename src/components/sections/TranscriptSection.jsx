@@ -60,8 +60,31 @@ const TranscriptSection = ({
   }, [currentVideoIndex]);
 
   return (
-    <div className="w-full bg-[#F5F5F6] rounded-lg px-3 py-4 mt-6 h-[88px]">
-      <div className="flex items-center">
+    // <div className="w-full bg-[#F5F5F6] rounded-lg px-3 py-4 mt-6 h-[88px]">
+    <div className="w-full bg-[#F5F5F6] rounded-lg py-1.5 px-3 mt-3 h-[88px] text-[10px]">
+      <p>
+        Join us for a journey into the fundamentals of Corporate Finance by
+        Prof. Bhagwan Chowdhry.
+      </p>
+      <p>
+        This session explores three cornerstone concepts: Arbitrage – the art of
+        risk-free profit generation through market inefficiencies;
+      </p>
+      <p>
+        <strong>Valuation</strong> – the science and art of determining what
+        assets, projects, and companies are truly worth; and Capital Budgeting
+        under
+      </p>
+      <p>
+        <strong>Certainty</strong> – making optimal investment decisions when
+        outcomes are predictable.
+      </p>
+      <p>
+        Gain essential tools for financial decision-making through real-world
+        examples, bridging theory and practice to understand key principles
+        driving markets, strategy, and investments.
+      </p>
+      {/* <div className="flex items-center">
         <span className="font-lato font-bold text-base leading-none tracking-[0.02em] bg-clip-text text-transparent bg-gradient-to-b from-[#685EDD] to-[#DA8BFF]">
           Captions
         </span>
@@ -137,7 +160,7 @@ const TranscriptSection = ({
             </div>
           )}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

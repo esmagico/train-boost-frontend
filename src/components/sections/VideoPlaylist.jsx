@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentVideoIndex } from "@/store/features/videoSlice";
 
-const VideoPlaylist = ({ videos = [], loading = false }) => {
+const VideoPlaylist = ({ videos = [], loading = false, onVideoSelect }) => {
   const dispatch = useDispatch();
   const { currentVideoIndex } = useSelector((state) => state.video);
   const scrollContainerRef = useRef(null);
@@ -41,8 +41,14 @@ const VideoPlaylist = ({ videos = [], loading = false }) => {
   }, [currentVideoIndex]);
 
   const handleVideoSelect = (index) => {
-    if (index !== currentVideoIndex) {
-      dispatch(setCurrentVideoIndex(index));
+    if (onVideoSelect) {
+      // Use the callback from VideoPanel if provided
+      onVideoSelect(index);
+    } else {
+      // Fallback to direct dispatch if no callback provided
+      if (index !== currentVideoIndex) {
+        dispatch(setCurrentVideoIndex(index));
+      }
     }
   };
 
@@ -97,13 +103,13 @@ const VideoPlaylist = ({ videos = [], loading = false }) => {
                 className="w-full h-full object-cover"
               />
               {/* Play indicator for current video */}
-              {currentVideoIndex === index && (
+              {/* {currentVideoIndex === index && (
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                   <div className="w-4 h-4 bg-blue-600 rounded-full flex items-center justify-center">
                     <div className="w-0 h-0 border-l-[6px] border-l-white border-t-[3px] border-t-transparent border-b-[3px] border-b-transparent ml-0.5"></div>
                   </div>
                 </div>
-              )}
+              )} */}
               {/* Video number overlay */}
               <div className="absolute top-1 left-1 bg-black bg-opacity-70 text-white text-xs px-1 rounded">
                 {index + 1}

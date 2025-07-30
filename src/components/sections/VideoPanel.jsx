@@ -66,6 +66,12 @@ const VideoPanel = forwardRef(
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [autoPlayEnabled, setAutoPlayEnabled] = useState(false);
+    // Persistent video settings
+    const [videoSettings, setVideoSettings] = useState({
+      muted: false,
+      playbackRate: 1.0,
+      volume: 1.0,
+    });
     const videoRef = useRef(null);
     const activeVideoRef = useRef(null);
     const preloadVideoRef = useRef(null); // For preloading next video
@@ -134,6 +140,15 @@ const VideoPanel = forwardRef(
     useImperativeHandle(ref, () => ({
       pauseVideo,
     }));
+
+    // Apply persistent video settings when video loads
+    const applyVideoSettings = (videoElement) => {
+      if (videoElement) {
+        videoElement.muted = videoSettings.muted;
+        videoElement.playbackRate = videoSettings.playbackRate;
+        videoElement.volume = videoSettings.volume;
+      }
+    };
 
     // Handle video index changes (only when actually changing)
     useEffect(() => {
@@ -212,6 +227,7 @@ const VideoPanel = forwardRef(
       preloadedVideoIndex,
       hasInitialized,
       autoPlayEnabled,
+      videoSettings,
     ]);
 
     // Add effect to scroll active video into view
@@ -252,11 +268,17 @@ const VideoPanel = forwardRef(
           // Set source and start preloading
           preloadVideoRef.current.src = videos[nextVideoIndex].trainer_video;
           preloadVideoRef.current.onerror = (e) => {
-            console.error(`Failed to preload video ${nextVideoIndex}:`, e);
+            // console.error(`Failed to preload video ${nextVideoIndex}:`, e);
             setPreloadedVideoIndex(-1);
           };
           preloadVideoRef.current.oncanplaythrough = () => {
             console.log(`Video ${nextVideoIndex} preloaded successfully`);
+            // Apply persistent settings to preloaded video
+            applyVideoSettings(preloadVideoRef.current);
+          };
+          preloadVideoRef.current.onloadedmetadata = () => {
+            // Apply persistent settings when preloaded video metadata is loaded
+            applyVideoSettings(preloadVideoRef.current);
           };
           preloadVideoRef.current.load();
           setPreloadedVideoIndex(nextVideoIndex);
@@ -265,18 +287,28 @@ const VideoPanel = forwardRef(
           if (videos[nextVideoIndex]?.thumbnail) {
             const img = new Image();
             // img.src = videos[nextVideoIndex].thumbnail;
-            img.src = "https://cdn-api.epic.dev.esmagico.in/trainboost/slides/thumb.png";
+            img.src =
+              "https://cdn-api.epic.dev.esmagico.in/trainboost/slides/thumb.png";
           }
         }
       }
-    }, [currentTime, duration, currentVideoIndex, videos, preloadedVideoIndex]);
+    }, [
+      currentTime,
+      duration,
+      currentVideoIndex,
+      videos,
+      preloadedVideoIndex,
+      videoSettings,
+    ]);
 
     // Sync PPT to video panel when video starts playing
     useEffect(() => {
       if (isPlaying) {
         // When video panel starts playing, sync PPT to the same video
         dispatch(syncPptToVideoPanel());
-        console.log(`Syncing PPT to video panel's current video: ${currentVideoIndex + 1}`);
+        console.log(
+          `Syncing PPT to video panel's current video: ${currentVideoIndex + 1}`
+        );
       }
     }, [isPlaying, currentVideoIndex, dispatch]);
 
@@ -318,6 +350,15 @@ const VideoPanel = forwardRef(
       const minutes = Math.floor(timeInSeconds / 60);
       const seconds = Math.floor(timeInSeconds % 60);
       return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    };
+
+    // Handle video selection from playlist
+    const handleVideoSelect = (index) => {
+      if (index !== currentVideoIndex) {
+        setAutoPlayEnabled(true); // Enable autoplay when selecting from playlist
+        dispatch(setCurrentVideoIndex(index));
+        setIsPlaying(false);
+      }
     };
 
     // Handle transcript item click
@@ -425,6 +466,8 @@ const VideoPanel = forwardRef(
               onLoadedMetadata={(e) => {
                 const newDuration = e.target.duration;
                 setDuration(newDuration);
+                // Apply persistent settings when metadata is loaded
+                applyVideoSettings(e.target);
                 // Notify parent about duration
                 if (onVideoStateChange) {
                   onVideoStateChange({
@@ -434,6 +477,11 @@ const VideoPanel = forwardRef(
                     duration: newDuration,
                   });
                 }
+              }}
+              onCanPlay={(e) => {
+                console.log("Trainer video can play");
+                // Apply persistent settings when video can play
+                applyVideoSettings(e.target);
               }}
               onPlay={() => {
                 setIsPlaying(true);
@@ -473,15 +521,41 @@ const VideoPanel = forwardRef(
               onLoadStart={() => {
                 console.log("Trainer video loading started...");
               }}
-              onCanPlay={() => {
-                console.log("Trainer video can play");
+              onVolumeChange={(e) => {
+                // Track mute state and volume changes
+                const newMuted = e.target.muted;
+                const newVolume = e.target.volume;
+
+                if (
+                  newMuted !== videoSettings.muted ||
+                  newVolume !== videoSettings.volume
+                ) {
+                  setVideoSettings((prev) => ({
+                    ...prev,
+                    muted: newMuted,
+                    volume: newVolume,
+                  }));
+                }
+              }}
+              onRateChange={(e) => {
+                // Track playback rate changes
+                const newRate = e.target.playbackRate;
+                if (newRate !== videoSettings.playbackRate) {
+                  setVideoSettings((prev) => ({
+                    ...prev,
+                    playbackRate: newRate,
+                  }));
+                }
               }}
               onClick={togglePlayPause}
               // poster={videos?.[currentVideoIndex]?.thumbnail}
-              poster={"https://cdn-api.epic.dev.esmagico.in/trainboost/slides/thumb.png"}
+              poster={
+                "https://cdn-api.epic.dev.esmagico.in/trainboost/slides/thumb.png"
+              }
               autoPlay={autoPlayEnabled}
               controls={true}
               controlsList="nodownload"
+              disablePictureInPicture
             />
             {/* Preloading indicator */}
             {/* {preloadedVideoIndex === currentVideoIndex + 1 && (
@@ -501,7 +575,11 @@ const VideoPanel = forwardRef(
             </span>
           </div>
         </div>
-        <VideoPlaylist videos={videos} loading={loading} />
+        <VideoPlaylist
+          videos={videos}
+          loading={loading}
+          onVideoSelect={handleVideoSelect}
+        />
       </div>
     );
   }

@@ -6,7 +6,7 @@ import trainBoostLogo from "@/assets/svg/train-boost-logo.svg";
 
 const navigation = [
   { name: "Home", href: "/" },
-  { name: "Test", href: "/test" },
+  // { name: "Test", href: "/test" },
   // { name: 'Resources', href: '/' },
   // { name: 'Community', href: '/' },
 ];

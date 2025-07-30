@@ -174,6 +174,16 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
     scrollToBottom();
   }, [conversation]);
 
+  // Auto-scroll to bottom when chat is opened
+  useEffect(() => {
+    if (isOpen && conversation.length > 0) {
+      // Use setTimeout to ensure the DOM is rendered before scrolling
+      setTimeout(() => {
+        scrollToBottom();
+      }, 100);
+    }
+  }, [isOpen]);
+
   const handleSubmit = async () => {
     if (!question.trim()) return;
 
@@ -192,9 +202,19 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
       { type: "question", content: userQuestion },
     ]);
 
+    // Map conversation for API - convert internal format to API format and get latest 5
+    const mappedConversation = conversation
+      .slice(-10) // Get only the latest 10 conversations
+      .map((item) => ({
+        type: item.type === "question" ? "user" : "AI",
+        content: item.content,
+      }));
+
     try {
       const response = await submitQuestion({
         question: userQuestion,
+        conversation: mappedConversation,
+        knowledge_source_ids: [2, 3, 4, 5, 6, 7, 8],
       }).unwrap();
 
       if (response?.primary_jump_target !== undefined) {
@@ -260,6 +280,8 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
     setStartingText("");
     startingTextRef.current = "";
   };
+
+  console.log(conversation, "co");
 
   return (
     <>
@@ -382,9 +404,9 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
                     startingTextRef.current = newValue;
                   }
                 }}
-                className="w-full px-4 py-3 pr-20 text-gray-700 bg-white border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[52px] max-h-32"
+                className="w-full px-2 py-1.5 pr-20 text-gray-700 bg-white border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[52px] max-h-32"
                 placeholder={isListening ? "Listening..." : "Ask TrainBoost..."}
-                rows={2}
+                rows={3}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
@@ -401,7 +423,7 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
                 <button
                   onClick={toggleSpeechRecognition}
                   disabled={isLoading || isPlaying}
-                  className={`absolute right-2 top-0.5 p-2 rounded-full transition-colors ${
+                  className={`absolute right-2 top-1.5 p-2 rounded-full transition-colors ${
                     isLoading || isPlaying || isListening
                       ? "cursor-not-allowed"
                       : "cursor-pointer"
@@ -424,7 +446,7 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
               <button
                 onClick={handleSubmit}
                 disabled={!question.trim() || isLoading || isPlaying}
-                className={`absolute right-2 top-8 p-2 rounded-full transition-colors ${
+                className={`absolute right-2 top-10 p-2 rounded-full transition-colors ${
                   !question.trim() || isLoading || isPlaying
                     ? "cursor-not-allowed"
                     : "cursor-pointer"

@@ -132,7 +132,7 @@ const AnswerSection = ({ answer, audioLink = "", loading, onPauseVideo }) => {
           />
         </div>
       ) : null}
-      <div className="text-gray-700">{answer}</div>
+      <div className="text-[15px] text-gray-700">{answer}</div>
     </div>
   );
 };
