@@ -4,11 +4,98 @@ import { useDispatch, useSelector } from "react-redux";
 import { setQuestion, setAnswerPptIndex } from "@/store/features/videoSlice";
 import { useSubmitQuestionMutation } from "@/store/api/questionsApi";
 import AnswerSection from "@/components/sections/AnswerSection";
-import mic from "@/assets/svg/mic.svg";
-import micActive from "@/assets/svg/mic-active.svg";
-import submit from "@/assets/svg/submit.svg";
-import submitActive from "@/assets/svg/submit-active.svg";
-import { FiMessageCircle, FiX, FiMinus } from "react-icons/fi";
+
+// Custom SVG Icons
+const MessageCircleIcon = ({ size = 24, className = "" }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+  </svg>
+);
+
+const CloseIcon = ({ size = 20, className = "" }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
+
+const MinusIcon = ({ size = 16, className = "" }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <line x1="5" y1="12" x2="19" y2="12" />
+  </svg>
+);
+
+const MicIcon = ({ size = 24, className = "", isActive = false }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path
+      d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z"
+      fill={isActive ? "currentColor" : "none"}
+    />
+    <path d="M19 10v1a7 7 0 0 1-14 0v-1" />
+    <line x1="12" y1="19" x2="12" y2="23" />
+    <line x1="8" y1="23" x2="16" y2="23" />
+  </svg>
+);
+
+const SendIcon = ({ size = 24, className = "", isActive = false }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <line x1="22" y1="2" x2="11" y2="13" />
+    <polygon
+      points="22,2 15,22 11,13 2,9"
+      fill={isActive ? "currentColor" : "none"}
+    />
+  </svg>
+);
 
 const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -184,7 +271,7 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
             className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg transition-all duration-300 hover:scale-110 cursor-pointer"
             title="Open Chat"
           >
-            <FiMessageCircle size={24} />
+            <MessageCircleIcon size={24} />
           </button>
         )}
       </div>
@@ -195,7 +282,7 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
           {/* Chat Header */}
           <div className="bg-blue-600 text-white p-4 rounded-t-lg flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <FiMessageCircle size={20} />
+              <MessageCircleIcon size={20} />
               <h3 className="font-semibold">TrainBoost Assistant</h3>
             </div>
             <div className="flex items-center space-x-2">
@@ -204,14 +291,14 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
                 className="text-white hover:text-gray-200 p-1 cursor-pointer"
                 title="Clear conversation"
               >
-                <FiMinus size={16} />
+                <MinusIcon size={16} />
               </button>
               <button
                 onClick={toggleChat}
                 className="text-white hover:text-gray-200 p-1 cursor-pointer"
                 title="Close chat"
               >
-                <FiX size={20} />
+                <CloseIcon size={20} />
               </button>
             </div>
           </div>
@@ -220,7 +307,7 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {conversation.length === 0 && (
               <div className="text-center text-gray-500 mt-8">
-                <FiMessageCircle
+                <MessageCircleIcon
                   size={48}
                   className="mx-auto mb-4 text-gray-300"
                 />
@@ -321,19 +408,15 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
                   }`}
                   title={isListening ? "Stop listening" : "Start voice input"}
                 >
-                  {isListening ? (
-                    <img
-                      src={micActive.src}
-                      alt="Mic Active"
-                      className="w-[24px] h-[24px]"
-                    />
-                  ) : (
-                    <img
-                      src={mic.src}
-                      alt="Mic"
-                      className="w-[24px] h-[24px]"
-                    />
-                  )}
+                  <MicIcon
+                    size={18}
+                    isActive={isListening}
+                    className={
+                      isListening
+                        ? "text-red-500"
+                        : "text-gray-600 hover:text-blue-600"
+                    }
+                  />
                 </button>
               )}
 
@@ -348,19 +431,15 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
                 }`}
                 title="Submit question"
               >
-                {isLoading || isPlaying || question.trim() === "" ? (
-                  <img
-                    src={submit.src}
-                    alt="Submit"
-                    className="w-[24px] h-[24px]"
-                  />
-                ) : (
-                  <img
-                    src={submitActive.src}
-                    alt="Submit Active"
-                    className="w-[24px] h-[24px]"
-                  />
-                )}
+                <SendIcon
+                  size={18}
+                  isActive={!isLoading && !isPlaying && question.trim() !== ""}
+                  className={
+                    !question.trim() || isLoading || isPlaying
+                      ? "text-gray-400"
+                      : "text-blue-600 hover:text-blue-700"
+                  }
+                />
               </button>
             </div>
           </div>

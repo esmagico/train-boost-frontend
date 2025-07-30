@@ -59,7 +59,7 @@ const Header = () => {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`font-lato font-semibold text-[13px] leading-[100%] tracking-[0.02em] ${
+                className={`font-lato font-semibold text-[14px] leading-[100%] tracking-[0.02em] ${
                   isActive 
                     ? 'text-blue-600 ' 
                     : 'text-[#1A1C29] hover:text-blue-600'
