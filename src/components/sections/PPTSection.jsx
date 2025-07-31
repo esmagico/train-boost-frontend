@@ -67,12 +67,12 @@ const PPTSection = ({
       </div>
 
       {/* Transcript Section */}
-      {/* <TranscriptSection
+      <TranscriptSection
         videos={videos}
         currentVideoIndex={currentVideoIndex}
         currentVideoTime={currentVideoTime}
         isVideoPlaying={isVideoPlaying}
-      /> */}
+      />
     </div>
   );
 };

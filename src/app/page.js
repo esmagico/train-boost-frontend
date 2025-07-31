@@ -2,15 +2,18 @@
 import React, { useState, useRef, useEffect } from "react";
 import VideoPanel from "@/components/sections/VideoPanel";
 import PPTSection from "@/components/sections/PPTSection";
+import FloatingChatbot from "@/components/chat/FloatingChatbot";
 import { useGetAllVideoQuery } from "@/store/api/questionsApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsPlaying } from "@/store/features/videoSlice";
+import { usePathname } from "next/navigation";
 
 const Home = () => {
   const { data, isLoading } = useGetAllVideoQuery();
   const videos = data?.data?.filter(
     (video) => video?.trainer_video && video?.trainer_video?.trim() !== ""
   );
+  const pathname = usePathname();
   const videoPanelRef = useRef(null);
   const dispatch = useDispatch();
   const { pptVideoIndex } = useSelector((state) => state.video);
@@ -33,7 +36,7 @@ const Home = () => {
   // Handle video state changes from VideoPanel
   const handleVideoStateChange = (newState) => {
     setVideoState(newState);
-    
+
     // Update PPT sync state only when video panel video actually plays
     setPptSyncState({
       shouldSync: newState.isPlaying,
@@ -53,7 +56,7 @@ const Home = () => {
   const handlePauseAnswerAudio = () => {
     // Reset Redux audio state
     dispatch(setIsPlaying({ playing: false, audioId: null }));
-    
+
     // Pause all audio elements in the document
     document.querySelectorAll("audio").forEach((audio) => {
       if (!audio.paused) {
@@ -88,6 +91,11 @@ const Home = () => {
           </div>
         </div>
       </div>
+
+      {/* Floating Chatbot */}
+      {pathname === "/" && (
+        <FloatingChatbot onPauseVideo={handlePauseVideo} videos={videos} />
+      )}
     </div>
   );
 };
