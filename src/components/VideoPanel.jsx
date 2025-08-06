@@ -46,7 +46,7 @@ const VideoPanel = ({videos=[], loading = true}) => {
   const activeVideoRef = useRef(null);
   const router = useRouter();
   const dispatch = useDispatch();
-  const { currentVideoIndex } = useSelector((state) => state.video);
+  const { currentVideoIndex, currentSlide } = useSelector((state) => state.video);
   const [showRedirectPopup, setShowRedirectPopup] = useState(false);
   const [countdown, setCountdown] = useState(10);
 
@@ -75,13 +75,15 @@ const VideoPanel = ({videos=[], loading = true}) => {
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.load();
+      // Reset slide to 1 when video changes
+      dispatch(setCurrentSlide(1));
       if (isPlaying && autoPlayEnabled) {
         videoRef.current.play().catch((error) => {
           console.log("Error playing video:", error);
         });
       }
     }
-  }, [currentVideoIndex, autoPlayEnabled]);
+  }, [currentVideoIndex, autoPlayEnabled, dispatch]);
 
   // Add effect to scroll active video into view
   useEffect(() => {
@@ -103,7 +105,8 @@ const VideoPanel = ({videos=[], loading = true}) => {
     if (currentVideoIndex < videos?.length - 1) {
       setAutoPlayEnabled(true); // Enable autoplay for next video
       dispatch(setCurrentVideoIndex(currentVideoIndex + 1));
-      dispatch(setCurrentSlide(videos[currentVideoIndex + 1]?.slide));
+      // Reset slide to 1 when new video starts
+      dispatch(setCurrentSlide(1));
     } else {
       setShowRedirectPopup(true);
       setAutoPlayEnabled(false);
@@ -127,6 +130,8 @@ const VideoPanel = ({videos=[], loading = true}) => {
   const handleTranscriptClick = (index) => {
     setAutoPlayEnabled(false); // Disable autoplay when manually selecting video
     dispatch(setCurrentVideoIndex(index));
+    // Reset slide to 1 when new video is selected
+    dispatch(setCurrentSlide(1));
     setIsPlaying(false);
   };
 
@@ -198,7 +203,36 @@ const VideoPanel = ({videos=[], loading = true}) => {
             src={videos?.[currentVideoIndex]?.trainer_video}
             className="absolute top-0 left-0 w-full h-full object-cover"
             onEnded={handleVideoEnd}
-            onTimeUpdate={(e) => setCurrentTime(e.target.currentTime)}
+            onTimeUpdate={(e) => {
+              setCurrentTime(e.target.currentTime);
+              // Handle slide synchronization based on video time
+              const currentVideoData = videos[currentVideoIndex];
+              if (currentVideoData?.slides) {
+                const currentTimeSeconds = Math.floor(e.target.currentTime);
+                
+                // Find the appropriate slide based on current time
+                let newSlideIndex = 0;
+                for (let i = currentVideoData.slides.length - 1; i >= 0; i--) {
+                  if (currentTimeSeconds >= currentVideoData.slides[i]) {
+                    newSlideIndex = i;
+                    break;
+                  }
+                }
+                // Convert to 1-based slide number
+                const newSlideNumber = newSlideIndex + 1;
+                // Only dispatch if slide number has changed
+                if (newSlideNumber !== currentSlide) {
+                  console.log(`Slide sync: Time ${currentTimeSeconds}s -> Slide ${newSlideNumber} (was ${currentSlide})`);
+                  dispatch(setCurrentSlide(newSlideNumber));
+                }
+              } else {
+                // Log once if no slides array
+                const currentTimeSeconds = Math.floor(e.target.currentTime);
+                if (currentTimeSeconds === 1) {
+                  console.log(`No slides array found for video ${currentVideoIndex}:`, currentVideoData);
+                }
+              }
+            }}
             onLoadedMetadata={(e) => setDuration(e.target.duration)}
             onClick={togglePlayPause}
             poster={videos?.[currentVideoIndex]?.thumbnail}
@@ -229,7 +263,6 @@ const VideoPanel = ({videos=[], loading = true}) => {
               }`}
               onClick={() => {
                 handleTranscriptClick(index);
-                dispatch(setCurrentSlide(video.slide));
               }}
             >
               <img
