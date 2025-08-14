@@ -28,8 +28,7 @@ function ResultContent() {
   };
 
   const handleRestartTraining = () => {
-    const presentationId = searchParams.get("id") || process.env.NEXT_PUBLIC_PRESENTATION_ID || '1';
-    router.push(`/lectures/${presentationId}`);
+    router.push(`/`);
     dispatch(setCurrentVideoIndex(0));
   }
 

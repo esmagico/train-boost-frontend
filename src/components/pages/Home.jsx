@@ -16,8 +16,8 @@ const PlayIcon = () => (
   </svg>
 );
 
-const CheckIcon = () => (
-  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+const CheckIcon = ({ color = "currentColor" }) => (
+  <svg className="w-4 h-4" fill={color} viewBox="0 0 20 20">
     <path
       fillRule="evenodd"
       d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -52,7 +52,7 @@ const dummyPresentations = [
   },
   {
     presentation_id: 2,
-    title: "AI in Healthcare Market Trends 2025 Market Trends 2025",
+    title: "AI in Healthcare",
     image: "https://example.com/images/ai-healthcare.jpg",
     isCompleted: false,
   },
@@ -106,27 +106,43 @@ const dummyPresentations = [
   },
 ];
 
-const PresentationCard = ({ presentation, onClick }) => {
+const PresentationCard = ({ presentation, onClick, index }) => {
   const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   // Fallback image URL with AI/tech theme
   const fallbackImage =
     "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=300&fit=crop&crop=center";
 
+  // Priority loading for first 6 cards
+  const isPriority = index < 6;
+
   return (
     <div
-      className="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden border border-gray-100 hover:border-blue-200"
+      className="group relative bg-white rounded-xl border border-[#f1f2f4] hover:border-blue-200 hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden"
       onClick={onClick}
     >
       {/* Thumbnail */}
-      <div className="relative w-full h-48 bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
+      <div className="relative w-full h-48 bg-[#f1f2f4] overflow-hidden">
+        {/* Loading skeleton */}
+        {!imageLoaded && (
+          <div className="absolute inset-0 bg-gradient-to-r from-[#f1f2f4] via-gray-200 to-[#f1f2f4] animate-pulse">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
+          </div>
+        )}
+        
         <Image
           src={imageError ? fallbackImage : presentation.image}
           alt={presentation.title}
           fill
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          priority={isPriority}
+          className={`object-cover group-hover:scale-105 transition-all duration-300 ${
+            imageLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
           onError={() => setImageError(true)}
+          onLoad={() => setImageLoaded(true)}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          loading={isPriority ? 'eager' : 'lazy'}
         />
 
         {/* Gradient overlay */}
@@ -391,7 +407,7 @@ const Home = () => {
                 <p className="text-sm text-gray-500">certificates earned</p>
               </div>
               <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
-                <CheckIcon />
+                <CheckIcon color="white" />
               </div>
             </div>
           </div>
@@ -403,10 +419,11 @@ const Home = () => {
             Available Courses
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {presentations.map((presentation) => (
+            {presentations.map((presentation, index) => (
               <PresentationCard
                 key={presentation.presentation_id}
                 presentation={presentation}
+                index={index}
                 onClick={() =>
                   handlePresentationClick(presentation.presentation_id)
                 }

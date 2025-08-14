@@ -192,12 +192,13 @@ const FloatingChatbot = ({ onPauseVideo, videos = [], presentationId }) => {
       // Scroll to show the top of the latest answer message
       const answerElement = lastAnswerRef.current;
       const container = messagesContainerRef.current;
-      
+
       // Calculate the position to scroll to show the answer at the top
       const containerRect = container.getBoundingClientRect();
       const answerRect = answerElement.getBoundingClientRect();
-      const scrollTop = container.scrollTop + (answerRect.top - containerRect.top) - 20; // 20px padding from top
-      
+      const scrollTop =
+        container.scrollTop + (answerRect.top - containerRect.top) - 20; // 20px padding from top
+
       container.scrollTo({
         top: scrollTop,
         behavior: "smooth",
@@ -208,7 +209,7 @@ const FloatingChatbot = ({ onPauseVideo, videos = [], presentationId }) => {
   useEffect(() => {
     if (conversation.length > 0) {
       const lastMessage = conversation[conversation.length - 1];
-      
+
       // If the last message is an answer, scroll to show it at the top
       if (lastMessage.type === "answer") {
         // Use setTimeout to ensure the DOM is updated
@@ -427,7 +428,10 @@ const FloatingChatbot = ({ onPauseVideo, videos = [], presentationId }) => {
           </div>
 
           {/* Chat Messages */}
-          <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div
+            ref={messagesContainerRef}
+            className="flex-1 overflow-y-auto p-4 space-y-4"
+          >
             {conversation.length === 0 && (
               <div className="text-center text-gray-500 mt-8">
                 <MessageCircleIcon
@@ -452,8 +456,10 @@ const FloatingChatbot = ({ onPauseVideo, videos = [], presentationId }) => {
                   </div>
                 )}
                 {item.type === "answer" && (
-                  <div 
-                    ref={index === conversation.length - 1 ? lastAnswerRef : null}
+                  <div
+                    ref={
+                      index === conversation.length - 1 ? lastAnswerRef : null
+                    }
                     className="flex justify-start mb-2"
                   >
                     <div className="bg-gray-100 p-3 rounded-lg max-w-[80%]">
