@@ -97,7 +97,10 @@ const VideoPanel = forwardRef(
       }, 1000);
 
       if (countdown === 0) {
-        router.push("/test");
+        // Get presentationId from current URL
+        const currentPath = window.location.pathname;
+        const presentationId = currentPath.split('/lectures/')[1];
+        router.push(`/assessment/${presentationId}`);
       }
 
       return () => clearInterval(timer);
@@ -414,7 +417,7 @@ const VideoPanel = forwardRef(
             <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
               <h3 className="text-xl font-semibold mb-4">Training Complete!</h3>
               <p className="mb-6">
-                Redirecting to Test Page in {countdown} seconds...
+                Redirecting to Assessment in {countdown} seconds...
               </p>
               <div className="w-full bg-gray-200 rounded-full h-2.5">
                 <div
@@ -430,10 +433,14 @@ const VideoPanel = forwardRef(
                   Close
                 </button>
                 <button
-                  onClick={() => router.push("/test")}
+                  onClick={() => {
+                    const currentPath = window.location.pathname;
+                    const presentationId = currentPath.split('/lectures/')[1];
+                    router.push(`/assessment/${presentationId}`);
+                  }}
                   className="cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
                 >
-                  Go to Test Now
+                  Go to Assessment Now
                 </button>
               </div>
             </div>

@@ -52,7 +52,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-[#F9F9F9] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 mt-[-80px]">
         <div>
           <div className="flex justify-center">
@@ -60,15 +60,15 @@ const LoginPage = () => {
               <div className="size-8">
                 <img src={trainBoostLogo.src} alt="TrainBoost Logo" className="w-8 h-8" />
               </div>
-              <h2 className="text-2xl font-bold leading-tight tracking-[-0.015em]">
+              <h2 className="text-[24px] font-lato font-bold leading-tight tracking-[0.02em]">
                 Train Boost
               </h2>
             </div>
           </div>
-          <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
+          <h2 className="mt-6 text-center text-[28px] font-lato font-bold text-[#121416]">
             Sign in to your account
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          <p className="mt-2 text-center text-[14px] font-lato font-medium text-[#6B7280]">
             Training Using AI
           </p>
         </div>
@@ -84,7 +84,7 @@ const LoginPage = () => {
                 type="email"
                 autoComplete="email"
                 required
-                className="relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                className="relative block w-full px-3 py-3 border border-[#f1f2f4] placeholder-[#6B7280] text-[#121416] rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 focus:z-10 font-lato"
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -100,7 +100,7 @@ const LoginPage = () => {
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
                 required
-                className="relative block w-full px-3 py-3 pr-12 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                className="relative block w-full px-3 py-3 pr-12 border border-[#f1f2f4] placeholder-[#6B7280] text-[#121416] rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 focus:z-10 font-lato"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

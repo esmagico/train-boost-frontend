@@ -97,7 +97,7 @@ const SendIcon = ({ size = 24, className = "", isActive = false }) => (
   </svg>
 );
 
-const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
+const FloatingChatbot = ({ onPauseVideo, videos = [], presentationId }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [conversation, setConversation] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -271,6 +271,7 @@ const FloatingChatbot = ({ onPauseVideo, videos = [] }) => {
 
     try {
       const response = await submitQuestion({
+        presentationId,
         question: userQuestion,
         conversation: mappedConversation,
         knowledge_source_ids: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
