@@ -47,61 +47,61 @@ const dummyPresentations = [
   {
     presentation_id: 1,
     title: "Market Trends 2025",
-    image: "https://example.com/images/market-trends-2025.jpg",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=60",
     isCompleted: false,
   },
   {
     presentation_id: 2,
     title: "AI in Healthcare",
-    image: "https://example.com/images/ai-healthcare.jpg",
+    image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&auto=format&fit=crop&q=60",
     isCompleted: false,
   },
   {
     presentation_id: 3,
     title: "Renewable Energy Innovations",
-    image: "https://example.com/images/renewable-energy.jpg",
+    image: "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&auto=format&fit=crop&q=60",
     isCompleted: true,
   },
   {
     presentation_id: 4,
     title: "Global Economic Outlook",
-    image: "https://example.com/images/global-economy.jpg",
+    image: "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=800&auto=format&fit=crop&q=60",
     isCompleted: false,
   },
   {
     presentation_id: 5,
     title: "Cybersecurity Threats 2025",
-    image: "https://example.com/images/cybersecurity-threats.jpg",
+    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&auto=format&fit=crop&q=60",
     isCompleted: true,
   },
   {
     presentation_id: 6,
     title: "Sustainable Architecture",
-    image: "https://example.com/images/sustainable-architecture.jpg",
+    image: "https://images.unsplash.com/photo-1431576901776-e539bd916ba2?w=800&auto=format&fit=crop&q=60",
     isCompleted: true,
   },
   {
     presentation_id: 7,
     title: "Blockchain Applications",
-    image: "https://example.com/images/blockchain-applications.jpg",
+    image: "https://images.unsplash.com/photo-1644143379190-08a5f055de1d?w=800&auto=format&fit=crop&q=60",
     isCompleted: false,
   },
   {
     presentation_id: 8,
     title: "Space Exploration Advances",
-    image: "https://example.com/images/space-exploration.jpg",
+    image: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=800&auto=format&fit=crop&q=60",
     isCompleted: true,
   },
   {
     presentation_id: 9,
     title: "E-commerce Strategies",
-    image: "https://example.com/images/ecommerce-strategies.jpg",
+    image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&auto=format&fit=crop&q=60",
     isCompleted: false,
   },
   {
     presentation_id: 10,
     title: "Smart Cities of the Future",
-    image: "https://example.com/images/smart-cities.jpg",
+    image: "https://images.unsplash.com/photo-1493489188222-08b45e38a62a?w=800&auto=format&fit=crop&q=60",
     isCompleted: true,
   },
 ];
@@ -471,7 +471,7 @@ const Home = ({ showStats, showFilterTab }) => {
               .map((presentation, index) => (
                 <PresentationCard
                   key={presentation.presentation_id}
-                  showBadge={true}
+                  // showBadge={true}
                   presentation={presentation}
                   index={index}
                   onClick={() =>
