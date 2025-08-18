@@ -216,7 +216,7 @@ const PresentationCard = ({ presentation, onClick, index }) => {
   );
 };
 
-const Home = () => {
+const Home = ({showStats=true}) => {
   const router = useRouter();
   const [presentations, setPresentations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -257,7 +257,7 @@ const Home = () => {
           </div>
 
           {/* Stats Skeleton */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+       {showStats && <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {[...Array(3)].map((_, index) => (
               <div
                 key={index}
@@ -272,7 +272,7 @@ const Home = () => {
                 </div>
               </div>
             ))}
-          </div>
+          </div>}
 
           {/* Cards Skeleton */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -324,7 +324,7 @@ const Home = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      { showStats && <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {/* Progress Card */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between">
@@ -411,7 +411,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div>}
 
         {/* Course Grid */}
         <div className="mb-6">
