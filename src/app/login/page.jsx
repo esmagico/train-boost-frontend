@@ -52,7 +52,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F9F9F9] py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-[#F9F9F9] py-12 px-4 sm:px-6 lg:px-8 mt-[-52px]">
       <div className="max-w-md w-full space-y-8 mt-[-80px]">
         <div>
           <div className="flex justify-center">

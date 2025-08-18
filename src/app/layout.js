@@ -29,7 +29,9 @@ export default function RootLayout({ children }) {
       >
         <ReduxProvider>
           <PrivateRoute>
-            {children}
+            <div className="min-h-screen pt-[52px]">
+              {children}
+            </div>
           </PrivateRoute>
           <ToastContainer
             position="top-right"

@@ -38,7 +38,7 @@ const Header = () => {
   };
 
   return (
-    <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f1f2f4] px-10 py-2">
+    <header className="fixed top-0 left-0 right-0 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f1f2f4] px-10 py-2 bg-white/80 backdrop-blur-sm z-50">
       <div className="flex items-center gap-1 text-[#121416] cursor-pointer"
       onClick={() => router.push("/")}
       >

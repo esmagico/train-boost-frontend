@@ -106,7 +106,7 @@ const dummyPresentations = [
   },
 ];
 
-const PresentationCard = ({ presentation, onClick, index }) => {
+const PresentationCard = ({ presentation, onClick, index, showBadge }) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -166,10 +166,12 @@ const PresentationCard = ({ presentation, onClick, index }) => {
         )}
 
         {/* AI Badge */}
-        <div className="absolute top-3 left-3 px-2 py-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center gap-1 shadow-lg">
-          <AIIcon />
-          <span className="text-white text-xs font-semibold">AI</span>
-        </div>
+        {showBadge && (
+          <div className="absolute top-3 left-3 px-2 py-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center gap-1 shadow-lg">
+            <AIIcon />
+            <span className="text-white text-xs font-semibold">AI</span>
+          </div>
+        )}
 
         {/* Play Button Overlay */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
@@ -224,7 +226,7 @@ const PresentationCard = ({ presentation, onClick, index }) => {
   );
 };
 
-const Home = ({ showStats = true, showFilterTab = true }) => {
+const Home = ({ showStats, showFilterTab }) => {
   const router = useRouter();
   const [presentations, setPresentations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -469,6 +471,7 @@ const Home = ({ showStats = true, showFilterTab = true }) => {
               .map((presentation, index) => (
                 <PresentationCard
                   key={presentation.presentation_id}
+                  showBadge={true}
                   presentation={presentation}
                   index={index}
                   onClick={() =>
