@@ -33,38 +33,44 @@ export default function AssessmentPage() {
       <div className="min-h-screen bg-[#F9F9F9] py-8 px-6">
         <div className="max-w-3xl mx-auto bg-white rounded-xl border border-[#f1f2f4] overflow-hidden">
           <div className="p-6">
-            <div className="animate-pulse space-y-6">
+            <div className="animate-pulse">
               {/* Loading header */}
-              <div className="h-8 bg-[#f1f2f4] rounded w-3/4 mx-auto"></div>
-
-              {/* Loading question count */}
-              <div className="h-4 bg-[#f1f2f4] rounded w-1/4"></div>
-
-              {/* Loading question text */}
-              <div className="space-y-2">
-                <div className="h-6 bg-[#f1f2f4] rounded"></div>
-                <div className="h-6 bg-[#f1f2f4] rounded w-5/6"></div>
+              <div className="mb-8">
+                <div className="h-8 bg-[#f1f2f4] rounded-lg w-2/3 mx-auto"></div>
               </div>
 
-              {/* Loading options */}
-              <div className="space-y-3">
-                {[1, 2, 3, 4].map((i) => (
-                  <div
-                    key={i}
-                    className="p-4 border border-[#f1f2f4] rounded-xl"
-                  >
-                    <div className="flex items-center">
-                      <div className="w-5 h-5 rounded-full border-2 border-[#f1f2f4] mr-3"></div>
-                      <div className="h-4 bg-[#f1f2f4] rounded w-full"></div>
+              <div className="mb-6">
+                {/* Loading question count */}
+                <div className="flex justify-between items-center mb-4">
+                  <div className="h-4 bg-[#f1f2f4] rounded w-32"></div>
+                </div>
+
+                {/* Loading question text */}
+                <div className="mb-4">
+                  <div className="h-[22px] bg-[#f1f2f4] rounded-lg mb-2"></div>
+                  <div className="h-[22px] bg-[#f1f2f4] rounded-lg w-3/4"></div>
+                </div>
+
+                {/* Loading options */}
+                <div className="space-y-3">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div
+                      key={i}
+                      className="p-4 border border-[#f1f2f4] rounded-xl"
+                    >
+                      <div className="flex items-center">
+                        <div className="w-5 h-5 rounded-full border-2 border-[#6B7280] mr-3"></div>
+                        <div className="h-5 bg-[#f1f2f4] rounded-lg w-full"></div>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
 
               {/* Loading navigation buttons */}
               <div className="flex justify-between pt-4 border-t border-[#f1f2f4]">
-                <div className="h-10 bg-[#f1f2f4] rounded-xl w-24"></div>
-                <div className="h-10 bg-[#f1f2f4] rounded-xl w-24"></div>
+                <div className="h-10 w-[100px] bg-[#f1f2f4] rounded-xl"></div>
+                <div className="h-10 w-[100px] bg-[#f1f2f4] rounded-xl"></div>
               </div>
             </div>
           </div>

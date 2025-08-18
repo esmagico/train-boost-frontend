@@ -20,26 +20,33 @@ import VideoPlaylist from "./VideoPlaylist";
 
 // Skeleton Loader Component
 const VideoSkeleton = ({ width = "30%" }) => (
-  <div className="flex flex-col h-full flex-shrink-0" style={{ width }}>
+  <div className="flex flex-col h-full relative flex-shrink-0 pl-4" style={{ width }}>
     {/* Video Player Skeleton */}
-    <div className="p-4 bg-white rounded-xl border border-gray-200">
+    <div className="p-1 bg-white rounded-xl border border-gray-200">
       <div className="relative w-full pt-[56.25%] bg-gray-100 rounded-lg overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-16 h-16 rounded-full bg-gray-200 animate-pulse"></div>
         </div>
       </div>
+      {/* Time and video count skeleton */}
+      <div className="px-1 flex justify-between mt-2 text-sm">
+        <div className="w-20 h-4 bg-gray-200 rounded animate-pulse"></div>
+        <div className="w-12 h-4 bg-gray-200 rounded animate-pulse"></div>
+      </div>
     </div>
 
     {/* Playlist Skeleton */}
-    <div className="mt-4 p-4 bg-white rounded-xl border border-gray-200 flex-1">
-      <div className="h-6 w-1/3 bg-gray-200 rounded mb-4"></div>
-      <div className="space-y-3">
+    <div className="mt-4 bg-white rounded-xl border border-gray-200 flex-1">
+      <div className="p-4 border-b border-gray-100">
+        <div className="h-5 w-28 bg-gray-200 rounded animate-pulse"></div>
+      </div>
+      <div className="p-2 space-y-2">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="flex items-center p-2">
-            <div className="w-16 h-12 bg-gray-100 rounded mr-3 animate-pulse"></div>
+          <div key={i} className="flex items-center p-2 rounded-lg hover:bg-gray-50">
+            <div className="w-24 h-16 bg-gray-100 rounded-lg mr-3 animate-pulse"></div>
             <div className="flex-1">
-              <div className="h-4 bg-gray-100 rounded w-3/4 mb-1"></div>
-              <div className="h-3 bg-gray-50 rounded w-1/2"></div>
+              <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+              <div className="h-3 bg-gray-100 rounded w-1/2"></div>
             </div>
           </div>
         ))}

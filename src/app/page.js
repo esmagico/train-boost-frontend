@@ -1,5 +1,5 @@
 import Home from "@/components/pages/Home";
 
 export default function HomePage() {
-  return <Home showStats={false} />;
+  return <Home showStats={true} showFilterTab={true} />;
 }

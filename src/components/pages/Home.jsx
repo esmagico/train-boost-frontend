@@ -130,19 +130,19 @@ const PresentationCard = ({ presentation, onClick, index }) => {
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
           </div>
         )}
-        
+
         <Image
           src={imageError ? fallbackImage : presentation.image}
           alt={presentation.title}
           fill
           priority={isPriority}
           className={`object-cover group-hover:scale-105 transition-all duration-300 ${
-            imageLoaded ? 'opacity-100' : 'opacity-0'
+            imageLoaded ? "opacity-100" : "opacity-0"
           }`}
           onError={() => setImageError(true)}
           onLoad={() => setImageLoaded(true)}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          loading={isPriority ? 'eager' : 'lazy'}
+          loading={isPriority ? "eager" : "lazy"}
         />
 
         {/* Gradient overlay */}
@@ -151,8 +151,16 @@ const PresentationCard = ({ presentation, onClick, index }) => {
         {/* Completion Badge */}
         {presentation.isCompleted && (
           <div className="absolute top-3 right-3 w-7 h-7 bg-green-500 rounded-full flex items-center justify-center">
-            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            <svg
+              className="w-4 h-4 text-white"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clipRule="evenodd"
+              />
             </svg>
           </div>
         )}
@@ -216,10 +224,11 @@ const PresentationCard = ({ presentation, onClick, index }) => {
   );
 };
 
-const Home = ({showStats=true}) => {
+const Home = ({ showStats = true, showFilterTab = true }) => {
   const router = useRouter();
   const [presentations, setPresentations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     // Simulate API call
@@ -248,7 +257,7 @@ const Home = ({showStats=true}) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <div className="min-h-screen">
         <div className="max-w-7xl mx-auto px-6 py-8">
           {/* Header Skeleton */}
           <div className="mb-8">
@@ -257,22 +266,24 @@ const Home = ({showStats=true}) => {
           </div>
 
           {/* Stats Skeleton */}
-       {showStats && <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            {[...Array(3)].map((_, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-2xl p-6 shadow-sm animate-pulse"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="h-4 bg-gray-200 rounded w-20 mb-2"></div>
-                    <div className="h-8 bg-gray-200 rounded w-16"></div>
+          {showStats && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {[...Array(3)].map((_, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-2xl p-6 shadow-sm animate-pulse"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="h-4 bg-gray-200 rounded w-20 mb-2"></div>
+                      <div className="h-8 bg-gray-200 rounded w-16"></div>
+                    </div>
+                    <div className="w-12 h-12 bg-gray-200 rounded-full"></div>
                   </div>
-                  <div className="w-12 h-12 bg-gray-200 rounded-full"></div>
                 </div>
-              </div>
-            ))}
-          </div>}
+              ))}
+            </div>
+          )}
 
           {/* Cards Skeleton */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -303,7 +314,7 @@ const Home = ({showStats=true}) => {
   const progressPercentage = Math.round((completedCount / totalCount) * 100);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Hero Header */}
         <div className="mb-8">
@@ -324,111 +335,147 @@ const Home = ({showStats=true}) => {
         </div>
 
         {/* Stats Cards */}
-      { showStats && <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* Progress Card */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 mb-1">
-                  Learning Progress
-                </p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {completedCount}/{totalCount}
-                </p>
-                <p className="text-sm text-gray-500">courses completed</p>
+        {showStats && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {/* Progress Card */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600 mb-1">
+                    Learning Progress
+                  </p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {completedCount}/{totalCount}
+                  </p>
+                  <p className="text-sm text-gray-500">courses completed</p>
+                </div>
+                <div className="w-16 h-16 relative">
+                  <svg
+                    className="w-full h-full transform -rotate-90"
+                    viewBox="0 0 36 36"
+                  >
+                    <path
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none"
+                      stroke="#E5E7EB"
+                      strokeWidth="3"
+                    />
+                    <path
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none"
+                      stroke="url(#gradient)"
+                      strokeWidth="3"
+                      strokeDasharray={`${progressPercentage}, 100`}
+                      strokeLinecap="round"
+                    />
+                    <defs>
+                      <linearGradient
+                        id="gradient"
+                        x1="0%"
+                        y1="0%"
+                        x2="100%"
+                        y2="0%"
+                      >
+                        <stop offset="0%" stopColor="#3B82F6" />
+                        <stop offset="100%" stopColor="#8B5CF6" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-sm font-bold text-gray-900">
+                      {progressPercentage}%
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div className="w-16 h-16 relative">
-                <svg
-                  className="w-full h-full transform -rotate-90"
-                  viewBox="0 0 36 36"
-                >
-                  <path
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke="#E5E7EB"
-                    strokeWidth="3"
-                  />
-                  <path
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke="url(#gradient)"
-                    strokeWidth="3"
-                    strokeDasharray={`${progressPercentage}, 100`}
-                    strokeLinecap="round"
-                  />
-                  <defs>
-                    <linearGradient
-                      id="gradient"
-                      x1="0%"
-                      y1="0%"
-                      x2="100%"
-                      y2="0%"
-                    >
-                      <stop offset="0%" stopColor="#3B82F6" />
-                      <stop offset="100%" stopColor="#8B5CF6" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-sm font-bold text-gray-900">
-                    {progressPercentage}%
-                  </span>
+            </div>
+
+            {/* AI Insights Card */}
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-6 text-white shadow-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-blue-100 text-sm font-medium mb-1">
+                    AI Insights
+                  </p>
+                  <p className="text-2xl font-bold">Smart</p>
+                  <p className="text-blue-100 text-sm">personalized learning</p>
+                </div>
+                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                  <AIIcon />
+                </div>
+              </div>
+            </div>
+
+            {/* Achievement Card */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600 mb-1">
+                    Achievements
+                  </p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {completedCount}
+                  </p>
+                  <p className="text-sm text-gray-500">certificates earned</p>
+                </div>
+                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+                  <CheckIcon color="white" />
                 </div>
               </div>
             </div>
           </div>
+        )}
 
-          {/* AI Insights Card */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-6 text-white shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-blue-100 text-sm font-medium mb-1">
-                  AI Insights
-                </p>
-                <p className="text-2xl font-bold">Smart</p>
-                <p className="text-blue-100 text-sm">personalized learning</p>
+        {/* Filter tabs */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">
+              Available Courses
+            </h2>
+            {showFilterTab && (
+              <div className="flex bg-white/80 backdrop-blur-sm rounded-2xl p-1 shadow-lg border border-gray-200">
+                {[
+                  { key: "all", label: "All Courses" },
+                  { key: "in-progress", label: "In Progress" },
+                  { key: "completed", label: "Completed" },
+                ].map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setFilter(tab.key)}
+                    className={`cursor-pointer px-6 py-2 text-sm font-semibold rounded-xl transition-all duration-300 ${
+                      filter === tab.key
+                        ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
+                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
               </div>
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                <AIIcon />
-              </div>
-            </div>
+            )}
           </div>
-
-          {/* Achievement Card */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 mb-1">
-                  Achievements
-                </p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {completedCount}
-                </p>
-                <p className="text-sm text-gray-500">certificates earned</p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
-                <CheckIcon color="white" />
-              </div>
-            </div>
-          </div>
-        </div>}
+        </div>
 
         {/* Course Grid */}
         <div className="mb-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Available Courses
-          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {presentations.map((presentation, index) => (
-              <PresentationCard
-                key={presentation.presentation_id}
-                presentation={presentation}
-                index={index}
-                onClick={() =>
-                  handlePresentationClick(presentation.presentation_id)
-                }
-              />
-            ))}
+            {presentations
+              .filter(
+                (p) =>
+                  filter === "all" ||
+                  (filter === "completed" && p.isCompleted) ||
+                  (filter === "in-progress" && !p.isCompleted)
+              )
+              .map((presentation, index) => (
+                <PresentationCard
+                  key={presentation.presentation_id}
+                  presentation={presentation}
+                  index={index}
+                  onClick={() =>
+                    handlePresentationClick(presentation.presentation_id)
+                  }
+                />
+              ))}
           </div>
         </div>
 

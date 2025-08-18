@@ -127,7 +127,7 @@ function ResultContent() {
               </p>
 
               {!isPerfectScore && (
-                <div className="inline-block bg-amber-50 border border-amber-200 rounded-xl px-4 py-2 mt-2">
+                <div className="inline-block bg-amber-50 border border-amber-200 rounded-xl px-4 py-2">
                   <div className="flex items-center gap-2">
                     <svg
                       className="w-5 h-5 text-amber-500"
@@ -184,9 +184,37 @@ function ResultContent() {
 function ResultLoading() {
   return (
     <div className="min-h-[calc(100vh-70px)] flex items-center justify-center bg-[#F9F9F9] p-4">
-      <div className="text-center">
-        <div className="w-16 h-16 border-4 border-[#f1f2f4] border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-[14px] font-lato font-medium text-[#6B7280]">Loading result...</p>
+      <div className="max-w-xl w-full bg-white rounded-xl border border-[#f1f2f4] overflow-hidden mt-[-120px]">
+        <div className="p-8">
+          {/* Score Circle Skeleton */}
+          <div className="relative w-32 h-32 mx-auto mb-8">
+            <div className="absolute inset-0 rounded-full bg-[#f1f2f4] animate-pulse"></div>
+            <div className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-gray-200 animate-pulse"></div>
+          </div>
+
+          {/* Result Content Skeleton */}
+          <div className="text-center space-y-6">
+            {/* Title Skeleton */}
+            <div className="h-8 w-48 bg-gray-200 rounded-lg mx-auto animate-pulse"></div>
+
+            {/* Description Skeleton */}
+            <div className="space-y-2">
+              <div className="h-4 w-3/4 bg-gray-200 rounded mx-auto animate-pulse"></div>
+              <div className="h-4 w-2/3 bg-gray-200 rounded mx-auto animate-pulse"></div>
+            </div>
+
+            {/* Info Box Skeleton */}
+            <div className="inline-block bg-gray-100 rounded-xl px-4 py-2">
+              <div className="h-5 w-48 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+
+            {/* Button Skeleton */}
+            <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
+              <div className="h-10 w-32 bg-gray-200 rounded-lg animate-pulse"></div>
+              <div className="h-10 w-32 bg-gray-200 rounded-lg animate-pulse"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
