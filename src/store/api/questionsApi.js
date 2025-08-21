@@ -17,12 +17,12 @@ export const questionsApi = createApi({
   endpoints: (builder) => ({
     // Get quiz data
     getQuiz: builder.query({
-      query: (presentationId) => `presentations/${presentationId}/quiz`,
+      query: (presentationId) => `presentations/presentations/${presentationId}/quiz`,
       providesTags: ['Question'],
     }),
 
     getAllVideo: builder.query({
-      query: (presentationId) => `presentations/${presentationId}/slides`,
+      query: (presentationId) => `presentations/presentations/${presentationId}/slides`,
       providesTags: ['Question'],
     }),
     
