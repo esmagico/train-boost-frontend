@@ -3,168 +3,157 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-// AI-themed icons
-const AIIcon = () => (
-  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z" />
+// Icons
+const NotebookIcon = () => (
+  <svg className="w-5 h-5" fill="#744FFF" viewBox="0 0 24 24">
+    <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" opacity="0.5" />
+    <path d="M12 6h8v2h-8zm0 5h8v2h-8zm0 5h8v2h-8z" fill="#744FFF" />
   </svg>
 );
 
-const PlayIcon = () => (
-  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M8 5.14v14.72L19 12L8 5.14z" />
+const MicrophoneIcon = () => (
+  <svg className="w-5 h-5" fill="#744FFF" viewBox="0 0 24 24">
+    <path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z" />
+    <path d="M19 10v1a7 7 0 0 1-14 0v-1" stroke="#744FFF" strokeWidth="2" fill="none" />
+    <line x1="12" y1="19" x2="12" y2="23" stroke="#744FFF" strokeWidth="2" />
+    <line x1="8" y1="23" x2="16" y2="23" stroke="#744FFF" strokeWidth="2" />
   </svg>
 );
 
-const CheckIcon = ({ color = "currentColor" }) => (
-  <svg className="w-4 h-4" fill={color} viewBox="0 0 20 20">
-    <path
-      fillRule="evenodd"
-      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-      clipRule="evenodd"
-    />
+const MedalIcon = () => (
+  <svg className="w-5 h-5" fill="#744FFF" viewBox="0 0 24 24">
+    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" opacity="0.5" />
+    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#744FFF" />
   </svg>
 );
 
-const ClockIcon = () => (
-  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-    <path
-      fillRule="evenodd"
-      d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-      clipRule="evenodd"
-    />
-  </svg>
-);
-
-const BrainIcon = () => (
-  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M21.33 12.91c.09-.69.07-1.4-.07-2.08c.17-.73.17-1.5-.02-2.24c-.2-.78-.53-1.5-.95-2.16c-.44-.68-.97-1.28-1.58-1.77c-.63-.5-1.32-.89-2.07-1.15c-.76-.27-1.55-.4-2.35-.4c-.8 0-1.59.13-2.35.4c-.75.26-1.44.65-2.07 1.15c-.61.49-1.14 1.09-1.58 1.77c-.42.66-.75 1.38-.95 2.16c-.19.74-.19 1.51-.02 2.24c-.14.68-.16 1.39-.07 2.08c.1.7.32 1.37.65 1.98c.33.61.75 1.16 1.25 1.63c.51.48 1.09.87 1.71 1.17c.63.3 1.3.45 1.98.45c.68 0 1.35-.15 1.98-.45c.62-.3 1.2-.69 1.71-1.17c.5-.47.92-1.02 1.25-1.63c.33-.61.55-1.28.65-1.98z" />
-  </svg>
-);
-
-// Dummy data - in a real app, this would come from an API
+// Course data matching Figma design
 const dummyPresentations = [
   {
     presentation_id: 1,
-    title: "Corporate Finance",
-    image: "https://d8it4huxumps7.cloudfront.net/bites/wp-content/uploads/2019/05/14074536/ISB.jpg",
+    title: "Introduction to Digital Banking",
+    author: "Dr. Ananya Mehta",
+    status: "start",
     isCompleted: false,
+    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
+  },
+  {
+    presentation_id: 2,
+    title: "Basics of Financial Planning",
+    author: "Ms. Shreya Iyer",
+    status: "completed",
+    isCompleted: true,
+    image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop",
+  },
+  {
+    presentation_id: 3,
+    title: "Customer Service Excellence",
+    author: "Mr. Arjun Deshmukh",
+    status: "progress",
+    isCompleted: false,
+    image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&h=300&fit=crop",
+  },
+  {
+    presentation_id: 4,
+    title: "Effective Communication Skills",
+    author: "Dr. Kavita Nair",
+    status: "completed",
+    isCompleted: true,
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=300&fit=crop",
+  },
+  {
+    presentation_id: 5,
+    title: "Workplace Ethics & Compliance",
+    author: "Mr. Kunal Verma",
+    status: "start",
+    isCompleted: false,
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
+  },
+  {
+    presentation_id: 6,
+    title: "Understanding Investment Products",
+    author: "Dr. Sneha Reddy",
+    status: "progress",
+    isCompleted: false,
+    image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&h=300&fit=crop",
+  },
+  {
+    presentation_id: 7,
+    title: "Leadership and Team Management",
+    author: "Prof. Aditya Bansal",
+    status: "start",
+    isCompleted: false,
+    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop",
+  },
+  {
+    presentation_id: 8,
+    title: "Time Management for Professionals",
+    author: "Prof. Neeraj Sharma",
+    status: "progress",
+    isCompleted: false,
+    image: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=400&h=300&fit=crop",
   },
 ];
 
-const PresentationCard = ({ presentation, onClick, index, showBadge }) => {
-  const [imageError, setImageError] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
-
-  // Fallback image URL with AI/tech theme
-  const fallbackImage =
-    "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=300&fit=crop&crop=center";
-
-  // Priority loading for first 6 cards
-  const isPriority = index < 6;
+const PresentationCard = ({ presentation, onClick }) => {
+  const getStatusBadge = () => {
+    switch (presentation.status) {
+      case "completed":
+        return (
+          <div className="flex items-center justify-center px-[6px] py-[2.5px] bg-[#DCFCE7] rounded-[10px]">
+            <span className="text-[10px] font-lato font-normal leading-[12px] text-[#008236]">
+              Completed
+            </span>
+          </div>
+        );
+      case "progress":
+        return (
+          <div className="flex items-center justify-center px-[6px] py-[2.5px] bg-[#DBEAFE] rounded-[10px]">
+            <span className="text-[10px] font-lato font-normal leading-[12px] text-[#1447E6]">
+              In Progress
+            </span>
+          </div>
+        );
+      default:
+        return (
+          <div className="flex items-center justify-center px-[6px] py-[2.5px] bg-[#F3EDFF] rounded-[10px]">
+            <span className="text-[10px] font-lato font-normal leading-[12px] text-[#685EDD]">
+              Start Learning
+            </span>
+          </div>
+        );
+    }
+  };
 
   return (
     <div
-      className="group relative bg-white rounded-xl border border-[#f1f2f4] hover:border-blue-200 hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden"
+      className="flex flex-col items-start p-[12px_12px_16px] gap-[10px] w-full min-w-[280px] aspect-[331/223.5] bg-white rounded-[8px] cursor-pointer"
       onClick={onClick}
     >
-      {/* Thumbnail */}
-      <div className="relative w-full h-48 bg-[#f1f2f4] overflow-hidden">
-        {/* Loading skeleton */}
-        {!imageLoaded && (
-          <div className="absolute inset-0 bg-gradient-to-r from-[#f1f2f4] via-gray-200 to-[#f1f2f4] animate-pulse">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
-          </div>
-        )}
-
-        <Image
-          src={imageError ? fallbackImage : presentation.image}
-          alt={presentation.title}
-          fill
-          priority={isPriority}
-          className={`object-cover group-hover:scale-105 transition-all duration-300 ${
-            imageLoaded ? "opacity-100" : "opacity-0"
-          }`}
-          onError={() => setImageError(true)}
-          onLoad={() => setImageLoaded(true)}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          loading={isPriority ? "eager" : "lazy"}
-        />
-
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-        {/* Completion Badge */}
-        {presentation.isCompleted && (
-          <div className="absolute top-3 right-3 w-7 h-7 bg-green-500 rounded-full flex items-center justify-center">
-            <svg
-              className="w-4 h-4 text-white"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-        )}
-
-        {/* AI Badge */}
-        {showBadge && (
-          <div className="absolute top-3 left-3 px-2 py-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center gap-1 shadow-lg">
-            <AIIcon />
-            <span className="text-white text-xs font-semibold">AI</span>
-          </div>
-        )}
-
-        {/* Play Button Overlay */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-          <div className="w-16 h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl transform scale-75 group-hover:scale-100 transition-transform duration-300">
-            <PlayIcon />
-          </div>
+      <div className="flex flex-col items-start gap-[12px] w-full flex-1">
+        {/* Thumbnail */}
+        <div className="w-full flex-1 bg-[#F3EDFF] rounded-[8px] overflow-hidden relative">
+          <Image
+            src={presentation.image}
+            alt={presentation.title}
+            fill
+            className="object-cover"
+          />
         </div>
-
-        {/* Progress bar for completed courses */}
-        {presentation.isCompleted && (
-          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-500" />
-        )}
-      </div>
-
-      {/* Content */}
-      <div className="p-5">
-        <div className="flex items-start justify-between mb-3">
-          <h3
-            className="font-semibold text-gray-900 text-base leading-tight group-hover:text-blue-600 transition-colors overflow-hidden flex-1 mr-2"
-            style={{
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-            }}
-          >
-            {presentation.title}
-          </h3>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <BrainIcon />
-            <span>AI Training</span>
+        
+        {/* Content */}
+        <div className="flex flex-col items-start gap-[8px] w-full">
+          <div className="flex items-center gap-[8px] w-full">
+            <h3 className="font-lato font-semibold text-[16px] leading-[19px] text-[#1D1F2C] flex-grow">
+              {presentation.title}
+            </h3>
           </div>
-
-          <div className="flex items-center gap-2">
-            {presentation.isCompleted ? (
-              <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-                <CheckIcon />
-                Completed
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full hover:bg-blue-200 transition-colors">
-                <ClockIcon />
-                Start Learning
-              </span>
-            )}
+          
+          <div className="flex justify-between items-start gap-[8px] w-full">
+            <span className="font-lato font-normal text-[12px] leading-[14px] text-[#585858]">
+              {presentation.author}
+            </span>
+            {getStatusBadge()}
           </div>
         </div>
       </div>
@@ -172,7 +161,7 @@ const PresentationCard = ({ presentation, onClick, index, showBadge }) => {
   );
 };
 
-const Home = ({ showStats, showFilterTab }) => {
+const Home = () => {
   const router = useRouter();
   const [presentations, setPresentations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -205,51 +194,17 @@ const Home = ({ showStats, showFilterTab }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen">
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          {/* Header Skeleton */}
-          <div className="mb-8">
-            <div className="h-10 bg-gradient-to-r from-gray-200 to-gray-300 rounded-xl w-80 mb-3 animate-pulse"></div>
-            <div className="h-5 bg-gray-200 rounded-lg w-96 animate-pulse"></div>
-          </div>
-
-          {/* Stats Skeleton */}
-          {showStats && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              {[...Array(3)].map((_, index) => (
-                <div
-                  key={index}
-                  className="bg-white rounded-2xl p-6 shadow-sm animate-pulse"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="h-4 bg-gray-200 rounded w-20 mb-2"></div>
-                      <div className="h-8 bg-gray-200 rounded w-16"></div>
-                    </div>
-                    <div className="w-12 h-12 bg-gray-200 rounded-full"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Cards Skeleton */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-2xl shadow-sm animate-pulse overflow-hidden"
-              >
-                <div className="w-full h-48 bg-gradient-to-br from-gray-200 to-gray-300"></div>
-                <div className="p-5">
-                  <div className="h-5 bg-gray-200 rounded mb-3"></div>
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
-                  <div className="flex justify-between items-center">
-                    <div className="h-4 bg-gray-200 rounded w-20"></div>
-                    <div className="h-6 bg-gray-200 rounded-full w-16"></div>
-                  </div>
-                </div>
-              </div>
+      <div className="relative w-full min-h-screen bg-[#F9F9F9] animate-pulse">
+        <div className="absolute w-full h-[112px] left-0 top-[0px] bg-gray-300"></div>
+        <div className="absolute flex items-center gap-[12px] w-full h-[109px] px-[40px] top-[180px]">
+          {[...Array(3)].map((_, index) => (
+            <div key={index} className="flex-1 h-[109px] bg-gray-200 rounded-[8px]"></div>
+          ))}
+        </div>
+        <div className="absolute w-full h-[459px] px-[40px] top-[305px]">
+          <div className="grid grid-cols-4 gap-[12px]">
+            {[...Array(8)].map((_, index) => (
+              <div key={index} className="w-full h-[223.5px] bg-gray-200 rounded-[8px]"></div>
             ))}
           </div>
         </div>
@@ -259,154 +214,143 @@ const Home = ({ showStats, showFilterTab }) => {
 
   const completedCount = presentations.filter((p) => p.isCompleted).length;
   const totalCount = presentations.length;
-  const progressPercentage = Math.round((completedCount / totalCount) * 100);
 
   return (
-    <div className="min-h-screen">
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Hero Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <BrainIcon />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                AI-Powered Training Hub
-              </h1>
-              <p className="text-gray-600 text-lg">
-                Master new skills with intelligent, adaptive learning
-                experiences
-              </p>
-            </div>
+    <div className="w-full min-h-screen bg-[#F9F9F9]">
+      {/* Purple Header Section */}
+      <div className="w-full h-[112px] bg-[#744FFF] relative mt-1">
+        {/* User Profile */}
+        <div className="absolute flex items-center gap-[12px] w-[150px] h-[48px] left-[40px] top-[32px]">
+          <div className="w-[48px] h-[48px] bg-[#F1F2F4] rounded-[60px]"></div>
+          <div className="flex flex-col justify-center items-start gap-[4px] w-[90px] h-[38px]">
+            <span className="font-lato font-normal text-[12px] leading-[14px] text-white opacity-70">
+              Welcome back
+            </span>
+            <span className="font-lato font-semibold text-[17px] leading-[20px] text-white">
+              John Doe
+            </span>
           </div>
         </div>
 
-        {/* Stats Cards */}
-        {showStats && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            {/* Progress Card */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">
-                    Learning Progress
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {completedCount}/{totalCount}
-                  </p>
-                  <p className="text-sm text-gray-500">courses completed</p>
+        {/* Learning Overview - Hidden by default as per Figma */}
+        <div className="absolute flex flex-col items-start gap-[12px] w-full h-[138px] px-[40px] top-[104px] invisible">
+          <h3 className="w-full h-[17px] font-lato font-semibold text-[14px] leading-[17px] text-white">
+            Learning Overview
+          </h3>
+          
+          <div className="flex items-center gap-[12px] w-full h-[109px]">
+            {/* Course Completed */}
+            <div className="flex flex-col items-start p-[16px] gap-[10px] flex-1 h-[109px] bg-white rounded-[8px]">
+              <div className="flex flex-col items-start gap-[8px] w-full h-[77px]">
+                <div className="w-[32px] h-[32px] bg-[#F3EDFF] rounded-[37.9259px] flex items-center justify-center">
+                  <div className="w-[20px] h-[20px] bg-[#744FFF] opacity-50 rounded"></div>
                 </div>
-                <div className="w-16 h-16 relative">
-                  <svg
-                    className="w-full h-full transform -rotate-90"
-                    viewBox="0 0 36 36"
-                  >
-                    <path
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      fill="none"
-                      stroke="#E5E7EB"
-                      strokeWidth="3"
-                    />
-                    <path
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      fill="none"
-                      stroke="url(#gradient)"
-                      strokeWidth="3"
-                      strokeDasharray={`${progressPercentage}, 100`}
-                      strokeLinecap="round"
-                    />
-                    <defs>
-                      <linearGradient
-                        id="gradient"
-                        x1="0%"
-                        y1="0%"
-                        x2="100%"
-                        y2="0%"
-                      >
-                        <stop offset="0%" stopColor="#3B82F6" />
-                        <stop offset="100%" stopColor="#8B5CF6" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-sm font-bold text-gray-900">
-                      {progressPercentage}%
+                <div className="flex flex-col items-start gap-[4px] w-full h-[37px]">
+                  <div className="flex items-center gap-[8px] w-full h-[19px]">
+                    <span className="font-lato font-bold text-[16px] leading-[19px] text-[#1D1F2C]">
+                      {completedCount}/{totalCount}
                     </span>
                   </div>
+                  <span className="font-lato font-normal text-[12px] leading-[14px] text-[rgba(26,28,41,0.5)]">
+                    Course Completed
+                  </span>
                 </div>
               </div>
             </div>
 
-            {/* AI Insights Card */}
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-6 text-white shadow-lg">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-blue-100 text-sm font-medium mb-1">
-                    AI Insights
-                  </p>
-                  <p className="text-2xl font-bold">Smart</p>
-                  <p className="text-blue-100 text-sm">personalized learning</p>
+            {/* Speaking Skills */}
+            <div className="flex flex-col items-start p-[16px] gap-[10px] flex-1 h-[109px] bg-white rounded-[8px]">
+              <div className="flex flex-col items-start gap-[8px] w-full h-[77px]">
+                <div className="w-[32px] h-[32px] bg-[#F3EDFF] rounded-[37.9259px] flex items-center justify-center">
+                  <div className="w-[17.78px] h-[17.78px] bg-[#744FFF] rounded"></div>
                 </div>
-                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                  <AIIcon />
+                <div className="flex flex-col items-start gap-[4px] w-full h-[37px]">
+                  <div className="flex items-center gap-[8px] w-full h-[19px]">
+                    <span className="font-lato font-bold text-[16px] leading-[19px] text-[#1D1F2C]">
+                      5/10
+                    </span>
+                  </div>
+                  <span className="font-lato font-normal text-[12px] leading-[14px] text-[rgba(26,28,41,0.5)]">
+                    Course Completed
+                  </span>
                 </div>
               </div>
             </div>
 
-            {/* Achievement Card */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">
-                    Achievements
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {completedCount}
-                  </p>
-                  <p className="text-sm text-gray-500">certificates earned</p>
+            {/* Achievements */}
+            <div className="flex flex-col items-start p-[16px] gap-[10px] flex-1 h-[112px] bg-white rounded-[8px]">
+              <div className="flex flex-col items-start gap-[8px] w-full h-[77px]">
+                <div className="w-[32px] h-[32px] bg-[#F3EDFF] rounded-[37.9259px] flex items-center justify-center">
+                  <div className="w-[18px] h-[18px] bg-[#744FFF] rounded-[5px]"></div>
                 </div>
-                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
-                  <CheckIcon color="white" />
+                <div className="flex flex-col items-start gap-[4px] w-full h-[37px]">
+                  <div className="flex items-center gap-[8px] w-full h-[19px]">
+                    <span className="font-lato font-bold text-[16px] leading-[19px] text-[#1D1F2C]">
+                      5
+                    </span>
+                  </div>
+                  <span className="font-lato font-normal text-[12px] leading-[14px] text-[rgba(26,28,41,0.5)]">
+                    Achievement's
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-        )}
+        </div>
+      </div>
 
-        {/* Filter tabs */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">
-              Available Courses
-            </h2>
-            {showFilterTab && (
-              <div className="flex bg-white/80 backdrop-blur-sm rounded-2xl p-1 shadow-lg border border-gray-200">
-                {[
-                  { key: "all", label: "All Courses" },
-                  { key: "in-progress", label: "In Progress" },
-                  { key: "completed", label: "Completed" },
-                ].map((tab) => (
-                  <button
-                    key={tab.key}
-                    onClick={() => setFilter(tab.key)}
-                    className={`cursor-pointer px-6 py-2 text-sm font-semibold rounded-xl transition-all duration-300 ${
-                      filter === tab.key
-                        ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
-                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-            )}
+      {/* Course Section */}
+      <div className="flex flex-col items-start gap-[16px] w-full px-[40px] py-[20px]">
+        {/* Header with tabs */}
+        <div className="flex justify-between items-center gap-[16px] w-full h-[30px]">
+          <h2 className="font-lato font-bold text-[16px] leading-[19px] text-[#1A1C29]">
+            Available Courses
+          </h2>
+          
+          {/* Tabs */}
+          <div className="flex items-start p-[4px] w-[234px] h-[30px] bg-white border border-[#E0E2E7] rounded-[6px]">
+            <button
+              onClick={() => setFilter("all")}
+              className={`flex justify-center items-center px-[8px] py-[6px] gap-[8px] flex-1 h-[22px] rounded-[4px] cursor-pointer ${
+                filter === "all" ? "bg-[#744FFF]" : ""
+              }`}
+            >
+              <span className={`font-lato font-medium text-[12px] leading-[20px] ${
+                filter === "all" ? "text-white" : "text-[#667085]"
+              }`}>
+                All
+              </span>
+            </button>
+            <button
+              onClick={() => setFilter("in-progress")}
+              className={`flex justify-center items-center px-[12px] py-[6px] gap-[8px] flex-1 h-[22px] rounded-[4px] cursor-pointer ${
+                filter === "in-progress" ? "bg-[#744FFF]" : ""
+              }`}
+            >
+              <span className={`font-lato font-medium text-[12px] leading-[20px] whitespace-nowrap ${
+                filter === "in-progress" ? "text-white" : "text-[#667085]"
+              }`}>
+                In Progress
+              </span>
+            </button>
+            <button
+              onClick={() => setFilter("completed")}
+              className={`flex justify-center items-center px-[12px] py-[6px] gap-[8px] flex-1 h-[22px] rounded-[4px] cursor-pointer ${
+                filter === "completed" ? "bg-[#744FFF]" : ""
+              }`}
+            >
+              <span className={`font-lato font-medium text-[12px] leading-[20px] ${
+                filter === "completed" ? "text-white" : "text-[#667085]"
+              }`}>
+                Completed
+              </span>
+            </button>
           </div>
         </div>
 
         {/* Course Grid */}
-        <div className="mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="flex flex-col items-start gap-[12px] w-full h-[459px]">
+          <div className="grid grid-cols-4 gap-[12px] w-full">
             {presentations
               .filter(
                 (p) =>
@@ -414,34 +358,15 @@ const Home = ({ showStats, showFilterTab }) => {
                   (filter === "completed" && p.isCompleted) ||
                   (filter === "in-progress" && !p.isCompleted)
               )
-              .map((presentation, index) => (
+              .map((presentation) => (
                 <PresentationCard
                   key={presentation.presentation_id}
-                  // showBadge={true}
                   presentation={presentation}
-                  index={index}
-                  onClick={() =>
-                    handlePresentationClick(presentation.presentation_id)
-                  }
+                  onClick={() => handlePresentationClick(presentation.presentation_id)}
                 />
               ))}
           </div>
         </div>
-
-        {/* Empty State */}
-        {presentations.length === 0 && !loading && (
-          <div className="text-center py-16">
-            <div className="w-20 h-20 bg-gradient-to-r from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <BrainIcon />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              No courses available
-            </h3>
-            <p className="text-gray-600">
-              New AI-powered training content is coming soon.
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
