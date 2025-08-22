@@ -17,8 +17,8 @@ const LoginPage = () => {
 
   // Redirect if already authenticated
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("isTrainBoostLogin") === "true";
-    if (isLoggedIn) {
+    const token = localStorage.getItem("trainboost_access_token");
+    if (token) {
       router.push("/");
     }
   }, [router]);
@@ -28,34 +28,40 @@ const LoginPage = () => {
     e.preventDefault();
     setIsLoading(true);
 
-
-    // Hardcoded credentials
-    const validEmail = "admin@trainboost.com";
-    const validPassword = "T9#kZ2!pQ8@rL6$vB1";
-
-
-    // Simulate loading delay
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-
-    if (email === validEmail && password === validPassword) {
-      // Set login flag in localStorage
-      localStorage.setItem("isTrainBoostLogin", "true");
-
-
-      toast.success("Login successful! Welcome to Train Boost", {
-        position: "top-right",
-        autoClose: 2000,
+    try {
+      const response = await fetch('https://xstk67r5-3001.inc1.devtunnels.ms/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username:email, password }),
       });
 
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Store access token
+        localStorage.setItem("trainboost_access_token", data.access_token);
 
-      router.push("/");
-    } else {
-      toast.error("Invalid email or password. Please check your credentials.", {
+        toast.success("Login successful! Welcome to Train Boost", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+
+        router.push("/");
+      } else {
+        toast.error("Invalid email or password. Please check your credentials.", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      }
+    } catch (error) {
+      toast.error("Login failed. Please try again.", {
         position: "top-right",
         autoClose: 3000,
       });
     }
+    
     setIsLoading(false);
   };
 
@@ -105,7 +111,7 @@ const LoginPage = () => {
                 <input
                   id="email"
                   name="email"
-                  type="email"
+                  // type="email"
                   autoComplete="email"
                   required
                   className="w-full h-[44px] bg-white border border-[#E5E7EB] rounded-[11px] px-3 py-[9px] text-[14px] font-lato font-normal leading-[17px] text-black placeholder:text-[rgba(0,0,0,0.5)] focus:outline-none focus:border-[#4A47C8] transition-colors"

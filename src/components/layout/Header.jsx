@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import trainBoostLogo from "@/assets/svg/train-boost-logo.svg";
+import { decodeJWT } from "@/utils/jwt";
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -15,7 +16,22 @@ const Header = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [userInfo, setUserInfo] = useState({ name: '', email: '' });
   const dropdownRef = useRef(null);
+
+  // Get user info from JWT token
+  useEffect(() => {
+    const token = localStorage.getItem("trainboost_access_token");
+    if (token) {
+      const decoded = decodeJWT(token);
+      if (decoded) {
+        setUserInfo({
+          name: decoded.name || decoded.preferred_username || 'User',
+          email: decoded.email || ''
+        });
+      }
+    }
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -32,7 +48,7 @@ const Header = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("isTrainBoostLogin");
+    localStorage.removeItem("trainboost_access_token");
     setIsDropdownOpen(false);
     router.push("/login");
   };
@@ -87,11 +103,11 @@ const Header = () => {
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           />
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+            <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg py-1 z-50">
               <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
-                <div className="font-medium">Admin User</div>
-                <div className="text-gray-500 truncate">
-                  admin@trainboost.com
+                <div className="font-medium">{userInfo.name}</div>
+                <div className="text-gray-500 break-all">
+                  {userInfo.email}
                 </div>
               </div>
               <button

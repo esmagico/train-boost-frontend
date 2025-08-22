@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Header from "@/components/layout/Header";
+import { decodeJWT } from "@/utils/jwt";
 
 const PrivateRoute = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -14,11 +15,17 @@ const PrivateRoute = ({ children }) => {
       return;
     }
 
-    // Check if user is logged in
-    const isLoggedIn = localStorage.getItem("isTrainBoostLogin") === "true";
+    // Check if user has valid token
+    const token = localStorage.getItem("trainboost_access_token");
     
-    if (isLoggedIn) {
-      setIsAuthenticated(true);
+    if (token) {
+      const decoded = decodeJWT(token);
+      if (decoded && decoded.exp > Date.now() / 1000) {
+        setIsAuthenticated(true);
+      } else {
+        localStorage.removeItem("trainboost_access_token");
+        router.push("/login");
+      }
     } else {
       router.push("/login");
     }
