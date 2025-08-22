@@ -2,30 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useGetPresentationsQuery } from "../../store/api/questionsApi";
 
-// Icons
-const NotebookIcon = () => (
-  <svg className="w-5 h-5" fill="#744FFF" viewBox="0 0 24 24">
-    <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" opacity="0.5" />
-    <path d="M12 6h8v2h-8zm0 5h8v2h-8zm0 5h8v2h-8z" fill="#744FFF" />
-  </svg>
-);
-
-const MicrophoneIcon = () => (
-  <svg className="w-5 h-5" fill="#744FFF" viewBox="0 0 24 24">
-    <path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z" />
-    <path d="M19 10v1a7 7 0 0 1-14 0v-1" stroke="#744FFF" strokeWidth="2" fill="none" />
-    <line x1="12" y1="19" x2="12" y2="23" stroke="#744FFF" strokeWidth="2" />
-    <line x1="8" y1="23" x2="16" y2="23" stroke="#744FFF" strokeWidth="2" />
-  </svg>
-);
-
-const MedalIcon = () => (
-  <svg className="w-5 h-5" fill="#744FFF" viewBox="0 0 24 24">
-    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" opacity="0.5" />
-    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#744FFF" />
-  </svg>
-);
 
 // Course data matching Figma design
 const dummyPresentations = [
@@ -134,8 +112,8 @@ const PresentationCard = ({ presentation, onClick }) => {
         {/* Thumbnail */}
         <div className="w-full flex-1 bg-[#F3EDFF] rounded-[8px] overflow-hidden relative">
           <Image
-            src={presentation.image}
-            alt={presentation.title}
+            src={presentation?.image}
+            alt={presentation?.title}
             fill
             className="object-cover transition-transform duration-300 hover:scale-110"
           />
@@ -145,13 +123,13 @@ const PresentationCard = ({ presentation, onClick }) => {
         <div className="flex flex-col items-start gap-[8px] w-full">
           <div className="flex items-center gap-[8px] w-full">
             <h3 className="font-lato font-semibold text-[16px] leading-[19px] text-[#1D1F2C] flex-grow">
-              {presentation.title}
+              {presentation?.title || "Unknown Title"}
             </h3>
           </div>
           
           <div className="flex justify-between items-start gap-[8px] w-full">
             <span className="font-lato font-normal text-[12px] leading-[14px] text-[#585858]">
-              {presentation.author}
+              {presentation?.author || "Unknown Author"}
             </span>
             {getStatusBadge()}
           </div>
@@ -163,34 +141,23 @@ const PresentationCard = ({ presentation, onClick }) => {
 
 const Home = () => {
   const router = useRouter();
-  const [presentations, setPresentations] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
-
-  useEffect(() => {
-    // Simulate API call
-    const loadPresentations = async () => {
-      try {
-        // In a real app, you would fetch from your API here
-        // const response = await fetch('/api/presentations');
-        // const data = await response.json();
-
-        // For now, use dummy data
-        await new Promise((resolve) => setTimeout(resolve, 1200)); // Simulate loading
-        setPresentations(dummyPresentations);
-      } catch (error) {
-        console.error("Error loading presentations:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadPresentations();
-  }, []);
+  const { data: presentations = [], isLoading: loading, error } = useGetPresentationsQuery();
 
   const handlePresentationClick = (presentationId) => {
     router.push(`/lectures/${presentationId}`);
   };
+
+  if (error) {
+    return (
+      <div className="w-full min-h-screen bg-[#F9F9F9] flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-red-600 mb-2">Error Loading Presentations</h2>
+          <p className="text-gray-600">Failed to fetch data from the server.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -242,7 +209,7 @@ const Home = () => {
     );
   }
 
-  const completedCount = presentations.filter((p) => p.isCompleted).length;
+  const completedCount = presentations.filter((p) => p.isCompleted || p.status === 'completed').length;
   const totalCount = presentations.length;
 
   return (

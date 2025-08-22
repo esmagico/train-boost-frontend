@@ -271,25 +271,44 @@ const FloatingChatbot = ({ onPauseVideo, videos = [], presentationId }) => {
       }));
 
     try {
-      const response = await submitQuestion({
-        presentationId,
-        question: userQuestion,
-        conversation: mappedConversation,
-        knowledge_source_ids: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-      }).unwrap();
-
-      if (response?.primary_jump_target !== undefined) {
-        dispatch(setAnswerPptIndex(response.primary_jump_target));
-      }
-
-      setConversation((prev) => [
-        ...prev,
-        {
-          type: "answer",
-          content: response?.answer || "No answer received",
-          audioLink: response?.audio_url || "",
+      const response = await fetch(`https://cf.be.trainboost.esmagico.com/api/qa/${presentationId}?stream_audio=true`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'audio/mpeg',
+          'Content-Type': 'application/json',
         },
-      ]);
+        body: JSON.stringify({
+          question: userQuestion,
+          // conversation: mappedConversation,
+          // knowledge_source_ids: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        }),
+      });
+
+      if (response.ok) {
+        // Get answer text from response header
+        const answerText = response.headers.get('x-answer') || 'No answer received';
+            console.log([...response.headers.entries()], "test");      
+        // Get primary jump target if available
+        const jumpTarget = response.headers.get('x-jump-target');
+        if (jumpTarget !== null && jumpTarget !== undefined) {
+          dispatch(setAnswerPptIndex(parseInt(jumpTarget)));
+        }
+
+        // Create audio blob from response stream
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+
+        setConversation((prev) => [
+          ...prev,
+          {
+            type: "answer",
+            content: answerText,
+            audioLink: audioUrl,
+          },
+        ]);
+      } else {
+        throw new Error('Failed to get response');
+      }
     } catch (error) {
       console.log("Error submitting question:", error);
       setConversation((prev) => [
