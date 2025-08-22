@@ -17,8 +17,8 @@ const LoginPage = () => {
 
   // Redirect if already authenticated
   useEffect(() => {
-    const token = localStorage.getItem("trainboost_access_token");
-    if (token) {
+    const tokens = JSON.parse(localStorage.getItem("trainboost_tokens") || '{}');
+    if (tokens.access_token) {
       router.push("/");
     }
   }, [router]);
@@ -40,8 +40,11 @@ const LoginPage = () => {
       if (response.ok) {
         const data = await response.json();
         
-        // Store access token
-        localStorage.setItem("trainboost_access_token", data.access_token);
+        // Store both tokens
+        localStorage.setItem("trainboost_tokens", JSON.stringify({
+          access_token: data.access_token,
+          refresh_token: data.refresh_token
+        }));
 
         toast.success("Login successful! Welcome to Train Boost", {
           position: "top-right",

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Header from "@/components/layout/Header";
-import { decodeJWT } from "@/utils/jwt";
+import { getValidAccessToken } from "@/utils/auth";
 
 const PrivateRoute = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -15,20 +15,21 @@ const PrivateRoute = ({ children }) => {
       return;
     }
 
-    // Check if user has valid token
-    const token = localStorage.getItem("trainboost_access_token");
-    
-    if (token) {
-      const decoded = decodeJWT(token);
-      if (decoded && decoded.exp > Date.now() / 1000) {
-        setIsAuthenticated(true);
-      } else {
-        localStorage.removeItem("trainboost_access_token");
+    // Check if user has valid token (with auto-refresh)
+    const checkAuth = async () => {
+      try {
+        const validToken = await getValidAccessToken();
+        if (validToken) {
+          setIsAuthenticated(true);
+        } else {
+          router.push("/login");
+        }
+      } catch (error) {
         router.push("/login");
       }
-    } else {
-      router.push("/login");
-    }
+    };
+
+    checkAuth();
   }, [pathname, router]);
 
   // For login page, render without header
