@@ -2,23 +2,31 @@ import React from "react";
 import chat_history from "@/assets/svg/chat_history.svg";
 import back_to_session from "@/assets/svg/back_to_session.svg";
 import Image from "next/image";
-// import tap_to_speak from "@/assets/svg/tap_to_speak.svg";
+import tap_to_speak from "@/assets/svg/tap-to-speak.svg";
+import { useDispatch } from "react-redux";
+import { setIsQuestionMode } from "@/store/features/videoSlice";
 
 const QuestionModeUser = () => {
+  const dispatch = useDispatch();
+
+  const handleBackToSession = () => {
+    dispatch(setIsQuestionMode(false));
+  };
+
   return (
     <div className="flex-1 border border-[#E5E7EB] rounded-[10px] p-3 flex flex-col">
       {/* Main Content Frame */}
       <div className="flex-1 bg-[#F7F7F7] rounded-xl flex items-center justify-center p-6">
         {/* Center Content */}
         <div className="flex flex-col items-center gap-[30px] max-w-[275px]">
-          {/* Avatar with Animation */}
-          <div className="w-[120px] h-[120px] relative flex items-center justify-center">
-            <div className="w-[150px] h-[150px] absolute">
-              {/* Animated waves */}
-              <div className="w-full h-full rounded-full bg-gradient-to-r from-blue-400 to-purple-500 opacity-20 animate-pulse"></div>
-            </div>
-            {/* You can add your avatar content here */}
-            <div className="w-[120px] h-[120px] rounded-full bg-gray-200 z-10"></div>
+          {/* Tap to Speak */}
+          <div className="w-[120px] h-[120px] flex items-center justify-center">
+            <Image
+              src={tap_to_speak}
+              alt="tap to speak"
+              width={72}
+              height={72}
+            />
           </div>
 
           {/* Question Text */}
@@ -38,7 +46,7 @@ const QuestionModeUser = () => {
           />
        
         </button>
-        <button className="cursor-pointer flex items-center gap-1 px-3 py-1.5 bg-[#6E60DF] rounded-[73.75px]">
+        <button onClick={handleBackToSession} className="cursor-pointer flex items-center gap-1 px-3 py-1.5 bg-[#6E60DF] rounded-[73.75px]">
           <Image
             className="w-5 h-5"
             src={back_to_session}
