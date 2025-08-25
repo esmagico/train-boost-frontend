@@ -42,7 +42,26 @@ const BrainIcon = () => (
   </svg>
 );
 
-// Dummy data - in a real app, this would come from an API
+// Sidebar icons
+const BookIcon = () => (
+  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+  </svg>
+);
+
+const ClipboardIcon = () => (
+  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+  </svg>
+);
+
+const UsersIcon = () => (
+  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+  </svg>
+);
+
+// Dummy data
 const dummyPresentations = [
   {
     presentation_id: 1,
@@ -50,6 +69,18 @@ const dummyPresentations = [
     image: "https://d8it4huxumps7.cloudfront.net/bites/wp-content/uploads/2019/05/14074536/ISB.jpg",
     isCompleted: false,
   },
+];
+
+const dummyAssessments = [
+  { id: 1, course: "Corporate Finance", score: 85, status: "Completed", date: "2024-01-15" },
+  { id: 2, course: "Data Analytics", score: 92, status: "Completed", date: "2024-01-10" },
+  { id: 3, course: "Machine Learning", score: null, status: "Pending", date: "2024-01-20" },
+];
+
+const dummyUsers = [
+  { id: 1, name: "John Doe", email: "john@company.com", role: "Student", courses: 3, lastActive: "2024-01-15" },
+  { id: 2, name: "Jane Smith", email: "jane@company.com", role: "Instructor", courses: 8, lastActive: "2024-01-14" },
+  { id: 3, name: "Mike Johnson", email: "mike@company.com", role: "Student", courses: 2, lastActive: "2024-01-13" },
 ];
 
 const PresentationCard = ({ presentation, onClick, index, showBadge }) => {
@@ -177,6 +208,7 @@ const Home = ({ showStats, showFilterTab }) => {
   const [presentations, setPresentations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [activeSection, setActiveSection] = useState("courses");
 
   useEffect(() => {
     // Simulate API call
@@ -205,52 +237,97 @@ const Home = ({ showStats, showFilterTab }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen">
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          {/* Header Skeleton */}
-          <div className="mb-8">
-            <div className="h-10 bg-gradient-to-r from-gray-200 to-gray-300 rounded-xl w-80 mb-3 animate-pulse"></div>
-            <div className="h-5 bg-gray-200 rounded-lg w-96 animate-pulse"></div>
-          </div>
-
-          {/* Stats Skeleton */}
-          {showStats && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="min-h-screen flex">
+        {/* Sidebar Skeleton */}
+        <div className="w-64 bg-white border-r border-gray-200 flex-shrink-0">
+          <div className="p-6">
+            <nav className="space-y-2">
               {[...Array(3)].map((_, index) => (
                 <div
                   key={index}
-                  className="bg-white rounded-2xl p-6 shadow-sm animate-pulse"
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-transparent animate-pulse"
                 >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="h-4 bg-gray-200 rounded w-20 mb-2"></div>
-                      <div className="h-8 bg-gray-200 rounded w-16"></div>
+                  <div className="w-5 h-5 bg-gray-200 rounded"></div>
+                  <div className="h-4 bg-gray-200 rounded w-20"></div>
+                </div>
+              ))}
+            </nav>
+          </div>
+        </div>
+
+        {/* Main Content Skeleton */}
+        <div className="flex-1">
+          <div className="max-w-7xl mx-auto px-6 py-8">
+            {/* Header Skeleton */}
+            <div className="mb-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gray-200 rounded-2xl animate-pulse"></div>
+                <div>
+                  <div className="h-8 bg-gray-200 rounded-xl w-80 mb-2 animate-pulse"></div>
+                  <div className="h-5 bg-gray-200 rounded-lg w-96 animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Stats Skeleton */}
+            {showStats && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                {[...Array(3)].map((_, index) => (
+                  <div
+                    key={index}
+                    className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 animate-pulse"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="h-4 bg-gray-200 rounded w-24 mb-2"></div>
+                        <div className="h-8 bg-gray-200 rounded w-16 mb-1"></div>
+                        <div className="h-3 bg-gray-200 rounded w-20"></div>
+                      </div>
+                      <div className="w-16 h-16 bg-gray-200 rounded-full"></div>
                     </div>
-                    <div className="w-12 h-12 bg-gray-200 rounded-full"></div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Filter tabs skeleton */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-6">
+                <div className="h-8 bg-gray-200 rounded w-48 animate-pulse"></div>
+                {showFilterTab && (
+                  <div className="flex bg-white/80 rounded-2xl p-1 shadow-lg border border-gray-200">
+                    {[...Array(3)].map((_, index) => (
+                      <div
+                        key={index}
+                        className="h-8 bg-gray-200 rounded-xl w-24 mx-1 animate-pulse"
+                      ></div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Cards Skeleton */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-xl border border-gray-200 shadow-sm animate-pulse overflow-hidden"
+                >
+                  <div className="w-full h-48 bg-gray-200"></div>
+                  <div className="p-5">
+                    <div className="h-5 bg-gray-200 rounded mb-3"></div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-5 bg-gray-200 rounded"></div>
+                        <div className="h-4 bg-gray-200 rounded w-16"></div>
+                      </div>
+                      <div className="h-6 bg-gray-200 rounded-full w-20"></div>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
-          )}
-
-          {/* Cards Skeleton */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-2xl shadow-sm animate-pulse overflow-hidden"
-              >
-                <div className="w-full h-48 bg-gradient-to-br from-gray-200 to-gray-300"></div>
-                <div className="p-5">
-                  <div className="h-5 bg-gray-200 rounded mb-3"></div>
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
-                  <div className="flex justify-between items-center">
-                    <div className="h-4 bg-gray-200 rounded w-20"></div>
-                    <div className="h-6 bg-gray-200 rounded-full w-16"></div>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </div>
@@ -261,9 +338,126 @@ const Home = ({ showStats, showFilterTab }) => {
   const totalCount = presentations.length;
   const progressPercentage = Math.round((completedCount / totalCount) * 100);
 
-  return (
-    <div className="min-h-screen">
-      <div className="max-w-7xl mx-auto px-6 py-8">
+  const renderContent = () => {
+    if (activeSection === "assessments") {
+      return (
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900">Assessment Results</h1>
+              <p className="text-gray-500 mt-1">Track your learning progress and performance</p>
+            </div>
+          </div>
+          
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {dummyAssessments.map((assessment) => (
+                  <tr key={assessment.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">{assessment.course}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {assessment.score ? (
+                        <div className="text-sm text-gray-900 font-medium">{assessment.score}%</div>
+                      ) : (
+                        <div className="text-sm text-gray-400">—</div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-md ${
+                        assessment.status === 'Completed' 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {assessment.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {assessment.date}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSection === "users") {
+      return (
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900">User Management</h1>
+              <p className="text-gray-500 mt-1">Manage users and their learning activities</p>
+            </div>
+          </div>
+          
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Courses</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Active</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {dummyUsers.map((user) => (
+                  <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+                          <span className="text-xs font-medium text-gray-600">
+                            {user.name.split(' ').map(n => n[0]).join('')}
+                          </span>
+                        </div>
+                        <div className="ml-3">
+                          <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                          <div className="text-sm text-gray-500">{user.email}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-md ${
+                        user.role === 'Instructor' 
+                          ? 'bg-blue-100 text-blue-800' 
+                          : 'bg-gray-100 text-gray-800'
+                      }`}>
+                        {user.role}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {user.courses}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="h-2 w-2 bg-green-400 rounded-full mr-2"></div>
+                        <span className="text-sm text-gray-500">{user.lastActive}</span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <>
         {/* Hero Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
@@ -275,8 +469,7 @@ const Home = ({ showStats, showFilterTab }) => {
                 AI-Powered Training Hub
               </h1>
               <p className="text-gray-600 text-lg">
-                Master new skills with intelligent, adaptive learning
-                experiences
+                Master new skills with intelligent, adaptive learning experiences
               </p>
             </div>
           </div>
@@ -442,6 +635,48 @@ const Home = ({ showStats, showFilterTab }) => {
             </p>
           </div>
         )}
+      </>
+    );
+  };
+
+  const sidebarSections = [
+    { key: "courses", label: "Courses", icon: BookIcon },
+    { key: "assessments", label: "Assessment", icon: ClipboardIcon },
+    { key: "users", label: "User Management", icon: UsersIcon },
+  ];
+
+  return (
+    <div className="min-h-screen flex">
+      {/* Sidebar */}
+      <div className="w-64 bg-white border-r border-gray-200 flex-shrink-0">
+        <div className="p-6">
+          <nav className="space-y-2">
+            {sidebarSections.map((section) => {
+              const IconComponent = section.icon;
+              return (
+                <button
+                  key={section.key}
+                  onClick={() => setActiveSection(section.key)}
+                  className={`cursor-pointer w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-colors border ${
+                    activeSection === section.key
+                      ? "bg-blue-50 text-blue-700 border-blue-200"
+                      : "text-gray-600 hover:bg-gray-50 border-transparent"
+                  }`}
+                >
+                  <IconComponent />
+                  <span className="font-medium">{section.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1">
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          {renderContent()}
+        </div>
       </div>
     </div>
   );
