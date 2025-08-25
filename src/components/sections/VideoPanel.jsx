@@ -17,12 +17,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useGetAllVideoQuery } from "@/store/api/questionsApi";
 import VideoPlaylist from "./VideoPlaylist";
+import AILearningAssistant from "./AILearningAssistant";
 
 // Skeleton Loader Component
 const VideoSkeleton = ({ width = "30%" }) => (
-  <div className="flex flex-col h-full relative flex-shrink-0 pl-4" style={{ width }}>
+  <div
+    className="flex flex-col h-full relative flex-shrink-0 pl-4"
+    style={{ width }}
+  >
     {/* Video Player Skeleton */}
-    <div className="p-1 bg-white rounded-xl border border-gray-200">
+    <div className="p-1 bg-white rounded-xl border border-[#E5E7EB]">
       <div className="relative w-full pt-[56.25%] bg-gray-100 rounded-lg overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-16 h-16 rounded-full bg-gray-200 animate-pulse"></div>
@@ -36,13 +40,16 @@ const VideoSkeleton = ({ width = "30%" }) => (
     </div>
 
     {/* Playlist Skeleton */}
-    <div className="mt-4 bg-white rounded-xl border border-gray-200 flex-1">
+    <div className="mt-4 bg-white rounded-xl border border-[#E5E7EB] flex-1">
       <div className="p-4 border-b border-gray-100">
         <div className="h-5 w-28 bg-gray-200 rounded animate-pulse"></div>
       </div>
       <div className="p-2 space-y-2">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="flex items-center p-2 rounded-lg hover:bg-gray-50">
+          <div
+            key={i}
+            className="flex items-center p-2 rounded-lg hover:bg-gray-50"
+          >
             <div className="w-24 h-16 bg-gray-100 rounded-lg mr-3 animate-pulse"></div>
             <div className="flex-1">
               <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
@@ -106,7 +113,7 @@ const VideoPanel = forwardRef(
       if (countdown === 0) {
         // Get presentationId from current URL
         const currentPath = window.location.pathname;
-        const presentationId = currentPath.split('/lectures/')[1];
+        const presentationId = currentPath.split("/lectures/")[1];
         router.push(`/assessment/${presentationId}`);
       }
 
@@ -415,7 +422,7 @@ const VideoPanel = forwardRef(
 
     return (
       <div
-        className="flex flex-col h-full relative flex-shrink-0 pl-4"
+        className="flex flex-col h-full relative gap-4 flex-shrink-0 pl-4"
         style={{ width }}
       >
         {/* Redirect Popup */}
@@ -442,7 +449,7 @@ const VideoPanel = forwardRef(
                 <button
                   onClick={() => {
                     const currentPath = window.location.pathname;
-                    const presentationId = currentPath.split('/lectures/')[1];
+                    const presentationId = currentPath.split("/lectures/")[1];
                     router.push(`/assessment/${presentationId}`);
                   }}
                   className="cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
@@ -453,7 +460,7 @@ const VideoPanel = forwardRef(
             </div>
           </div>
         )}
-        <div className="p-1 bg-white rounded-xl border border-gray-200">
+        <div className="p-3 pb-2 bg-white rounded-xl border border-[#E5E7EB]">
           <div className="relative w-full pt-[56.25%] bg-black rounded-lg overflow-hidden">
             {" "}
             {/* 16:9 Aspect Ratio */}
@@ -580,7 +587,7 @@ const VideoPanel = forwardRef(
           )} */}
           </div>
           {/* Time display below video */}
-          <div className=" px-1 flex justify-between mt-2 text-sm text-gray-600">
+          <div className="px-1 flex justify-between mt-2 text-[12px] leading-4 tracking-normal font-normal text-center text-gray-600 font-lato">
             <span>
               {formatTime(currentTime)} / {formatTime(duration)}
             </span>
@@ -589,11 +596,7 @@ const VideoPanel = forwardRef(
             </span>
           </div>
         </div>
-        <VideoPlaylist
-          videos={videos}
-          loading={loading}
-          onVideoSelect={handleVideoSelect}
-        />
+        <AILearningAssistant />
       </div>
     );
   }

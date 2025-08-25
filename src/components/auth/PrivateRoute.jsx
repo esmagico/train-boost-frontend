@@ -9,28 +9,28 @@ const PrivateRoute = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
 
-  useEffect(() => {
-    // Skip auth check for login page
-    if (pathname === "/login") {
-      return;
-    }
+  // useEffect(() => {
+  //   // Skip auth check for login page
+  //   if (pathname === "/login") {
+  //     return;
+  //   }
 
-    // Check if user has valid token (with auto-refresh)
-    const checkAuth = async () => {
-      try {
-        const validToken = await getValidAccessToken();
-        if (validToken) {
-          setIsAuthenticated(true);
-        } else {
-          router.push("/login");
-        }
-      } catch (error) {
-        router.push("/login");
-      }
-    };
+  //   // Check if user has valid token (with auto-refresh)
+  //   const checkAuth = async () => {
+  //     try {
+  //       const validToken = await getValidAccessToken();
+  //       if (validToken) {
+  //         setIsAuthenticated(true);
+  //       } else {
+  //         router.push("/login");
+  //       }
+  //     } catch (error) {
+  //       router.push("/login");
+  //     }
+  //   };
 
-    checkAuth();
-  }, [pathname, router]);
+  //   checkAuth();
+  // }, [pathname, router]);
 
   // For login page, render without header
   if (pathname === "/login") {
@@ -38,7 +38,8 @@ const PrivateRoute = ({ children }) => {
   }
 
   // For other pages, render with header if authenticated
-  if (isAuthenticated) {
+  // if (isAuthenticated) {
+  if (true) {
     return (
       <>
         <Header />
