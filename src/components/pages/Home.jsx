@@ -341,15 +341,25 @@ const Home = ({ showStats, showFilterTab }) => {
   const renderContent = () => {
     if (activeSection === "assessments") {
       return (
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-900">Assessment Results</h1>
-              <p className="text-gray-500 mt-1">Track your learning progress and performance</p>
+        <>
+          {/* Hero Header */}
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <ClipboardIcon />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                  Assessment Results
+                </h1>
+                <p className="text-gray-600 text-lg">
+                  Track your learning progress and performance
+                </p>
+              </div>
             </div>
           </div>
-          
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
@@ -389,21 +399,31 @@ const Home = ({ showStats, showFilterTab }) => {
               </tbody>
             </table>
           </div>
-        </div>
+        </>
       );
     }
 
     if (activeSection === "users") {
       return (
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-900">User Management</h1>
-              <p className="text-gray-500 mt-1">Manage users and their learning activities</p>
+        <>
+          {/* Hero Header */}
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <UsersIcon />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                  User Management
+                </h1>
+                <p className="text-gray-600 text-lg">
+                  Manage users and their learning activities
+                </p>
+              </div>
             </div>
           </div>
-          
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
@@ -452,7 +472,7 @@ const Home = ({ showStats, showFilterTab }) => {
               </tbody>
             </table>
           </div>
-        </div>
+        </>
       );
     }
 
