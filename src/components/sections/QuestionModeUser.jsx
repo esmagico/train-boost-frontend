@@ -2,7 +2,7 @@ import React from "react";
 import chat_history from "@/assets/svg/chat_history.svg";
 import back_to_session from "@/assets/svg/back_to_session.svg";
 import Image from "next/image";
-import tap_to_speak from "@/assets/svg/tap_to_speak.svg";
+// import tap_to_speak from "@/assets/svg/tap_to_speak.svg";
 
 const QuestionModeUser = () => {
   return (
