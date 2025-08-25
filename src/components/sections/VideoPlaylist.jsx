@@ -82,33 +82,6 @@ const VideoPlaylist = ({ videos = [], loading = false, onVideoSelect }) => {
       <div ref={scrollContainerRef} className="overflow-x-auto overflow-y-visible">
         <div className="flex overflow-x-auto gap-2 pb-1.5 pt-5 overflow-y-visible">
           {videos.map((video, index) => {
-            const lessonTitles = [
-              "Investment gjgdty Strategies for",
-              "Investment gjgdty Strategies for",
-              "Investment gjgdty Strategies for",
-              "Stock Market Trends Analysis",
-              "Real Estate Investment Insights",
-              "Retirement Planning Basics",
-              "Diversified Portfolio Management",
-              "Sustainable Investment Practices",
-              "Investment gjgdty Strategies for",
-              "Tax Strategies for Investors",
-              "Risk Assessment Techniques",
-            ];
-
-            const durations = [
-              "5 min",
-              "5 min",
-              "5 min",
-              "12 min",
-              "20 min",
-              "8 min",
-              "10 min",
-              "18 min",
-              "5 min",
-              "7 min",
-              "15 min",
-            ];
 
             return (
               <div
@@ -124,14 +97,10 @@ const VideoPlaylist = ({ videos = [], loading = false, onVideoSelect }) => {
                 {/* Video Info Container - using padding instead of absolute positioning */}
                 <div className="p-2 flex flex-col gap-1.5">
                   <h4 className="font-lato font-medium text-[12px] leading-[14px] tracking-[0.02em] text-[#1A1C29] line-clamp-2">
-                    {video.title ||
-                      lessonTitles[index] ||
-                      "Investment gjgdty Strategies for"}
+                    {video.title || "Untitled Video"}
                   </h4>
                   <div className="font-lato font-normal text-[10px] leading-[100%] align-middle text-[rgba(26,28,41,0.7)]">
-                    {formatDuration(video.duration) ||
-                      durations[index] ||
-                      "5 min"}
+                    {formatDuration(video.duration) || "0:00"}
                   </div>
                 </div>
 

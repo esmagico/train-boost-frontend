@@ -15,7 +15,7 @@ const AILearningAssistant = () => {
   };
 
   return (
-    <div className="flex flex-col items-start p-3 gap-2.5 w-full min-w-[300px] h-[397px] border border-[#E5E7EB] rounded-xl bg-white">
+    <div className="flex flex-col items-start p-3 gap-2.5 w-full flex-1 border border-[#E5E7EB] rounded-xl bg-white">
       {/* Inner Frame */}
       <div className="w-full h-full bg-[#E0DDFF] rounded-xl p-3 flex flex-col">
         {/* Top Section with Chat Icon */}

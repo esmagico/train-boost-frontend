@@ -18,6 +18,10 @@ import { useRouter } from "next/navigation";
 import { useGetAllVideoQuery } from "@/store/api/questionsApi";
 import VideoPlaylist from "./VideoPlaylist";
 import AILearningAssistant from "./AILearningAssistant";
+import QuestionModeUI from "./QuestionModeAI";
+import QuestionModeAssistant from "./QuestionModeUser";
+import QuestionModeUser from "./QuestionModeUser";
+import QuestionModeAI from "./QuestionModeAI";
 
 // Skeleton Loader Component
 const VideoSkeleton = ({ width = "30%" }) => (
@@ -91,7 +95,7 @@ const VideoPanel = forwardRef(
     const preloadVideoRef = useRef(null); // For preloading next video
     const router = useRouter();
     const dispatch = useDispatch();
-    const { currentVideoIndex } = useSelector((state) => state.video);
+    const { currentVideoIndex , isQuestionMode} = useSelector((state) => state.video);
     const [showRedirectPopup, setShowRedirectPopup] = useState(false);
     const [countdown, setCountdown] = useState(10);
     const [preloadedVideoIndex, setPreloadedVideoIndex] = useState(-1);
@@ -460,6 +464,7 @@ const VideoPanel = forwardRef(
             </div>
           </div>
         )}
+        {!isQuestionMode ? (
         <div className="p-3 pb-2 bg-white rounded-xl border border-[#E5E7EB]">
           <div className="relative w-full pt-[56.25%] bg-black rounded-lg overflow-hidden">
             {" "}
@@ -578,13 +583,6 @@ const VideoPanel = forwardRef(
               controlsList="nodownload"
               disablePictureInPicture
             />
-            {/* Preloading indicator */}
-            {/* {preloadedVideoIndex === currentVideoIndex + 1 && (
-            <div className="absolute top-4 right-4 bg-green-600 bg-opacity-80 text-white px-2 py-1 rounded-md text-xs flex items-center">
-              <div className="w-2 h-2 bg-white rounded-full animate-pulse mr-1"></div>
-              Next video ready
-            </div>
-          )} */}
           </div>
           {/* Time display below video */}
           <div className="px-1 flex justify-between mt-2 text-[12px] leading-4 tracking-normal font-normal text-center text-gray-600 font-lato">
@@ -596,7 +594,10 @@ const VideoPanel = forwardRef(
             </span>
           </div>
         </div>
-        <AILearningAssistant />
+        ) : (
+        <QuestionModeAI />
+        )}
+        {isQuestionMode ? <QuestionModeUser /> : <AILearningAssistant />}
       </div>
     );
   }
