@@ -96,11 +96,11 @@ const Home = () => {
       </div>
 
       {/* Floating Chatbot */}
-      <FloatingChatbot 
+      {/* <FloatingChatbot 
         onPauseVideo={handlePauseVideo} 
         videos={videos} 
         presentationId={presentationId}
-      />
+      /> */}
     </div>
   );
 };

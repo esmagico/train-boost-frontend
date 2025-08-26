@@ -22,6 +22,7 @@ import QuestionModeUI from "./QuestionModeAI";
 import QuestionModeAssistant from "./QuestionModeUser";
 import QuestionModeUser from "./QuestionModeUser";
 import QuestionModeAI from "./QuestionModeAI";
+import ChatUI from "./ChatUI";
 
 // Skeleton Loader Component
 const VideoSkeleton = ({ width = "30%" }) => (
@@ -103,7 +104,7 @@ const VideoPanel = forwardRef(
     const router = useRouter();
     const dispatch = useDispatch();
     const { currentVideoIndex, isQuestionMode } = useSelector((state) => state.video);
-    
+    const [showChat, setShowChat] = useState(false);
     const handleQuestionSubmit = async (userQuestion) => {
       if (!userQuestion) return;
       
@@ -515,7 +516,7 @@ const VideoPanel = forwardRef(
             </div>
           </div>
         )}
-        {!isQuestionMode ? (
+        {!isQuestionMode && !showChat ? (
         <div className="p-3 pb-2 bg-white rounded-xl border border-[#E5E7EB]">
           <div className="relative w-full pt-[56.25%] bg-black rounded-lg overflow-hidden">
             {" "}
@@ -645,7 +646,8 @@ const VideoPanel = forwardRef(
             </span>
           </div>
         </div>
-        ) : (
+        ) : null}
+        {isQuestionMode && (
         <QuestionModeAI 
           answer={qaState.answer}
           audioLink={qaState.audioLink}
@@ -653,14 +655,20 @@ const VideoPanel = forwardRef(
           onAudioStateChange={(isPlaying) => setQaState(prev => ({ ...prev, isAudioPlaying: isPlaying }))}
         />
         )}
-        {isQuestionMode ? (
+        {showChat ? (
+          <ChatUI onClose={() => setShowChat(false)} presentationId={presentationId} />
+        ) : isQuestionMode ? (
           <QuestionModeUser 
             onPauseVideo={pauseVideo}
             onQuestionSubmit={handleQuestionSubmit}
             isLoading={qaState.isLoading}
+            setShowChat={setShowChat}
           />
         ) : (
-          <AILearningAssistant />
+          <AILearningAssistant 
+          setShowChat={setShowChat}
+          showChat={showChat}
+          />
         )}
       </div>
     );

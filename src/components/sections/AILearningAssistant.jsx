@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsQuestionMode } from "../../store/features/videoSlice";
 import message from "../../assets/svg/message.svg";
@@ -6,7 +6,8 @@ import chat_star from "../../assets/svg/chat_star.svg";
 import microphone from "../../assets/svg/microphone.svg";
 import Image from "next/image";
 
-const AILearningAssistant = () => {
+
+const AILearningAssistant = ({showChat, setShowChat = ()=>{}}) => {
   const {isQuestionMode} = useSelector((state) => state.video);
   const dispatch = useDispatch();
 
@@ -14,13 +15,24 @@ const AILearningAssistant = () => {
     dispatch(setIsQuestionMode(true));
   };
 
+  const handleMessageClick = () => {
+    setShowChat(true);
+  };
+
+
+
+
+
   return (
     <div className="flex flex-col items-start p-3 gap-2.5 w-full flex-1 border border-[#E5E7EB] rounded-xl bg-white">
       {/* Inner Frame */}
       <div className="w-full h-full bg-[#E0DDFF] rounded-xl p-3 flex flex-col">
         {/* Top Section with Chat Icon */}
         <div className="flex justify-end mb-4">
-          <button className="cursor-pointer w-[30px] h-[30px] bg-white rounded-full flex items-center justify-center">
+          <button 
+            onClick={handleMessageClick}
+            className="cursor-pointer w-[30px] h-[30px] bg-white rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors"
+          >
             <Image className="w-full h-full" src={message} alt="message" />
           </button>
         </div>

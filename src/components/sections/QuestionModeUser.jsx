@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setIsQuestionMode, setQuestion, setAnswerPptIndex } from "@/store/features/videoSlice";
 
 
-const QuestionModeUser = ({ onPauseVideo, onQuestionSubmit, isLoading }) => {
+const QuestionModeUser = ({ onPauseVideo, onQuestionSubmit, isLoading, setShowChat }) => {
   const dispatch = useDispatch();
   const { question } = useSelector((state) => state.video);
   const [isListening, setIsListening] = useState(false);
@@ -130,6 +130,11 @@ const QuestionModeUser = ({ onPauseVideo, onQuestionSubmit, isLoading }) => {
     dispatch(setIsQuestionMode(false));
   };
 
+  const handleChatHistory = () => {
+    setShowChat(true);
+    dispatch(setIsQuestionMode(false));
+  };
+
   return (
     <div className="flex-1 border border-[#E5E7EB] rounded-[10px] p-3 flex flex-col">
       {/* Main Content Frame */}
@@ -175,7 +180,7 @@ const QuestionModeUser = ({ onPauseVideo, onQuestionSubmit, isLoading }) => {
 
       {/* Bottom Input Section */}
       <div className="mt-6 flex items-center justify-center px-3 gap-4 mx-auto">
-        <button className="cursor-pointer flex items-center gap-1 px-3 py-[7px] bg-[rgba(110,96,223,0.1)] rounded-[73.75px]">
+        <button onClick={handleChatHistory} className="cursor-pointer flex items-center gap-1 px-3 py-[7px] bg-[rgba(110,96,223,0.1)] rounded-[73.75px]">
           <Image
             className="w-[18px] h-[18px]"
             src={chat_history}
