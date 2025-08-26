@@ -13,7 +13,7 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
+  const loginBaseUrl = process.env.NEXT_PUBLIC_LOGIN_BASE_URL;
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -29,7 +29,7 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('https://xstk67r5-3001.inc1.devtunnels.ms/auth/login', {
+      const response = await fetch(`${loginBaseUrl}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
