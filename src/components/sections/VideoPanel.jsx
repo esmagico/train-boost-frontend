@@ -16,6 +16,7 @@ import React, {
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useGetAllVideoQuery } from "@/store/api/questionsApi";
+import { toast } from 'react-toastify';
 import VideoPlaylist from "./VideoPlaylist";
 import AILearningAssistant from "./AILearningAssistant";
 import QuestionModeUI from "./QuestionModeAI";
@@ -86,6 +87,7 @@ const VideoPanel = forwardRef(
       audioLink: "",
       isAudioPlaying: false
     });
+    const [conversation, setConversation] = useState([]);
     const [isPlaying, setIsPlaying] = useState(false);
     const [hasInitialized, setHasInitialized] = useState(false);
     const [lastVideoSrc, setLastVideoSrc] = useState("");
@@ -115,6 +117,12 @@ const VideoPanel = forwardRef(
       
       setQaState(prev => ({ ...prev, isLoading: true, answer: "", audioLink: "" }));
       
+      // Add user question to conversation
+      setConversation(prev => [
+        ...prev,
+        { type: "question", content: userQuestion }
+      ]);
+      
       try {
         const response = await fetch(`https://cf.be.trainboost.esmagico.com/api/qa/${presentationId}?stream_audio=true`, {
           method: 'POST',
@@ -139,12 +147,25 @@ const VideoPanel = forwardRef(
           const audioUrl = URL.createObjectURL(audioBlob);
           
           setQaState(prev => ({ ...prev, answer: answerText, audioLink: audioUrl }));
+          
+          // Add AI answer to conversation
+          setConversation(prev => [
+            ...prev,
+            { type: "answer", content: answerText || "No text answer found" }
+          ]);
         } else {
           throw new Error('Failed to get response');
         }
       } catch (error) {
         console.log("Error submitting question:", error);
+        toast.error("Failed to get audio response. Please try again.");
         setQaState(prev => ({ ...prev, answer: "Failed to load answer. Please try again." }));
+        
+        // Add error to conversation
+        setConversation(prev => [
+          ...prev,
+          { type: "error", content: "Failed to load answer. Please try again." }
+        ]);
       } finally {
         setQaState(prev => ({ ...prev, isLoading: false }));
       }
@@ -666,7 +687,7 @@ const VideoPanel = forwardRef(
         />
         )}
         {showChat ? (
-          <ChatUI onClose={() => setShowChat(false)} presentationId={presentationId} />
+          <ChatUI onClose={() => setShowChat(false)} conversation={conversation} />
         ) : isQuestionMode ? (
           <QuestionModeUser 
             onPauseVideo={pauseVideo}

@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
+import { toast } from 'react-toastify';
 
 const QuestionModeAI = forwardRef(({ answer, audioLink, isAudioPlaying, onAudioStateChange, isLoading }, ref) => {
   const audioRef = useRef(null);
@@ -6,7 +7,10 @@ const QuestionModeAI = forwardRef(({ answer, audioLink, isAudioPlaying, onAudioS
   useEffect(() => {
     if (audioLink && audioRef.current) {
       audioRef.current.src = audioLink;
-      audioRef.current.play().catch(console.log);
+      audioRef.current.play().catch((error) => {
+        console.log('Audio playback failed:', error);
+        toast.error('Audio playback failed. Please try again.');
+      });
     }
   }, [audioLink]);
 
@@ -99,6 +103,7 @@ const QuestionModeAI = forwardRef(({ answer, audioLink, isAudioPlaying, onAudioS
           onPlay={handleAudioPlay}
           onPause={handleAudioPause}
           onEnded={handleAudioEnded}
+          onError={() => toast.error('Audio failed to load. Please try again.')}
           style={{ display: 'none' }}
         />
       )}

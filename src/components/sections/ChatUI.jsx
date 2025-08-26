@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import { setIsQuestionMode } from "@/store/features/videoSlice";
 import back_to_session from "@/assets/svg/back_to_session.svg";
@@ -7,28 +7,8 @@ import ai_answer_icon from "@/assets/svg/ai_answer_icon.svg";
 import close_icon from "@/assets/svg/close.svg";
 import Image from "next/image";
 
-const ChatUI = ({ onClose }) => {
+const ChatUI = ({ onClose, conversation = [] }) => {
   const dispatch = useDispatch();
-  const [messages] = useState([
-    {
-      id: 1,
-      type: "user",
-      text: "Can you explain the key changes in the new savings account policy?",
-      timestamp: new Date(),
-    },
-    {
-      id: 2,
-      type: "ai",
-      text: "The new savings account policy increases the minimum balance requirement and introduces.",
-      timestamp: new Date(),
-    },
-    {
-      id: 3,
-      type: "user",
-      text: "What is the annual course fee?",
-      timestamp: new Date(),
-    },
-  ]);
 
   const handleInteractionMode = () => {
     dispatch(setIsQuestionMode(true));
@@ -58,34 +38,52 @@ const ChatUI = ({ onClose }) => {
 
         {/* Messages Container */}
         <div className="flex-1 px-3 py-4 overflow-y-auto">
-          <div className="space-y-6">
-            {messages.map((message, index) => (
-              <div key={message.id}>
-                {message.type === "user" ? (
-                  /* User Message */
-                  <div className="flex justify-end">
-                    <div className="max-w-[75%] bg-[rgba(26,26,26,0.07)] rounded-[10px_10px_0px_10px] px-2.5 py-2">
-                      <p className="font-lato font-normal text-[13px] leading-4 text-right text-[#1A1C29]">
-                        {message.text}
-                      </p>
+          {conversation.length === 0 ? (
+            <div className="flex items-center justify-center h-full text-gray-500">
+              <p className="font-lato font-normal text-sm">No conversation history yet. Start asking questions!</p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {conversation.map((item, index) => (
+                <div key={index}>
+                  {item.type === "question" ? (
+                    /* User Message */
+                    <div className="flex justify-end">
+                      <div className="max-w-[75%] bg-[rgba(26,26,26,0.07)] rounded-[10px_10px_0px_10px] px-2.5 py-2">
+                        <p className="font-lato font-normal text-[13px] leading-4 text-right text-[#1A1C29]">
+                          {item.content}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  /* AI Message */
-                  <div className="flex gap-2 items-start">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-b from-[#685EDD] to-[#DA8BFF] flex items-center justify-center flex-shrink-0">
-                      <Image src={ai_answer_icon} alt="AI Answer Icon" />
+                  ) : item.type === "answer" ? (
+                    /* AI Message */
+                    <div className="flex gap-2 items-start">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-b from-[#685EDD] to-[#DA8BFF] flex items-center justify-center flex-shrink-0">
+                        <Image src={ai_answer_icon} alt="AI Answer Icon" />
+                      </div>
+                      <div className="flex-1 max-w-[301px]">
+                        <p className="font-lato font-normal text-[13px] leading-[18px] text-[#1A1C29]">
+                          {item.content || "No text answer found"}
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex-1 max-w-[301px]">
-                      <p className="font-lato font-normal text-[13px] leading-[18px] text-[#1A1C29]">
-                        {message.text}
-                      </p>
+                  ) : item.type === "error" ? (
+                    /* Error Message */
+                    <div className="flex gap-2 items-start">
+                      <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center flex-shrink-0">
+                        <span className="text-white text-xs">!</span>
+                      </div>
+                      <div className="flex-1 max-w-[301px]">
+                        <p className="font-lato font-normal text-[13px] leading-[18px] text-red-600">
+                          {item.content}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
