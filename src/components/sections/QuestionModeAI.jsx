@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 
-const QuestionModeAI = ({ answer, audioLink, isAudioPlaying, onAudioStateChange }) => {
+const QuestionModeAI = ({ answer, audioLink, isAudioPlaying, onAudioStateChange, isLoading }) => {
   const audioRef = useRef(null);
 
   useEffect(() => {
@@ -63,9 +63,17 @@ const QuestionModeAI = ({ answer, audioLink, isAudioPlaying, onAudioStateChange 
             </div>
 
             {/* Text Content */}
-            <p className="w-full text-center font-lato font-normal text-sm leading-[18px] text-white">
-              {answer || "Ask me anything about the presentation, and I'll help with the answers."}
-            </p>
+            {isLoading ? (
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
+                <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+              </div>
+            ) : (
+              <p className="w-full text-center font-lato font-normal text-sm leading-[18px] text-white">
+                {answer || "Ask me anything about the presentation, and I'll help with the answers."}
+              </p>
+            )}
           </div>
         </div>
       </div>

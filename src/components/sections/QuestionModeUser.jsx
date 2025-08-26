@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setIsQuestionMode, setQuestion, setAnswerPptIndex } from "@/store/features/videoSlice";
 
 
-const QuestionModeUser = ({ onPauseVideo, onQuestionSubmit, isLoading, setShowChat }) => {
+const QuestionModeUser = ({ onPauseVideo, onQuestionSubmit, setShowChat }) => {
   const dispatch = useDispatch();
   const { question } = useSelector((state) => state.video);
   const [isListening, setIsListening] = useState(false);
@@ -160,13 +160,7 @@ const QuestionModeUser = ({ onPauseVideo, onQuestionSubmit, isLoading, setShowCh
           </div>
 
           {/* Question/Answer Text */}
-          {isLoading ? (
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
-            </div>
-          ) : question ? (
+          {question ? (
             <p className="font-lato font-normal text-sm leading-[18px] text-center text-[#1A1C29]">
               {question}
             </p>

@@ -649,6 +649,7 @@ const VideoPanel = forwardRef(
         ) : null}
         {isQuestionMode && (
         <QuestionModeAI 
+        isLoading={qaState.isLoading}
           answer={qaState.answer}
           audioLink={qaState.audioLink}
           isAudioPlaying={qaState.isAudioPlaying}
@@ -661,7 +662,6 @@ const VideoPanel = forwardRef(
           <QuestionModeUser 
             onPauseVideo={pauseVideo}
             onQuestionSubmit={handleQuestionSubmit}
-            isLoading={qaState.isLoading}
             setShowChat={setShowChat}
           />
         ) : (
