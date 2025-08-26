@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setIsQuestionMode, setQuestion, setAnswerPptIndex } from "@/store/features/videoSlice";
 
 
-const QuestionModeUser = ({ presentationId=1, onPauseVideo, onQuestionSubmit, isLoading }) => {
+const QuestionModeUser = ({ onPauseVideo, onQuestionSubmit, isLoading }) => {
   const dispatch = useDispatch();
   const { question } = useSelector((state) => state.video);
   const [isListening, setIsListening] = useState(false);
@@ -47,7 +47,7 @@ const QuestionModeUser = ({ presentationId=1, onPauseVideo, onQuestionSubmit, is
             startingTextRef.current = combinedText;
             setIsListening(false);
             if (onQuestionSubmit) {
-              onQuestionSubmit(combinedText, presentationId);
+              onQuestionSubmit(combinedText);
             }
           }
         };

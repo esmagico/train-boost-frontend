@@ -74,6 +74,7 @@ const VideoPanel = forwardRef(
       onVideoStateChange,
       onPauseVideo,
       onPauseAnswerAudio,
+      presentationId,
       width = "30%",
     },
     ref
@@ -103,7 +104,7 @@ const VideoPanel = forwardRef(
     const dispatch = useDispatch();
     const { currentVideoIndex, isQuestionMode } = useSelector((state) => state.video);
     
-    const handleQuestionSubmit = async (userQuestion, presentationId) => {
+    const handleQuestionSubmit = async (userQuestion) => {
       if (!userQuestion) return;
       
       if (onPauseVideo) {
@@ -654,7 +655,6 @@ const VideoPanel = forwardRef(
         )}
         {isQuestionMode ? (
           <QuestionModeUser 
-            presentationId={1}
             onPauseVideo={pauseVideo}
             onQuestionSubmit={handleQuestionSubmit}
             isLoading={qaState.isLoading}

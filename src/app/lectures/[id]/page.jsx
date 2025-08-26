@@ -89,6 +89,7 @@ const Home = () => {
               onPauseVideo={handlePauseVideo}
               onPauseAnswerAudio={handlePauseAnswerAudio}
               width="30%"
+              presentationId={presentationId}
             />
           </div>
         </div>
