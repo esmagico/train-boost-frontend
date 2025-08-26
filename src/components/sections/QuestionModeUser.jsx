@@ -61,7 +61,7 @@ const QuestionModeUser = ({ onPauseVideo, onQuestionSubmit, setShowChat, onPause
         };
 
         recognitionRef.current.onerror = (event) => {
-          console.error("Speech recognition error:", event.error);
+          console.log("Speech recognition error:", event.error);
           setIsListening(false);
 
           if (event.error === "not-allowed") {
@@ -92,7 +92,7 @@ const QuestionModeUser = ({ onPauseVideo, onQuestionSubmit, setShowChat, onPause
       try {
         recognitionRef.current.stop();
       } catch (error) {
-        console.error("Error stopping speech recognition:", error);
+        console.log("Error stopping speech recognition:", error);
       }
       setIsListening(false);
     } else {
@@ -113,7 +113,7 @@ const QuestionModeUser = ({ onPauseVideo, onQuestionSubmit, setShowChat, onPause
         recognitionRef.current.start();
         setIsListening(true);
       } catch (error) {
-        console.error("Error starting speech recognition:", error);
+        console.log("Error starting speech recognition:", error);
         setIsListening(false);
       }
     }
@@ -125,7 +125,7 @@ const QuestionModeUser = ({ onPauseVideo, onQuestionSubmit, setShowChat, onPause
       try {
         recognitionRef.current.stop();
       } catch (error) {
-        console.error("Error stopping speech recognition:", error);
+        console.log("Error stopping speech recognition:", error);
       }
       setIsListening(false);
     }

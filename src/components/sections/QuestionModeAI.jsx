@@ -6,7 +6,7 @@ const QuestionModeAI = forwardRef(({ answer, audioLink, isAudioPlaying, onAudioS
   useEffect(() => {
     if (audioLink && audioRef.current) {
       audioRef.current.src = audioLink;
-      audioRef.current.play().catch(console.error);
+      audioRef.current.play().catch(console.log);
     }
   }, [audioLink]);
 

@@ -259,7 +259,7 @@ const VideoPanel = forwardRef(
               preloadVideoRef.current.src = "";
               setPreloadedVideoIndex(-1);
             } catch (error) {
-              console.error(
+              console.log(
                 "Error using preloaded video, falling back to normal load:",
                 error
               );
@@ -349,7 +349,7 @@ const VideoPanel = forwardRef(
           // Set source and start preloading
           preloadVideoRef.current.src = videos[nextVideoIndex].trainer_video;
           preloadVideoRef.current.onerror = (e) => {
-            // console.error(`Failed to preload video ${nextVideoIndex}:`, e);
+            // console.log(`Failed to preload video ${nextVideoIndex}:`, e);
             setPreloadedVideoIndex(-1);
           };
           preloadVideoRef.current.oncanplaythrough = () => {

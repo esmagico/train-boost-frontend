@@ -153,7 +153,7 @@ const FloatingChatbot = ({ onPauseVideo, videos = [], presentationId }) => {
         };
 
         recognitionRef.current.onerror = (event) => {
-          console.error("Speech recognition error:", event.error);
+          console.log("Speech recognition error:", event.error);
           setIsListening(false);
 
           // Handle specific error cases
@@ -242,7 +242,7 @@ const FloatingChatbot = ({ onPauseVideo, videos = [], presentationId }) => {
         recognitionRef.current.stop();
         setIsListening(false);
       } catch (error) {
-        console.error("Error stopping speech recognition on submit:", error);
+        console.log("Error stopping speech recognition on submit:", error);
         setIsListening(false);
       }
     }
@@ -333,7 +333,7 @@ const FloatingChatbot = ({ onPauseVideo, videos = [], presentationId }) => {
       try {
         recognitionRef.current.stop();
       } catch (error) {
-        console.error("Error stopping speech recognition:", error);
+        console.log("Error stopping speech recognition:", error);
       }
       setIsListening(false);
     } else {
@@ -354,7 +354,7 @@ const FloatingChatbot = ({ onPauseVideo, videos = [], presentationId }) => {
               recognitionRef.current.start();
               setIsListening(true);
             } catch (error) {
-              console.error(
+              console.log(
                 "Error starting speech recognition after stop:",
                 error
               );
@@ -366,7 +366,7 @@ const FloatingChatbot = ({ onPauseVideo, videos = [], presentationId }) => {
           setIsListening(true);
         }
       } catch (error) {
-        console.error("Error starting speech recognition:", error);
+        console.log("Error starting speech recognition:", error);
         setIsListening(false);
 
         // If it fails because it's already started, try to stop and restart
@@ -378,12 +378,12 @@ const FloatingChatbot = ({ onPauseVideo, videos = [], presentationId }) => {
                 recognitionRef.current.start();
                 setIsListening(true);
               } catch (retryError) {
-                console.error("Error on retry:", retryError);
+                console.log("Error on retry:", retryError);
                 setIsListening(false);
               }
             }, 100);
           } catch (stopError) {
-            console.error("Error stopping recognition:", stopError);
+            console.log("Error stopping recognition:", stopError);
             setIsListening(false);
           }
         }
@@ -546,7 +546,7 @@ const FloatingChatbot = ({ onPauseVideo, videos = [], presentationId }) => {
                           recognitionRef.current.stop();
                           setIsListening(false);
                         } catch (error) {
-                          console.error(
+                          console.log(
                             "Error stopping speech recognition on Enter:",
                             error
                           );

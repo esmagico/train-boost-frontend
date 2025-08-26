@@ -69,7 +69,7 @@ const Header = () => {
         }
       }
     } catch (error) {
-      console.error('Logout API error:', error);
+      console.log('Logout API error:', error);
     } finally {
       setIsLoggingOut(false);
     }
