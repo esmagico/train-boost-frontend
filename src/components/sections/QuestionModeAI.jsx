@@ -1,6 +1,35 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
+import Lottie from "lottie-react";
+import userWaveAnimation from "@/assets/json/user_wave.json";
 
-const QuestionModeAI = () => {
+const QuestionModeAI = ({ answer, audioLink, isAudioPlaying, onAudioStateChange }) => {
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    if (audioLink && audioRef.current) {
+      audioRef.current.src = audioLink;
+      audioRef.current.play().catch(console.error);
+    }
+  }, [audioLink]);
+
+  const handleAudioPlay = () => {
+    if (onAudioStateChange) {
+      onAudioStateChange(true);
+    }
+  };
+
+  const handleAudioPause = () => {
+    if (onAudioStateChange) {
+      onAudioStateChange(false);
+    }
+  };
+
+  const handleAudioEnded = () => {
+    if (onAudioStateChange) {
+      onAudioStateChange(false);
+    }
+  };
+
   return (
     <div className="p-3 pb-2 bg-white rounded-xl border border-[#E5E7EB]">
       <div className="relative w-full pt-[56.25%] bg-black rounded-lg overflow-hidden">
@@ -12,19 +41,36 @@ const QuestionModeAI = () => {
             
             {/* Avatar Container */}
             <div className="w-16 h-16 rounded-full border-[0.8px] border-white/50 bg-gray-300 flex items-center justify-center">
-              {/* Placeholder for avatar image */}
-              <div className="w-12 h-12 rounded-full bg-white/20"></div>
+              {isAudioPlaying ? (
+                <Lottie
+                  animationData={userWaveAnimation}
+                  style={{ width: 64, height: 64 }}
+                  loop={true}
+                />
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-white/20"></div>
+              )}
             </div>
 
             {/* Text Content */}
             <p className="w-full text-center font-lato font-normal text-sm leading-[18px] text-white">
-              Ask me anything about the presentation, and I'll help with the answers.
+              {answer || "Ask me anything about the presentation, and I'll help with the answers."}
             </p>
           </div>
         </div>
       </div>
+      
+      {/* Hidden Audio Element */}
+      {audioLink && (
+        <audio
+          ref={audioRef}
+          onPlay={handleAudioPlay}
+          onPause={handleAudioPause}
+          onEnded={handleAudioEnded}
+          style={{ display: 'none' }}
+        />
+      )}
     </div>
-
   );
 };
 

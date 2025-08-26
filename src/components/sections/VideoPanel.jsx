@@ -78,6 +78,12 @@ const VideoPanel = forwardRef(
     },
     ref
   ) => {
+    const [qaState, setQaState] = useState({
+      isLoading: false,
+      answer: "",
+      audioLink: "",
+      isAudioPlaying: false
+    });
     const [isPlaying, setIsPlaying] = useState(false);
     const [hasInitialized, setHasInitialized] = useState(false);
     const [lastVideoSrc, setLastVideoSrc] = useState("");
@@ -95,7 +101,51 @@ const VideoPanel = forwardRef(
     const preloadVideoRef = useRef(null); // For preloading next video
     const router = useRouter();
     const dispatch = useDispatch();
-    const { currentVideoIndex , isQuestionMode} = useSelector((state) => state.video);
+    const { currentVideoIndex, isQuestionMode } = useSelector((state) => state.video);
+    
+    const handleQuestionSubmit = async (userQuestion, presentationId) => {
+      if (!userQuestion) return;
+      
+      if (onPauseVideo) {
+        onPauseVideo();
+      }
+      
+      setQaState(prev => ({ ...prev, isLoading: true, answer: "", audioLink: "" }));
+      
+      try {
+        const response = await fetch(`https://cf.be.trainboost.esmagico.com/api/qa/${presentationId}?stream_audio=true`, {
+          method: 'POST',
+          headers: {
+            'Accept': 'audio/mpeg',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            question: userQuestion,
+          }),
+        });
+        
+        if (response.ok) {
+          const answerText = response.headers.get('x-answer') || 'No answer received';
+          
+          const jumpTarget = response.headers.get('x-jump-target');
+          if (jumpTarget !== null && jumpTarget !== undefined) {
+            dispatch(setAnswerPptIndex(parseInt(jumpTarget)));
+          }
+          
+          const audioBlob = await response.blob();
+          const audioUrl = URL.createObjectURL(audioBlob);
+          
+          setQaState(prev => ({ ...prev, answer: answerText, audioLink: audioUrl }));
+        } else {
+          throw new Error('Failed to get response');
+        }
+      } catch (error) {
+        console.log("Error submitting question:", error);
+        setQaState(prev => ({ ...prev, answer: "Failed to load answer. Please try again." }));
+      } finally {
+        setQaState(prev => ({ ...prev, isLoading: false }));
+      }
+    };
     const [showRedirectPopup, setShowRedirectPopup] = useState(false);
     const [countdown, setCountdown] = useState(10);
     const [preloadedVideoIndex, setPreloadedVideoIndex] = useState(-1);
@@ -595,9 +645,23 @@ const VideoPanel = forwardRef(
           </div>
         </div>
         ) : (
-        <QuestionModeAI />
+        <QuestionModeAI 
+          answer={qaState.answer}
+          audioLink={qaState.audioLink}
+          isAudioPlaying={qaState.isAudioPlaying}
+          onAudioStateChange={(isPlaying) => setQaState(prev => ({ ...prev, isAudioPlaying: isPlaying }))}
+        />
         )}
-        {isQuestionMode ? <QuestionModeUser /> : <AILearningAssistant />}
+        {isQuestionMode ? (
+          <QuestionModeUser 
+            presentationId={1}
+            onPauseVideo={pauseVideo}
+            onQuestionSubmit={handleQuestionSubmit}
+            isLoading={qaState.isLoading}
+          />
+        ) : (
+          <AILearningAssistant />
+        )}
       </div>
     );
   }

@@ -1,15 +1,132 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import chat_history from "@/assets/svg/chat_history.svg";
 import back_to_session from "@/assets/svg/back_to_session.svg";
 import Image from "next/image";
 import tap_to_speak from "@/assets/svg/tap-to-speak.svg";
-import { useDispatch } from "react-redux";
-import { setIsQuestionMode } from "@/store/features/videoSlice";
+import Lottie from "lottie-react";
+import userWaveAnimation from "@/assets/json/user_wave.json";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsQuestionMode, setQuestion, setAnswerPptIndex } from "@/store/features/videoSlice";
 
-const QuestionModeUser = () => {
+
+const QuestionModeUser = ({ presentationId=1, onPauseVideo, onQuestionSubmit, isLoading }) => {
   const dispatch = useDispatch();
+  const { question } = useSelector((state) => state.video);
+  const [isListening, setIsListening] = useState(false);
+  const [speechSupported, setSpeechSupported] = useState(false);
+  const [startingText, setStartingText] = useState("");
+  const startingTextRef = useRef("");
+  const recognitionRef = useRef(null);
+
+  // Initialize speech recognition
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if (SpeechRecognition) {
+        setSpeechSupported(true);
+        recognitionRef.current = new SpeechRecognition();
+
+        recognitionRef.current.continuous = false;
+        recognitionRef.current.interimResults = true;
+        recognitionRef.current.lang = "en-US";
+
+        recognitionRef.current.onresult = (event) => {
+          const lastResult = event.results[event.results.length - 1];
+          const transcript = lastResult[0].transcript;
+
+          const combinedText =
+            startingTextRef.current +
+            (startingTextRef.current && transcript ? " " : "") +
+            transcript;
+          dispatch(setQuestion(combinedText));
+
+          if (lastResult.isFinal) {
+            setStartingText(combinedText);
+            startingTextRef.current = combinedText;
+            setIsListening(false);
+            if (onQuestionSubmit) {
+              onQuestionSubmit(combinedText, presentationId);
+            }
+          }
+        };
+
+        recognitionRef.current.onstart = () => {
+          setIsListening(true);
+        };
+
+        recognitionRef.current.onend = () => {
+          setIsListening(false);
+        };
+
+        recognitionRef.current.onerror = (event) => {
+          console.error("Speech recognition error:", event.error);
+          setIsListening(false);
+
+          if (event.error === "not-allowed") {
+            alert(
+              "Microphone access denied. Please allow microphone access and try again."
+            );
+          }
+        };
+      }
+    }
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort();
+      }
+    };
+  }, [dispatch]);
+
+
+
+  const handleTapToSpeak = () => {
+    if (!speechSupported || !recognitionRef.current) {
+      alert("Speech recognition is not supported in your browser.");
+      return;
+    }
+
+    if (isListening) {
+      try {
+        recognitionRef.current.stop();
+      } catch (error) {
+        console.error("Error stopping speech recognition:", error);
+      }
+      setIsListening(false);
+    } else {
+      if (onPauseVideo) {
+        onPauseVideo();
+      }
+
+      setStartingText("");
+      startingTextRef.current = "";
+      dispatch(setQuestion(""));
+
+      try {
+        recognitionRef.current.start();
+        setIsListening(true);
+      } catch (error) {
+        console.error("Error starting speech recognition:", error);
+        setIsListening(false);
+      }
+    }
+  };
 
   const handleBackToSession = () => {
+    // Stop speech recognition if active
+    if (isListening && recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch (error) {
+        console.error("Error stopping speech recognition:", error);
+      }
+      setIsListening(false);
+    }
+    
+    // Clear state
+    dispatch(setQuestion(""));
     dispatch(setIsQuestionMode(false));
   };
 
@@ -19,20 +136,40 @@ const QuestionModeUser = () => {
       <div className="flex-1 bg-[#F7F7F7] rounded-xl flex items-center justify-center p-6">
         {/* Center Content */}
         <div className="flex flex-col items-center gap-[30px] max-w-[275px]">
-          {/* Tap to Speak */}
-          <div className="w-[120px] h-[120px] flex items-center justify-center">
-            <Image
-              src={tap_to_speak}
-              alt="tap to speak"
-              width={72}
-              height={72}
-            />
+          {/* Avatar/Tap to Speak */}
+          <div className="w-[120px] h-[120px] flex items-center justify-center cursor-pointer" onClick={handleTapToSpeak}>
+            {isListening ? (
+              <Lottie
+                animationData={userWaveAnimation}
+                style={{ width: 120, height: 120 }}
+                loop={true}
+              />
+            ) : (
+              <Image
+                src={tap_to_speak}
+                alt="tap to speak"
+                width={72}
+                height={72}
+              />
+            )}
           </div>
 
-          {/* Question Text */}
-          <p className="font-lato font-normal text-sm leading-[18px] text-center text-[#1A1C29]">
-            Can you explain the key changes in the new savings account policy?
-          </p>
+          {/* Question/Answer Text */}
+          {isLoading ? (
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
+              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+            </div>
+          ) : question ? (
+            <p className="font-lato font-normal text-sm leading-[18px] text-center text-[#1A1C29]">
+              {question}
+            </p>
+          ) : (
+            <p className="font-lato font-normal text-sm leading-[18px] text-center text-[#1A1C29]">
+              {isListening ? "Listening..." : "Tap to ask a question"}
+            </p>
+          )}
         </div>
       </div>
 
