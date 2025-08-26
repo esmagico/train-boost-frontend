@@ -1,6 +1,4 @@
 import React, { useRef, useEffect } from 'react';
-import Lottie from "lottie-react";
-import userWaveAnimation from "@/assets/json/user_wave.json";
 
 const QuestionModeAI = ({ answer, audioLink, isAudioPlaying, onAudioStateChange }) => {
   const audioRef = useRef(null);
@@ -11,6 +9,8 @@ const QuestionModeAI = ({ answer, audioLink, isAudioPlaying, onAudioStateChange 
       audioRef.current.play().catch(console.error);
     }
   }, [audioLink]);
+
+
 
   const handleAudioPlay = () => {
     if (onAudioStateChange) {
@@ -40,16 +40,26 @@ const QuestionModeAI = ({ answer, audioLink, isAudioPlaying, onAudioStateChange 
           <div className="flex flex-col items-center gap-[19px] w-[243px] h-[137px]">
             
             {/* Avatar Container */}
-            <div className="w-16 h-16 rounded-full border-[0.8px] border-white/50 bg-gray-300 flex items-center justify-center">
-              {isAudioPlaying ? (
-                <Lottie
-                  animationData={userWaveAnimation}
-                  style={{ width: 64, height: 64 }}
-                  loop={true}
-                />
-              ) : (
-                <div className="w-12 h-12 rounded-full bg-white/20"></div>
+            <div className="relative flex items-center justify-center">
+              {/* Animated Wave Rings */}
+              {isAudioPlaying && (
+                <>
+                  {[1, 2, 3].map((ring) => (
+                    <div
+                      key={ring}
+                      className="absolute rounded-full border-2 border-white/30 animate-wave"
+                      style={{
+                        animationDelay: `${ring * 0.4}s`
+                      }}
+                    />
+                  ))}
+                </>
               )}
+              
+              {/* Main Avatar */}
+              <div className="w-16 h-16 rounded-full border-[0.8px] border-white/50 bg-gray-300 flex items-center justify-center relative z-10">
+                <div className="w-12 h-12 rounded-full bg-white/20"></div>
+              </div>
             </div>
 
             {/* Text Content */}
