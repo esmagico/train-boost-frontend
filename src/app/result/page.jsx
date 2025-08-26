@@ -1,13 +1,17 @@
 "use client";
 
+import Button from "@/components/common/Button";
+import { setCurrentVideoIndex } from "@/store/features/videoSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
+import { useDispatch } from "react-redux";
 
 // Separate component for the result content
 function ResultContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [score, setScore] = useState(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const scoreParam = searchParams.get("score");
@@ -19,14 +23,20 @@ function ResultContent() {
   const isPerfectScore = score === 100;
 
   const handleRetry = () => {
-    router.push("/test");
+    const presentationId = searchParams.get("id") || process.env.NEXT_PUBLIC_PRESENTATION_ID || '1';
+    router.push(`/assessment/${presentationId}`);
   };
+
+  const handleRestartTraining = () => {
+    router.push(`/`);
+    dispatch(setCurrentVideoIndex(0));
+  }
 
   if (score === null) return null;
 
   return (
-    <div className="min-h-[calc(100vh-70px)] flex items-center justify-center bg-gray-50 p-4">
-      <div className="max-w-xl w-full bg-white rounded-2xl shadow-lg overflow-hidden mt-[-120px]">
+    <div className="min-h-[calc(100vh-70px)] flex items-center justify-center bg-[#F9F9F9] p-4">
+      <div className="max-w-xl w-full bg-white rounded-xl border border-[#f1f2f4] overflow-hidden mt-[-120px]">
         <div className="p-8">
           {/* Score Circle */}
           <div className="relative w-32 h-32 mx-auto mb-8">
@@ -36,7 +46,7 @@ function ResultContent() {
                   a 15.9155 15.9155 0 0 1 0 31.831
                   a 15.9155 15.9155 0 0 1 0 -31.831"
                 fill="none"
-                stroke="#E5E7EB"
+                stroke="#f1f2f4"
                 strokeWidth="3"
               />
               <path
@@ -55,7 +65,7 @@ function ResultContent() {
                 className="score-text"
                 textAnchor="middle"
                 fill={isPerfectScore ? "#059669" : "#3B82F6"}
-                style={{ fontSize: "8px", fontWeight: "bold" }}
+                style={{ fontSize: "8px", fontWeight: "bold", fontFamily: "Lato" }}
               >
                 {score}%
               </text>
@@ -102,7 +112,7 @@ function ResultContent() {
           {/* Result Content */}
           <div className="text-center space-y-6">
             <h1
-              className={`text-2xl font-bold ${
+              className={`text-[24px] font-lato font-bold ${
                 isPerfectScore ? "text-green-600" : "text-blue-600"
               }`}
             >
@@ -110,14 +120,14 @@ function ResultContent() {
             </h1>
 
             <div className="space-y-2">
-              <p className="text-gray-600">
+              <p className="text-[16px] font-lato font-medium text-[#6B7280]">
                 {isPerfectScore
                   ? "You've mastered the training with a perfect score! Your certificate awaits."
                   : "Keep going! Review and try again to achieve mastery."}
               </p>
 
               {!isPerfectScore && (
-                <div className="inline-block bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 mt-2">
+                <div className="inline-block bg-amber-50 border border-amber-200 rounded-xl px-4 py-2">
                   <div className="flex items-center gap-2">
                     <svg
                       className="w-5 h-5 text-amber-500"
@@ -132,7 +142,7 @@ function ResultContent() {
                         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    <p className="text-sm font-medium text-amber-800">
+                    <p className="text-[14px] font-lato font-semibold text-amber-800">
                       You need 100% to pass this assessment
                     </p>
                   </div>
@@ -142,26 +152,25 @@ function ResultContent() {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
-              <button
-                onClick={() =>
-                  router.push(isPerfectScore ? "/congratulations" : "/")
-                }
-                className={`cursor-pointer px-4 py-2 rounded-lg font-medium text-white transition-colors ${
+              <Button
+                onClick={handleRestartTraining}
+                variant={"primary"}
+                className={`${
                   isPerfectScore
                     ? "bg-green-600 hover:bg-green-700"
                     : "bg-blue-600 hover:bg-blue-700"
                 }`}
               >
-                {isPerfectScore ? "View Certificate" : "Restart Training"}
-              </button>
+                {isPerfectScore ? "Ok" : "Restart Training"}
+              </Button>
 
               {!isPerfectScore && (
-                <button
+                <Button
                   onClick={handleRetry}
-                  className="cursor-pointer px-4 py-2 rounded-lg font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
+                  variant="secondary"
                 >
                   Try Again
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -174,10 +183,38 @@ function ResultContent() {
 // Loading component
 function ResultLoading() {
   return (
-    <div className="min-h-[calc(100vh-70px)] flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="text-center">
-        <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-gray-600">Loading result...</p>
+    <div className="min-h-[calc(100vh-70px)] flex items-center justify-center bg-[#F9F9F9] p-4">
+      <div className="max-w-xl w-full bg-white rounded-xl border border-[#f1f2f4] overflow-hidden mt-[-120px]">
+        <div className="p-8">
+          {/* Score Circle Skeleton */}
+          <div className="relative w-32 h-32 mx-auto mb-8">
+            <div className="absolute inset-0 rounded-full bg-[#f1f2f4] animate-pulse"></div>
+            <div className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-gray-200 animate-pulse"></div>
+          </div>
+
+          {/* Result Content Skeleton */}
+          <div className="text-center space-y-6">
+            {/* Title Skeleton */}
+            <div className="h-8 w-48 bg-gray-200 rounded-lg mx-auto animate-pulse"></div>
+
+            {/* Description Skeleton */}
+            <div className="space-y-2">
+              <div className="h-4 w-3/4 bg-gray-200 rounded mx-auto animate-pulse"></div>
+              <div className="h-4 w-2/3 bg-gray-200 rounded mx-auto animate-pulse"></div>
+            </div>
+
+            {/* Info Box Skeleton */}
+            <div className="inline-block bg-gray-100 rounded-xl px-4 py-2">
+              <div className="h-5 w-48 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+
+            {/* Button Skeleton */}
+            <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
+              <div className="h-10 w-32 bg-gray-200 rounded-lg animate-pulse"></div>
+              <div className="h-10 w-32 bg-gray-200 rounded-lg animate-pulse"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -3,61 +3,90 @@ import { setIsPlaying } from "@/store/features/videoSlice";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const AnswerSection = ({ answer, audioLink = "", loading }) => {
-  const { currentPlayingAudioId } = useSelector((state) => state.video);
+// Global map to track which audio URLs have been auto-played
+const autoPlayedAudios = new Map();
+
+const AnswerSection = ({ answer, audioLink = "", loading, onPauseVideo }) => {
+  const { currentPlayingAudioId, isVideoPlaying } = useSelector(
+    (state) => state.video
+  );
   const audioRef = useRef(null);
   const dispatch = useDispatch();
   const audioId = useRef(`audio-${Math.random().toString(36).substr(2, 9)}`);
   const isPlaying = currentPlayingAudioId === audioId.current;
 
+  // Effect to pause audio when video starts playing
   useEffect(() => {
-    if (audioRef.current) {
+    if (isVideoPlaying && audioRef.current && !audioRef.current.paused) {
+      audioRef.current.pause();
+    }
+  }, [isVideoPlaying]);
+
+  useEffect(() => {
+    if (audioRef.current && audioLink) {
       const handlePlay = () => {
+        // Pause video panel when answer audio starts playing
+        if (onPauseVideo) {
+          onPauseVideo();
+        }
+
         // Pause any other playing audio
-        document.querySelectorAll('audio').forEach(audio => {
+        document.querySelectorAll("audio").forEach((audio) => {
           if (audio !== audioRef.current && !audio.paused) {
             audio.pause();
           }
         });
         dispatch(setIsPlaying({ playing: true, audioId: audioId.current }));
       };
-      const handlePause = () => dispatch(setIsPlaying({ playing: false, audioId: null }));
-      const handleEnd = () => dispatch(setIsPlaying({ playing: false, audioId: null }));
+      const handlePause = () =>
+        dispatch(setIsPlaying({ playing: false, audioId: null }));
+      const handleEnd = () =>
+        dispatch(setIsPlaying({ playing: false, audioId: null }));
 
       audioRef.current.addEventListener("play", handlePlay);
       audioRef.current.addEventListener("pause", handlePause);
       audioRef.current.addEventListener("ended", handleEnd);
 
-      // Auto-play when audio loads
-      const playAudio = async () => {
-        try {
-          await audioRef.current.play();
-        } catch (error) {
-          console.log("Error playing audio:", error);
-        }
-      };
+      // Auto-play only if this audio URL hasn't been auto-played before
+      const hasBeenAutoPlayed = autoPlayedAudios.get(audioLink);
+      if (!hasBeenAutoPlayed) {
+        const playAudio = async () => {
+          try {
+            await audioRef.current.play();
+            // Mark this audio as auto-played
+            autoPlayedAudios.set(audioLink, true);
+          } catch (error) {
+            console.log("Error playing audio:", error);
+            // Mark as attempted even if failed
+            autoPlayedAudios.set(audioLink, true);
+          }
+        };
 
-      playAudio();
+        playAudio();
+      }
 
       return () => {
         if (audioRef.current) {
           audioRef.current.removeEventListener("play", handlePlay);
           audioRef.current.removeEventListener("pause", handlePause);
           audioRef.current.removeEventListener("ended", handleEnd);
-          audioRef.current.pause();
-          audioRef.current = null;
         }
       };
     }
-  }, [audioLink]);
+  }, [audioLink, dispatch, onPauseVideo]);
 
   const toggleAudio = () => {
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
+        // Pause video panel when manually starting audio
+        if (onPauseVideo) {
+          onPauseVideo();
+        }
+
         // Pause any other playing audio before playing this one
-        document.querySelectorAll('audio').forEach(audio => {
+        document.querySelectorAll("audio").forEach((audio) => {
           if (audio !== audioRef.current && !audio.paused) {
             audio.pause();
           }
@@ -105,7 +134,7 @@ const AnswerSection = ({ answer, audioLink = "", loading }) => {
           />
         </div>
       ) : null}
-      <div className="text-gray-700">{answer}</div>
+      <div className="text-[15px] text-gray-700">{answer}</div>
     </div>
   );
 };

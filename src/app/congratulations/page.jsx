@@ -16,7 +16,7 @@ export default function CongratulationsPage() {
   // }, [router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-2xl w-full bg-white rounded-2xl overflow-hidden mt-[-200px]">
         <div className="p-8 text-center ">
           <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -49,16 +49,6 @@ export default function CongratulationsPage() {
               You&apos;ve successfully completed the training and passed the assessment with flying colors!
             </p>
           </div>
-          
-          {/* <div className="text-sm text-gray-500 mt-8">
-            <p>Redirecting you to the home page in 5 seconds...</p>
-            <button 
-              onClick={() => router.push('/')}
-              className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Go to Home Now
-            </button>
-          </div> */}
         </div>
       </div>
     </div>

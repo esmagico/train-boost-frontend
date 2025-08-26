@@ -1,13 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  currentVideoIndex: 0,
+  currentVideoIndex: 0, // Video panel's current video
+  pptVideoIndex: 0, // PPT section's current video (can be different)
   currentSlide: 1,
   isQuestionMode: false,
   questionPanelPptSlide: 1,
   question: "",
   isPlaying: false,
   currentPlayingAudioId: null,
+  currentVideoTime: 0,
+  isVideoPlaying: false,
+  answerPptIndex: null,
 };
 
 const videoSlice = createSlice({
@@ -33,15 +37,35 @@ const videoSlice = createSlice({
       state.isPlaying = action.payload.playing;
       state.currentPlayingAudioId = action.payload.audioId || null;
     },
+    setCurrentVideoTime: (state, action) => {
+      state.currentVideoTime = action.payload;
+    },
+    setIsVideoPlaying: (state, action) => {
+      state.isVideoPlaying = action.payload;
+    },
+    setPptVideoIndex: (state, action) => {
+      state.pptVideoIndex = action.payload;
+    },
+    setAnswerPptIndex: (state, action) => {
+      state.answerPptIndex = action.payload;
+    },
+    syncPptToVideoPanel: (state) => {
+      state.pptVideoIndex = state.currentVideoIndex;
+    },
   },
 });
 
 export const {
   setCurrentVideoIndex,
+  setPptVideoIndex,
   setCurrentSlide,
   setIsQuestionMode,
   setQuestionPanelPptSlide,
   setQuestion,
   setIsPlaying,
+  setCurrentVideoTime,
+  setIsVideoPlaying,
+  setAnswerPptIndex,
+  syncPptToVideoPanel,
 } = videoSlice.actions;
 export default videoSlice.reducer;
