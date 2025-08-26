@@ -61,6 +61,18 @@ const UsersIcon = () => (
   </svg>
 );
 
+const ChartIcon = () => (
+  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+  </svg>
+);
+
+const SupportIcon = () => (
+  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0c0 .993-.241 1.929-.668 2.754l-1.524-1.525a3.997 3.997 0 00.078-2.183l1.562-1.562C15.802 8.249 16 9.1 16 10zm-5.165 3.913l1.58 1.58A5.98 5.98 0 0110 16a5.976 5.976 0 01-2.516-.552l1.562-1.562a4.006 4.006 0 001.789.027zm-4.677-2.796a4.002 4.002 0 01-.041-2.08l-1.106-1.106A6.002 6.002 0 004 10c0 .639.1 1.255.283 1.836l1.875-1.875zM10 4a6.002 6.002 0 012.668.628l-1.524 1.524a4.002 4.002 0 00-2.183.078l-1.562-1.562A5.98 5.98 0 0110 4z" clipRule="evenodd" />
+  </svg>
+);
+
 // Dummy data
 const dummyPresentations = [
   {
@@ -82,6 +94,20 @@ const dummyUsers = [
   { id: 2, name: "Jane Smith", email: "jane@company.com", role: "Instructor", courses: 8, lastActive: "2024-01-14" },
   { id: 3, name: "Mike Johnson", email: "mike@company.com", role: "Student", courses: 2, lastActive: "2024-01-13" },
 ];
+
+const dummyAnalytics = {
+  userRank: 2,
+  totalUsers: 1250,
+  monthlyProgress: [65, 72, 78, 85, 88, 92],
+  monthlyLabels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  averageScore: 88,
+  completionRate: 94
+};
+
+const supportInfo = {
+  email: "support@trainboost.com",
+  phone: "+1 (555) 123-4567"
+};
 
 const PresentationCard = ({ presentation, onClick, index, showBadge }) => {
   const [imageError, setImageError] = useState(false);
@@ -242,7 +268,7 @@ const Home = ({ showStats, showFilterTab }) => {
         <div className="w-64 bg-white border-r border-gray-200 flex-shrink-0">
           <div className="p-6">
             <nav className="space-y-2">
-              {[...Array(3)].map((_, index) => (
+              {[...Array(5)].map((_, index) => (
                 <div
                   key={index}
                   className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-transparent animate-pulse"
@@ -339,6 +365,179 @@ const Home = ({ showStats, showFilterTab }) => {
   const progressPercentage = Math.round((completedCount / totalCount) * 100);
 
   const renderContent = () => {
+    if (activeSection === "analytics") {
+      return (
+        <>
+          {/* Hero Header */}
+          <div className="mb-6">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                <ChartIcon />
+              </div>
+              <h1 className="text-xl font-semibold text-gray-900">User Analytics</h1>
+            </div>
+            <p className="text-gray-600 text-sm ml-11">Track your progress and compare with other learners</p>
+          </div>
+
+          {/* Analytics Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            {/* Ranking Card */}
+            <div className="bg-white rounded-lg p-4 border border-[#f1f2f4] hover:shadow-sm transition-shadow">
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-6 h-6 bg-blue-50 rounded flex items-center justify-center">
+                  <ChartIcon />
+                </div>
+                <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Top Performer</span>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-gray-600 mb-1">Your Ranking</p>
+                <p className="text-2xl font-bold text-gray-900 mb-0.5">Top {dummyAnalytics.userRank}%</p>
+                <p className="text-xs text-gray-500">of {dummyAnalytics.totalUsers.toLocaleString()} users</p>
+              </div>
+            </div>
+
+            {/* Average Score Card */}
+            <div className="bg-white rounded-lg p-4 border border-[#f1f2f4] hover:shadow-sm transition-shadow">
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-6 h-6 bg-green-50 rounded flex items-center justify-center">
+                  <CheckIcon color="#10b981" />
+                </div>
+                <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">+5%</span>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-gray-600 mb-1">Average Score</p>
+                <p className="text-2xl font-bold text-gray-900 mb-0.5">{dummyAnalytics.averageScore}%</p>
+                <p className="text-xs text-gray-500">from last month</p>
+              </div>
+            </div>
+
+            {/* Completion Rate Card */}
+            <div className="bg-white rounded-lg p-4 border border-[#f1f2f4] hover:shadow-sm transition-shadow">
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-6 h-6 bg-purple-50 rounded flex items-center justify-center">
+                  <BrainIcon />
+                </div>
+                <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">Above Avg</span>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-gray-600 mb-1">Completion Rate</p>
+                <p className="text-2xl font-bold text-gray-900 mb-0.5">{dummyAnalytics.completionRate}%</p>
+                <p className="text-xs text-gray-500">courses completed</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Monthly Progress Chart */}
+          <div className="bg-white rounded-lg p-4 border border-[#f1f2f4] mb-6">
+            <h3 className="text-base font-semibold text-gray-900 mb-4">Monthly Progress</h3>
+            <div className="flex items-end justify-between h-40 gap-2">
+              {dummyAnalytics.monthlyProgress.map((value, index) => (
+                <div key={index} className="flex flex-col items-center flex-1">
+                  <div className="w-full bg-gray-50 rounded relative flex items-end" style={{ height: '120px' }}>
+                    <div 
+                      className="w-full bg-gradient-to-t from-blue-600 to-purple-600 rounded transition-all duration-1000 ease-out"
+                      style={{ height: `${(value / 100) * 120}px` }}
+                    ></div>
+                  </div>
+                  <div className="mt-2 text-center">
+                    <div className="text-xs font-medium text-gray-900">{value}%</div>
+                    <div className="text-xs text-gray-500">{dummyAnalytics.monthlyLabels[index]}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Achievement Insight */}
+          <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-4 border border-yellow-200">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center">
+                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 text-sm">🎉 Outstanding Performance!</h4>
+                <p className="text-gray-600 text-xs">You are in the top {dummyAnalytics.userRank}% of users. Keep up the excellent work!</p>
+              </div>
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    if (activeSection === "support") {
+      return (
+        <>
+          {/* Hero Header */}
+          <div className="mb-12">
+            <div className="flex items-center gap-4 mb-2">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                <SupportIcon />
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900">Help & Support</h1>
+            </div>
+            <p className="text-gray-600 ml-14">Get assistance and contact our support team</p>
+          </div>
+
+          {/* Contact Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            {/* Email Support */}
+            <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] hover:shadow-sm transition-shadow">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-2">Email Support</h3>
+                  <p className="text-blue-600 font-medium mb-1">{supportInfo.email}</p>
+                  <p className="text-sm text-gray-500">Response within 24 hours</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Phone Support */}
+            <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] hover:shadow-sm transition-shadow">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-2">Phone Support</h3>
+                  <p className="text-green-600 font-medium mb-1">{supportInfo.phone}</p>
+                  <p className="text-sm text-gray-500">Mon-Fri, 9AM-6PM EST</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* FAQ Section */}
+          <div className="bg-white rounded-xl p-8 border border-[#f1f2f4]">
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">Frequently Asked Questions</h3>
+            <div className="space-y-6">
+              <div className="pb-6 border-b border-gray-100 last:border-b-0 last:pb-0">
+                <h4 className="font-medium text-gray-900 mb-2">How do I reset my password?</h4>
+                <p className="text-gray-600 text-sm leading-relaxed">Click on "Forgot Password" on the login page and follow the instructions sent to your email.</p>
+              </div>
+              <div className="pb-6 border-b border-gray-100 last:border-b-0 last:pb-0">
+                <h4 className="font-medium text-gray-900 mb-2">How can I track my learning progress?</h4>
+                <p className="text-gray-600 text-sm leading-relaxed">Visit the User Analytics section to see detailed progress charts and performance insights.</p>
+              </div>
+              <div className="pb-6 border-b border-gray-100 last:border-b-0 last:pb-0">
+                <h4 className="font-medium text-gray-900 mb-2">Can I download course materials?</h4>
+                <p className="text-gray-600 text-sm leading-relaxed">Yes, most course materials are available for download in the course sections.</p>
+              </div>
+            </div>
+          </div>
+        </>
+      );
+    }
+
     if (activeSection === "assessments") {
       return (
         <>
@@ -661,8 +860,10 @@ const Home = ({ showStats, showFilterTab }) => {
 
   const sidebarSections = [
     { key: "courses", label: "Courses", icon: BookIcon },
+    { key: "analytics", label: "User Analytics", icon: ChartIcon },
     { key: "assessments", label: "Assessment", icon: ClipboardIcon },
     { key: "users", label: "User Management", icon: UsersIcon },
+    { key: "support", label: "Help & Support", icon: SupportIcon },
   ];
 
   return (

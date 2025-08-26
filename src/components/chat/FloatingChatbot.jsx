@@ -97,7 +97,7 @@ const SendIcon = ({ size = 24, className = "", isActive = false }) => (
   </svg>
 );
 
-const FloatingChatbot = ({ onPauseVideo, videos = [], presentationId }) => {
+const FloatingChatbot = ({ onPauseVideo, videos = [], presentationId , current_slide_number }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [conversation, setConversation] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -113,6 +113,7 @@ const FloatingChatbot = ({ onPauseVideo, videos = [], presentationId }) => {
   const { question, isPlaying } = useSelector((state) => state.video);
   const [submitQuestion] = useSubmitQuestionMutation();
 
+  console.log(current_slide_number,"pptVideoIndex")
   // Initialize speech recognition
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -276,6 +277,10 @@ const FloatingChatbot = ({ onPauseVideo, videos = [], presentationId }) => {
         question: userQuestion,
         conversation: mappedConversation,
         knowledge_source_ids: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        // current_slide_number: current_slide_number,
+        config: {
+          use_external_knowledge: true,
+        },
       }).unwrap();
 
       if (response?.primary_jump_target !== undefined) {

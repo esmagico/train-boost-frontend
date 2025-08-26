@@ -95,10 +95,11 @@ const Home = () => {
       </div>
 
       {/* Floating Chatbot */}
-      <FloatingChatbot 
+      <FloatingChatbot
         onPauseVideo={handlePauseVideo} 
         videos={videos} 
         presentationId={presentationId}
+        current_slide_number={pptVideoIndex}
       />
     </div>
   );
