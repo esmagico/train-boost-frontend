@@ -105,6 +105,7 @@ const VideoPanel = forwardRef(
     const dispatch = useDispatch();
     const { currentVideoIndex, isQuestionMode } = useSelector((state) => state.video);
     const [showChat, setShowChat] = useState(false);
+    const questionModeAIRef = useRef(null);
     const handleQuestionSubmit = async (userQuestion) => {
       if (!userQuestion) return;
       
@@ -151,6 +152,13 @@ const VideoPanel = forwardRef(
     const [showRedirectPopup, setShowRedirectPopup] = useState(false);
     const [countdown, setCountdown] = useState(10);
     const [preloadedVideoIndex, setPreloadedVideoIndex] = useState(-1);
+
+    // Function to stop answer audio
+    const stopAnswerAudio = () => {
+      if (questionModeAIRef.current) {
+        questionModeAIRef.current.stopAudio();
+      }
+    };
 
     // Handle countdown and redirect
     useEffect(() => {
@@ -649,7 +657,8 @@ const VideoPanel = forwardRef(
         ) : null}
         {isQuestionMode && (
         <QuestionModeAI 
-        isLoading={qaState.isLoading}
+          ref={questionModeAIRef}
+          isLoading={qaState.isLoading}
           answer={qaState.answer}
           audioLink={qaState.audioLink}
           isAudioPlaying={qaState.isAudioPlaying}
@@ -663,6 +672,7 @@ const VideoPanel = forwardRef(
             onPauseVideo={pauseVideo}
             onQuestionSubmit={handleQuestionSubmit}
             setShowChat={setShowChat}
+            onPauseAnswerAudio={stopAnswerAudio}
           />
         ) : (
           <AILearningAssistant 

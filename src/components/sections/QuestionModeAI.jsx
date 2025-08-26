@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
 
-const QuestionModeAI = ({ answer, audioLink, isAudioPlaying, onAudioStateChange, isLoading }) => {
+const QuestionModeAI = forwardRef(({ answer, audioLink, isAudioPlaying, onAudioStateChange, isLoading }, ref) => {
   const audioRef = useRef(null);
 
   useEffect(() => {
@@ -29,6 +29,20 @@ const QuestionModeAI = ({ answer, audioLink, isAudioPlaying, onAudioStateChange,
       onAudioStateChange(false);
     }
   };
+
+  const stopAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      if (onAudioStateChange) {
+        onAudioStateChange(false);
+      }
+    }
+  };
+
+  useImperativeHandle(ref, () => ({
+    stopAudio
+  }));
 
   return (
     <div className="p-3 pb-2 bg-white rounded-xl border border-[#E5E7EB]">
@@ -90,6 +104,8 @@ const QuestionModeAI = ({ answer, audioLink, isAudioPlaying, onAudioStateChange,
       )}
     </div>
   );
-};
+});
+
+QuestionModeAI.displayName = 'QuestionModeAI';
 
 export default QuestionModeAI;

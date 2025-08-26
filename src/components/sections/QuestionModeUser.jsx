@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setIsQuestionMode, setQuestion, setAnswerPptIndex } from "@/store/features/videoSlice";
 
 
-const QuestionModeUser = ({ onPauseVideo, onQuestionSubmit, setShowChat }) => {
+const QuestionModeUser = ({ onPauseVideo, onQuestionSubmit, setShowChat, onPauseAnswerAudio }) => {
   const dispatch = useDispatch();
   const { question } = useSelector((state) => state.video);
   const [isListening, setIsListening] = useState(false);
@@ -98,6 +98,11 @@ const QuestionModeUser = ({ onPauseVideo, onQuestionSubmit, setShowChat }) => {
     } else {
       if (onPauseVideo) {
         onPauseVideo();
+      }
+
+      // Stop any playing answer audio when mic starts
+      if (onPauseAnswerAudio) {
+        onPauseAnswerAudio();
       }
 
       setStartingText("");
