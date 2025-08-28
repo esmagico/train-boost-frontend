@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setIsQuestionMode, setQuestion, setAnswerPptIndex } from "@/store/features/videoSlice";
 
 
-const QuestionModeUser = ({ onPauseVideo, onQuestionSubmit, setShowChat, onPauseAnswerAudio }) => {
+const QuestionModeUser = ({ onPauseVideo, onQuestionSubmit, setShowChat, onPauseAnswerAudio, isAudioPlaying, isAudioLoading}) => {
   const dispatch = useDispatch();
   const { question } = useSelector((state) => state.video);
   const [isListening, setIsListening] = useState(false);
@@ -165,13 +165,13 @@ const QuestionModeUser = ({ onPauseVideo, onQuestionSubmit, setShowChat, onPause
           </div>
 
           {/* Question/Answer Text */}
-          {question ? (
+          {(question && (isAudioPlaying || isAudioLoading)) || isListening? (
             <p className="font-lato font-normal text-sm leading-[18px] text-center text-[#1A1C29]">
               {question}
             </p>
           ) : (
             <p className="font-lato font-normal text-sm leading-[18px] text-center text-[#1A1C29]">
-              {isListening ? "Listening..." : "Tap to ask a question"}
+              { "Tap to ask a question"}
             </p>
           )}
         </div>

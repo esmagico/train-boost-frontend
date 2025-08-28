@@ -279,8 +279,8 @@ const FloatingChatbot = ({ onPauseVideo, videos = [], presentationId }) => {
         },
         body: JSON.stringify({
           question: userQuestion,
-          // conversation: mappedConversation,
-          // knowledge_source_ids: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          conversation: mappedConversation,
+          knowledge_source_ids: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
         }),
       });
 

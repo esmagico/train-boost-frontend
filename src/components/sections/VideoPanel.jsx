@@ -16,7 +16,7 @@ import React, {
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useGetAllVideoQuery } from "@/store/api/questionsApi";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import VideoPlaylist from "./VideoPlaylist";
 import AILearningAssistant from "./AILearningAssistant";
 import QuestionModeUI from "./QuestionModeAI";
@@ -85,7 +85,7 @@ const VideoPanel = forwardRef(
       isLoading: false,
       answer: "",
       audioLink: "",
-      isAudioPlaying: false
+      isAudioPlaying: false,
     });
     const [conversation, setConversation] = useState([]);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -105,70 +105,103 @@ const VideoPanel = forwardRef(
     const preloadVideoRef = useRef(null); // For preloading next video
     const router = useRouter();
     const dispatch = useDispatch();
-    const { currentVideoIndex, isQuestionMode } = useSelector((state) => state.video);
+    const { currentVideoIndex, isQuestionMode } = useSelector(
+      (state) => state.video
+    );
     const [showChat, setShowChat] = useState(false);
     const questionModeAIRef = useRef(null);
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
     const handleQuestionSubmit = async (userQuestion) => {
+      console.log(userQuestion, "userQuestion");
       if (!userQuestion) return;
-      
+
       if (onPauseVideo) {
         onPauseVideo();
       }
-      
-      setQaState(prev => ({ ...prev, isLoading: true, answer: "", audioLink: "" }));
-      
-      // Add user question to conversation
-      setConversation(prev => [
+
+      setQaState((prev) => ({
         ...prev,
-        { type: "question", content: userQuestion }
+        isLoading: true,
+        answer: "",
+        audioLink: "",
+      }));
+
+      // Add user question to conversation
+      setConversation((prev) => [
+        ...prev,
+        { type: "question", content: userQuestion },
       ]);
-      
+
       try {
-        const response = await fetch(`${API_BASE_URL}/qa/${presentationId}?stream_audio=true`, {
-          method: 'POST',
-          headers: {
-            'Accept': 'audio/mpeg',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            question: userQuestion,
-          }),
-        });
-        
+        // Map conversation for API - convert internal format to API format and get latest 10
+        const mappedConversation = conversation
+          .slice(-10) // Get only the latest 10 conversations
+          .map((item) => ({
+            type: item.type === "question" ? "user" : "AI",
+            content: item.content,
+          }));
+
+        const response = await fetch(
+          `${API_BASE_URL}/qa/${presentationId}?stream_audio=true`,
+          {
+            method: "POST",
+            headers: {
+              Accept: "audio/mpeg",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              question: userQuestion,
+              conversation: mappedConversation,
+              knowledge_source_ids: [1],
+              config: { use_external_knowledge: false },
+            }),
+          }
+        );
+
         if (response.ok) {
-          const answerText = response.headers.get('x-answer') || 'No answer received';
-          
-          const jumpTarget = response.headers.get('x-jump-target');
+          const answerText =
+            response.headers.get("x-answer") || "No answer received";
+
+          const jumpTarget = response.headers.get("x-jump-target");
           if (jumpTarget !== null && jumpTarget !== undefined) {
             dispatch(setAnswerPptIndex(parseInt(jumpTarget)));
           }
-          
+
           const audioBlob = await response.blob();
           const audioUrl = URL.createObjectURL(audioBlob);
-          
-          setQaState(prev => ({ ...prev, answer: answerText, audioLink: audioUrl }));
-          
-          // Add AI answer to conversation
-          setConversation(prev => [
+
+          setQaState((prev) => ({
             ...prev,
-            { type: "answer", content: answerText || "No text answer found" }
+            answer: answerText,
+            audioLink: audioUrl,
+          }));
+
+          // Add AI answer to conversation
+          setConversation((prev) => [
+            ...prev,
+            { type: "answer", content: answerText || "No text answer found" },
           ]);
         } else {
-          throw new Error('Failed to get response');
+          throw new Error("Failed to get response");
         }
       } catch (error) {
         console.log("Error submitting question:", error);
         toast.error("Failed to get audio response. Please try again.");
-        setQaState(prev => ({ ...prev, answer: "Failed to load answer. Please try again." }));
-        
-        // Add error to conversation
-        setConversation(prev => [
+        setQaState((prev) => ({
           ...prev,
-          { type: "error", content: "Failed to load answer. Please try again." }
+          answer: "Failed to load answer. Please try again.",
+        }));
+
+        // Add error to conversation
+        setConversation((prev) => [
+          ...prev,
+          {
+            type: "error",
+            content: "Failed to load answer. Please try again.",
+          },
         ]);
       } finally {
-        setQaState(prev => ({ ...prev, isLoading: false }));
+        setQaState((prev) => ({ ...prev, isLoading: false }));
       }
     };
     const [showRedirectPopup, setShowRedirectPopup] = useState(false);
@@ -415,6 +448,20 @@ const VideoPanel = forwardRef(
       }
     }, [isPlaying, currentVideoIndex, dispatch]);
 
+    // Reset error state when exiting question mode
+    useEffect(() => {
+      if (!isQuestionMode) {
+        setQaState((prev) => ({
+          ...prev,
+          isLoading: false,
+          answer: "",
+          audioLink: "",
+          isAudioPlaying: false,
+        }));
+        setConversation([]);
+      }
+    }, [isQuestionMode]);
+
     // Cleanup preload video element on unmount
     useEffect(() => {
       return () => {
@@ -547,160 +594,164 @@ const VideoPanel = forwardRef(
           </div>
         )}
         {!isQuestionMode && !showChat ? (
-        <div className="p-3 pb-2 bg-white rounded-xl border border-[#E5E7EB]">
-          <div className="relative w-full pt-[56.25%] bg-black rounded-lg overflow-hidden">
-            {" "}
-            {/* 16:9 Aspect Ratio */}
-            <video
-              key={`trainer-video-${currentVideoIndex}`}
-              ref={videoRef}
-              src={videos?.[currentVideoIndex]?.trainer_video}
-              className="absolute top-0 left-0 w-full h-full object-cover"
-              onEnded={handleVideoEnd}
-              onTimeUpdate={(e) => {
-                const time = e.target.currentTime;
-                setCurrentTime(time);
-                dispatch(setCurrentVideoTime(time));
-                // Pass video state to parent for PPT synchronization
-                if (onVideoStateChange) {
-                  onVideoStateChange({
-                    currentTime: time,
-                    isPlaying: !e.target.paused,
-                    currentVideoIndex,
-                    duration: e.target.duration || duration,
-                  });
-                }
-              }}
-              onLoadedMetadata={(e) => {
-                const newDuration = e.target.duration;
-                setDuration(newDuration);
-                // Apply persistent settings when metadata is loaded
-                applyVideoSettings(e.target);
-                // Notify parent about duration
-                if (onVideoStateChange) {
-                  onVideoStateChange({
-                    currentTime,
-                    isPlaying,
-                    currentVideoIndex,
-                    duration: newDuration,
-                  });
-                }
-              }}
-              onCanPlay={(e) => {
-                console.log("Trainer video can play");
-                // Apply persistent settings when video can play
-                applyVideoSettings(e.target);
-              }}
-              onPlay={() => {
-                setIsPlaying(true);
-                dispatch(setIsVideoPlaying(true));
+          <div className="p-3 pb-2 bg-white rounded-xl border border-[#E5E7EB]">
+            <div className="relative w-full pt-[56.25%] bg-black rounded-lg overflow-hidden">
+              {" "}
+              {/* 16:9 Aspect Ratio */}
+              <video
+                key={`trainer-video-${currentVideoIndex}`}
+                ref={videoRef}
+                src={videos?.[currentVideoIndex]?.trainer_video}
+                className="absolute top-0 left-0 w-full h-full object-cover"
+                onEnded={handleVideoEnd}
+                onTimeUpdate={(e) => {
+                  const time = e.target.currentTime;
+                  setCurrentTime(time);
+                  dispatch(setCurrentVideoTime(time));
+                  // Pass video state to parent for PPT synchronization
+                  if (onVideoStateChange) {
+                    onVideoStateChange({
+                      currentTime: time,
+                      isPlaying: !e.target.paused,
+                      currentVideoIndex,
+                      duration: e.target.duration || duration,
+                    });
+                  }
+                }}
+                onLoadedMetadata={(e) => {
+                  const newDuration = e.target.duration;
+                  setDuration(newDuration);
+                  // Apply persistent settings when metadata is loaded
+                  applyVideoSettings(e.target);
+                  // Notify parent about duration
+                  if (onVideoStateChange) {
+                    onVideoStateChange({
+                      currentTime,
+                      isPlaying,
+                      currentVideoIndex,
+                      duration: newDuration,
+                    });
+                  }
+                }}
+                onCanPlay={(e) => {
+                  console.log("Trainer video can play");
+                  // Apply persistent settings when video can play
+                  applyVideoSettings(e.target);
+                }}
+                onPlay={() => {
+                  setIsPlaying(true);
+                  dispatch(setIsVideoPlaying(true));
 
-                // Reset answerPptIndex when video starts playing
-                dispatch(setAnswerPptIndex(null));
+                  // Reset answerPptIndex when video starts playing
+                  dispatch(setAnswerPptIndex(null));
 
-                // Pause any playing answer audio when video starts
-                if (onPauseAnswerAudio) {
-                  onPauseAnswerAudio();
-                }
+                  // Pause any playing answer audio when video starts
+                  if (onPauseAnswerAudio) {
+                    onPauseAnswerAudio();
+                  }
 
-                // Notify parent about play state change
-                if (onVideoStateChange) {
-                  onVideoStateChange({
-                    currentTime,
-                    isPlaying: true,
-                    currentVideoIndex,
-                    duration,
-                  });
-                }
-              }}
-              onPause={() => {
-                setIsPlaying(false);
-                dispatch(setIsVideoPlaying(false));
-                // Notify parent about pause state change
-                if (onVideoStateChange) {
-                  onVideoStateChange({
-                    currentTime,
-                    isPlaying: false,
-                    currentVideoIndex,
-                    duration,
-                  });
-                }
-              }}
-              onLoadStart={() => {
-                console.log("Trainer video loading started...");
-              }}
-              onVolumeChange={(e) => {
-                // Track mute state and volume changes
-                const newMuted = e.target.muted;
-                const newVolume = e.target.volume;
+                  // Notify parent about play state change
+                  if (onVideoStateChange) {
+                    onVideoStateChange({
+                      currentTime,
+                      isPlaying: true,
+                      currentVideoIndex,
+                      duration,
+                    });
+                  }
+                }}
+                onPause={() => {
+                  setIsPlaying(false);
+                  dispatch(setIsVideoPlaying(false));
+                  // Notify parent about pause state change
+                  if (onVideoStateChange) {
+                    onVideoStateChange({
+                      currentTime,
+                      isPlaying: false,
+                      currentVideoIndex,
+                      duration,
+                    });
+                  }
+                }}
+                onLoadStart={() => {
+                  console.log("Trainer video loading started...");
+                }}
+                onVolumeChange={(e) => {
+                  // Track mute state and volume changes
+                  const newMuted = e.target.muted;
+                  const newVolume = e.target.volume;
 
-                if (
-                  newMuted !== videoSettings.muted ||
-                  newVolume !== videoSettings.volume
-                ) {
-                  setVideoSettings((prev) => ({
-                    ...prev,
-                    muted: newMuted,
-                    volume: newVolume,
-                  }));
+                  if (
+                    newMuted !== videoSettings.muted ||
+                    newVolume !== videoSettings.volume
+                  ) {
+                    setVideoSettings((prev) => ({
+                      ...prev,
+                      muted: newMuted,
+                      volume: newVolume,
+                    }));
+                  }
+                }}
+                onRateChange={(e) => {
+                  // Track playback rate changes
+                  const newRate = e.target.playbackRate;
+                  if (newRate !== videoSettings.playbackRate) {
+                    setVideoSettings((prev) => ({
+                      ...prev,
+                      playbackRate: newRate,
+                    }));
+                  }
+                }}
+                onClick={togglePlayPause}
+                // poster={videos?.[currentVideoIndex]?.thumbnail}
+                poster={
+                  "https://cdn-api.epic.dev.esmagico.in/trainboost/slides/thumb.png"
                 }
-              }}
-              onRateChange={(e) => {
-                // Track playback rate changes
-                const newRate = e.target.playbackRate;
-                if (newRate !== videoSettings.playbackRate) {
-                  setVideoSettings((prev) => ({
-                    ...prev,
-                    playbackRate: newRate,
-                  }));
-                }
-              }}
-              onClick={togglePlayPause}
-              // poster={videos?.[currentVideoIndex]?.thumbnail}
-              poster={
-                "https://cdn-api.epic.dev.esmagico.in/trainboost/slides/thumb.png"
-              }
-              autoPlay={autoPlayEnabled}
-              controls={true}
-              controlsList="nodownload"
-              disablePictureInPicture
-            />
+                autoPlay={autoPlayEnabled}
+                controls={true}
+                controlsList="nodownload"
+                disablePictureInPicture
+              />
+            </div>
+            {/* Time display below video */}
+            <div className="px-1 flex justify-between mt-2 text-[12px] leading-4 tracking-normal font-normal text-center text-gray-600 font-lato">
+              <span>
+                {formatTime(currentTime)} / {formatTime(duration)}
+              </span>
+              <span>
+                {currentVideoIndex + 1}/{videos?.length}
+              </span>
+            </div>
           </div>
-          {/* Time display below video */}
-          <div className="px-1 flex justify-between mt-2 text-[12px] leading-4 tracking-normal font-normal text-center text-gray-600 font-lato">
-            <span>
-              {formatTime(currentTime)} / {formatTime(duration)}
-            </span>
-            <span>
-              {currentVideoIndex + 1}/{videos?.length}
-            </span>
-          </div>
-        </div>
         ) : null}
         {isQuestionMode && (
-        <QuestionModeAI 
-          ref={questionModeAIRef}
-          isLoading={qaState.isLoading}
-          answer={qaState.answer}
-          audioLink={qaState.audioLink}
-          isAudioPlaying={qaState.isAudioPlaying}
-          onAudioStateChange={(isPlaying) => setQaState(prev => ({ ...prev, isAudioPlaying: isPlaying }))}
-        />
+          <QuestionModeAI
+            ref={questionModeAIRef}
+            isLoading={qaState.isLoading}
+            answer={qaState.answer}
+            audioLink={qaState.audioLink}
+            isAudioPlaying={qaState.isAudioPlaying}
+            onAudioStateChange={(isPlaying) =>
+              setQaState((prev) => ({ ...prev, isAudioPlaying: isPlaying }))
+            }
+          />
         )}
         {showChat ? (
-          <ChatUI onClose={() => setShowChat(false)} conversation={conversation} />
+          <ChatUI
+            onClose={() => setShowChat(false)}
+            conversation={conversation}
+          />
         ) : isQuestionMode ? (
-          <QuestionModeUser 
+          <QuestionModeUser
             onPauseVideo={pauseVideo}
             onQuestionSubmit={handleQuestionSubmit}
             setShowChat={setShowChat}
             onPauseAnswerAudio={stopAnswerAudio}
+            isAudioPlaying={qaState.isAudioPlaying}
+            isAudioLoading={qaState.isLoading}
           />
         ) : (
-          <AILearningAssistant 
-          setShowChat={setShowChat}
-          showChat={showChat}
-          />
+          <AILearningAssistant setShowChat={setShowChat} showChat={showChat} />
         )}
       </div>
     );
