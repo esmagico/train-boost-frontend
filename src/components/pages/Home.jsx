@@ -73,6 +73,32 @@ const SupportIcon = () => (
   </svg>
 );
 
+const BriefcaseIcon = () => (
+  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    <path fillRule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h2zm4-1a1 1 0 00-1 1v1h2V6a1 1 0 00-1-1z" clipRule="evenodd" />
+  </svg>
+);
+
+const ForumIcon = () => (
+  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z" />
+    <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z" />
+  </svg>
+);
+
+const CalendarIcon = () => (
+  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+  </svg>
+);
+
+const MentorshipIcon = () => (
+  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
+    <path d="M6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+  </svg>
+);
+
 // Dummy data
 const dummyPresentations = [
   {
@@ -109,6 +135,95 @@ const supportInfo = {
   phone: "+1 (555) 123-4567"
 };
 
+// Career Services dummy data
+const dummyJobOpportunities = [
+  { id: 1, title: "Senior Financial Analyst", company: "Goldman Sachs", location: "New York, NY", type: "Full-time", salary: "$95,000 - $120,000", posted: "2 days ago" },
+  { id: 2, title: "Investment Banking Associate", company: "JP Morgan Chase", location: "Chicago, IL", type: "Full-time", salary: "$110,000 - $140,000", posted: "1 week ago" },
+  { id: 3, title: "Corporate Finance Manager", company: "Microsoft", location: "Seattle, WA", type: "Full-time", salary: "$130,000 - $160,000", posted: "3 days ago" },
+  { id: 4, title: "Financial Planning Analyst", company: "Apple Inc.", location: "Cupertino, CA", type: "Full-time", salary: "$85,000 - $110,000", posted: "5 days ago" },
+];
+
+const careerResources = [
+  { title: "Resume Builder Tool", description: "Create professional resumes with AI assistance", icon: "📄", link: "#" },
+  { title: "Interview Preparation", description: "Practice with mock interviews and get feedback", icon: "🎯", link: "#" },
+  { title: "Career Counseling", description: "One-on-one sessions with career experts", icon: "💼", link: "#" },
+  { title: "Salary Negotiation Guide", description: "Learn how to negotiate your worth", icon: "💰", link: "#" },
+];
+
+// Community/Forum dummy data
+const dummyForumPosts = [
+  { id: 1, title: "Best practices for financial modeling in Excel?", author: "Sarah Chen", replies: 12, likes: 24, category: "Finance", time: "2 hours ago", isAnswered: true },
+  { id: 2, title: "Looking for study group for CFA Level 1", author: "Mike Johnson", replies: 8, likes: 15, category: "Study Groups", time: "4 hours ago", isAnswered: false },
+  { id: 3, title: "Career transition from accounting to investment banking", author: "Emily Davis", replies: 18, likes: 32, category: "Career", time: "1 day ago", isAnswered: true },
+  { id: 4, title: "Recommended books for corporate finance beginners", author: "Alex Rodriguez", replies: 25, likes: 45, category: "Resources", time: "2 days ago", isAnswered: true },
+];
+
+const forumCategories = [
+  { name: "General Discussion", count: 156, color: "bg-blue-100 text-blue-800" },
+  { name: "Study Groups", count: 89, color: "bg-green-100 text-green-800" },
+  { name: "Career Advice", count: 234, color: "bg-purple-100 text-purple-800" },
+  { name: "Course Help", count: 178, color: "bg-orange-100 text-orange-800" },
+  { name: "Resources", count: 92, color: "bg-indigo-100 text-indigo-800" },
+];
+
+// Calendar/Schedule dummy data
+const dummyScheduleEvents = [
+  { id: 1, title: "Corporate Finance - Module 3", type: "course", date: "2024-01-20", time: "10:00 AM", duration: "2 hours", color: "bg-blue-500" },
+  { id: 2, title: "Assignment: Financial Analysis", type: "assignment", date: "2024-01-22", time: "11:59 PM", duration: "Due", color: "bg-red-500" },
+  { id: 3, title: "Quiz: Investment Principles", type: "quiz", date: "2024-01-25", time: "2:00 PM", duration: "1 hour", color: "bg-green-500" },
+  { id: 4, title: "Mentorship Session with John Smith", type: "mentorship", date: "2024-01-26", time: "3:00 PM", duration: "1 hour", color: "bg-purple-500" },
+  { id: 5, title: "Career Workshop: Resume Building", type: "workshop", date: "2024-01-28", time: "1:00 PM", duration: "2 hours", color: "bg-orange-500" },
+];
+
+const upcomingDeadlines = [
+  { title: "Financial Modeling Project", course: "Corporate Finance", dueDate: "Jan 22, 2024", priority: "high" },
+  { title: "Market Analysis Report", course: "Investment Banking", dueDate: "Jan 25, 2024", priority: "medium" },
+  { title: "Risk Assessment Quiz", course: "Risk Management", dueDate: "Jan 28, 2024", priority: "low" },
+];
+
+// Mentorship Program dummy data
+const dummyMentors = [
+  {
+    id: 1,
+    name: "John Smith",
+    title: "Senior VP, Investment Banking",
+    company: "Goldman Sachs",
+    experience: "15+ years",
+    expertise: ["Investment Banking", "Merger & Acquisitions", "Corporate Finance",],
+    rating: 4.9,
+    sessions: 127,
+    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+  },
+  {
+    id: 2,
+    name: "Sarah Johnson",
+    title: "Director of Finance",
+    company: "Microsoft",
+    experience: "12+ years",
+    expertise: ["Corporate Finance", "Financial Planning", "Budgeting"],
+    rating: 4.8,
+    sessions: 89,
+    avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face"
+  },
+  {
+    id: 3,
+    name: "Michael Chen",
+    title: "Portfolio Manager",
+    company: "BlackRock",
+    experience: "10+ years",
+    expertise: ["Portfolio Management", "Risk Analysis", "Asset Allocation"],
+    rating: 4.7,
+    sessions: 156,
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
+  },
+];
+
+const mentorshipPrograms = [
+  { title: "Career Transition Program", duration: "3 months", participants: 45, description: "For professionals switching to finance careers" },
+  { title: "Leadership Development", duration: "6 months", participants: 28, description: "Develop leadership skills in finance roles" },
+  { title: "Technical Skills Mentorship", duration: "4 months", participants: 67, description: "Advanced financial modeling and analysis" },
+];
+
 const PresentationCard = ({ presentation, onClick, index, showBadge }) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -139,9 +254,8 @@ const PresentationCard = ({ presentation, onClick, index, showBadge }) => {
           alt={presentation.title}
           fill
           priority={isPriority}
-          className={`object-cover group-hover:scale-105 transition-all duration-300 ${
-            imageLoaded ? "opacity-100" : "opacity-0"
-          }`}
+          className={`object-cover group-hover:scale-105 transition-all duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"
+            }`}
           onError={() => setImageError(true)}
           onLoad={() => setImageLoaded(true)}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -434,7 +548,7 @@ const Home = ({ showStats, showFilterTab }) => {
               {dummyAnalytics.monthlyProgress.map((value, index) => (
                 <div key={index} className="flex flex-col items-center flex-1">
                   <div className="w-full bg-gray-50 rounded relative flex items-end" style={{ height: '120px' }}>
-                    <div 
+                    <div
                       className="w-full bg-gradient-to-t from-blue-600 to-purple-600 rounded transition-all duration-1000 ease-out"
                       style={{ height: `${(value / 100) * 120}px` }}
                     ></div>
@@ -538,6 +652,551 @@ const Home = ({ showStats, showFilterTab }) => {
       );
     }
 
+    if (activeSection === "career") {
+      return (
+        <>
+          {/* Hero Header */}
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <BriefcaseIcon />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                  Career Services
+                </h1>
+                <p className="text-gray-600 text-lg">
+                  Your gateway to career success and professional growth
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Career Resources */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            {careerResources.map((resource, index) => (
+              <div key={index} className="bg-white rounded-xl p-6 border border-[#f1f2f4] hover:shadow-sm transition-shadow cursor-pointer">
+                <div className="text-3xl mb-3">{resource.icon}</div>
+                <h3 className="font-semibold text-gray-900 mb-2">{resource.title}</h3>
+                <p className="text-sm text-gray-600 mb-4">{resource.description}</p>
+                <button className="text-blue-600 text-sm font-medium hover:text-blue-700">
+                  Get Started →
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Job Opportunities */}
+          <div className="bg-white rounded-xl border border-[#f1f2f4] mb-8">
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">Latest Job Opportunities</h3>
+                <button className="text-blue-600 text-sm font-medium hover:text-blue-700">
+                  View All Jobs
+                </button>
+              </div>
+            </div>
+            <div className="divide-y divide-gray-100">
+              {dummyJobOpportunities.map((job) => (
+                <div key={job.id} className="p-6 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-900 mb-1">{job.title}</h4>
+                      <p className="text-blue-600 font-medium mb-2">{job.company}</p>
+                      <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
+                        <span className="flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                          </svg>
+                          {job.location}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                          </svg>
+                          {job.type}
+                        </span>
+                      </div>
+                      <p className="text-green-600 font-medium text-sm">{job.salary}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-gray-500 mb-3">{job.posted}</p>
+                      <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                        Apply Now
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Career Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-green-600 font-medium text-sm">Job Placement Rate</p>
+                  <p className="text-2xl font-bold text-green-700">94%</p>
+                  <p className="text-green-600 text-xs">of graduates</p>
+                </div>
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-blue-600 font-medium text-sm">Average Salary Increase</p>
+                  <p className="text-2xl font-bold text-blue-700">35%</p>
+                  <p className="text-blue-600 text-xs">after completion</p>
+                </div>
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-purple-600 font-medium text-sm">Partner Companies</p>
+                  <p className="text-2xl font-bold text-purple-700">150+</p>
+                  <p className="text-purple-600 text-xs">hiring partners</p>
+                </div>
+                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    if (activeSection === "community") {
+      return (
+        <>
+          {/* Hero Header */}
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-green-600 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <ForumIcon />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                  Community Forum
+                </h1>
+                <p className="text-gray-600 text-lg">
+                  Connect, collaborate, and learn with fellow students
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Forum Categories */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+            {forumCategories.map((category, index) => (
+              <div key={index} className="bg-white rounded-xl p-4 border border-[#f1f2f4] hover:shadow-sm transition-shadow cursor-pointer">
+                <h3 className="font-semibold text-gray-900 text-sm mb-2">{category.name}</h3>
+                <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${category.color}`}>
+                  {category.count} posts
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Recent Posts */}
+          <div className="bg-white rounded-xl border border-[#f1f2f4] mb-8">
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">Recent Discussions</h3>
+                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                  New Post
+                </button>
+              </div>
+            </div>
+            <div className="divide-y divide-gray-100">
+              {dummyForumPosts.map((post) => (
+                <div key={post.id} className="p-6 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h4 className="font-semibold text-gray-900 hover:text-blue-600 cursor-pointer">
+                          {post.title}
+                        </h4>
+                        {post.isAnswered && (
+                          <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
+                            ✓ Answered
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
+                        <span className="font-medium">{post.author}</span>
+                        <span className={`px-2 py-1 rounded-full text-xs ${post.category === 'Finance' ? 'bg-blue-100 text-blue-700' :
+                            post.category === 'Study Groups' ? 'bg-green-100 text-green-700' :
+                              post.category === 'Career' ? 'bg-purple-100 text-purple-700' :
+                                'bg-orange-100 text-orange-700'
+                          }`}>
+                          {post.category}
+                        </span>
+                        <span>{post.time}</span>
+                      </div>
+                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                        <span className="flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
+                          </svg>
+                          {post.replies} replies
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                          </svg>
+                          {post.likes} likes
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Community Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] text-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
+                </svg>
+              </div>
+              <p className="text-2xl font-bold text-gray-900">2,847</p>
+              <p className="text-sm text-gray-600">Active Members</p>
+            </div>
+            <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] text-center">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <p className="text-2xl font-bold text-gray-900">749</p>
+              <p className="text-sm text-gray-600">Total Discussions</p>
+            </div>
+            <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] text-center">
+              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <p className="text-2xl font-bold text-gray-900">1,234</p>
+              <p className="text-sm text-gray-600">Questions Answered</p>
+            </div>
+            <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] text-center">
+              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              </div>
+              <p className="text-2xl font-bold text-gray-900">4.8</p>
+              <p className="text-sm text-gray-600">Community Rating</p>
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    if (activeSection === "calendar") {
+      return (
+        <>
+          {/* Hero Header */}
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <CalendarIcon />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                  Calendar & Schedule
+                </h1>
+                <p className="text-gray-600 text-lg">
+                  Stay organized with your courses, deadlines, and events
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-white rounded-xl p-6 border border-[#f1f2f4]">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 font-medium text-sm">This Week</p>
+                  <p className="text-2xl font-bold text-gray-900">5</p>
+                  <p className="text-gray-500 text-xs">upcoming events</p>
+                </div>
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <CalendarIcon />
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-xl p-6 border border-[#f1f2f4]">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-red-600 font-medium text-sm">Urgent</p>
+                  <p className="text-2xl font-bold text-red-700">2</p>
+                  <p className="text-red-500 text-xs">deadlines approaching</p>
+                </div>
+                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-xl p-6 border border-[#f1f2f4]">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-green-600 font-medium text-sm">Completed</p>
+                  <p className="text-2xl font-bold text-green-700">12</p>
+                  <p className="text-green-500 text-xs">tasks this month</p>
+                </div>
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Upcoming Events */}
+          <div className="bg-white rounded-xl border border-[#f1f2f4] mb-8">
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">Upcoming Events</h3>
+                <button className="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
+                  Add Event
+                </button>
+              </div>
+            </div>
+            <div className="divide-y divide-gray-100">
+              {dummyScheduleEvents.map((event) => (
+                <div key={event.id} className="p-6 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-3 h-12 rounded-full ${event.color}`}></div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-900 mb-1">{event.title}</h4>
+                      <div className="flex items-center gap-4 text-sm text-gray-600">
+                        <span className="flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                          </svg>
+                          {event.date}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                          </svg>
+                          {event.time}
+                        </span>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${event.type === 'course' ? 'bg-blue-100 text-blue-700' :
+                            event.type === 'assignment' ? 'bg-red-100 text-red-700' :
+                              event.type === 'quiz' ? 'bg-green-100 text-green-700' :
+                                event.type === 'mentorship' ? 'bg-purple-100 text-purple-700' :
+                                  'bg-orange-100 text-orange-700'
+                          }`}>
+                          {event.type}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-gray-900">{event.duration}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Upcoming Deadlines */}
+          <div className="bg-white rounded-xl border border-[#f1f2f4]">
+            <div className="p-6 border-b border-gray-100">
+              <h3 className="text-lg font-semibold text-gray-900">Upcoming Deadlines</h3>
+            </div>
+            <div className="divide-y divide-gray-100">
+              {upcomingDeadlines.map((deadline, index) => (
+                <div key={index} className="p-6 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">{deadline.title}</h4>
+                      <p className="text-sm text-gray-600">{deadline.course}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-gray-900 mb-1">{deadline.dueDate}</p>
+                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${deadline.priority === 'high' ? 'bg-red-100 text-red-700' :
+                          deadline.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                            'bg-green-100 text-green-700'
+                        }`}>
+                        {deadline.priority} priority
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    if (activeSection === "mentorship") {
+      return (
+        <>
+          {/* Hero Header */}
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-orange-600 to-red-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <MentorshipIcon />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                  Mentorship Program
+                </h1>
+                <p className="text-gray-600 text-lg">
+                  Connect with industry experts and accelerate your career growth
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Mentorship Programs */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {mentorshipPrograms.map((program, index) => (
+              <div key={index} className="bg-white rounded-xl p-6 border border-[#f1f2f4] hover:shadow-sm transition-shadow">
+                <h3 className="font-semibold text-gray-900 mb-2">{program.title}</h3>
+                <p className="text-sm text-gray-600 mb-4">{program.description}</p>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-orange-600 font-medium">{program.duration}</span>
+                  <span className="text-gray-500">{program.participants} participants</span>
+                </div>
+                <button className="w-full mt-4 bg-orange-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors">
+                  Join Program
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Featured Mentors */}
+          <div className="bg-white rounded-xl border border-[#f1f2f4] mb-8">
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">Featured Mentors</h3>
+                <button className="text-orange-600 text-sm font-medium hover:text-orange-700">
+                  View All Mentors
+                </button>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
+              {dummyMentors.map((mentor) => (
+                <div key={mentor.id} className="border border-gray-200 rounded-xl p-6 hover:shadow-sm transition-shadow">
+                  <div className="text-center mb-4">
+                    <img
+                      src={mentor.avatar}
+                      alt={mentor.name}
+                      className="w-16 h-16 rounded-full mx-auto mb-3 object-cover"
+                    />
+                    <h4 className="font-semibold text-gray-900">{mentor.name}</h4>
+                    <p className="text-sm text-gray-600 mb-1">{mentor.title}</p>
+                    <p className="text-sm text-blue-600 font-medium">{mentor.company}</p>
+                  </div>
+
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between text-sm mb-2">
+                      <span className="text-gray-600">Experience:</span>
+                      <span className="font-medium">{mentor.experience}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm mb-2">
+                      <span className="text-gray-600">Rating:</span>
+                      <div className="flex items-center gap-1">
+                        <span className="font-medium">{mentor.rating}</span>
+                        <svg className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Sessions:</span>
+                      <span className="font-medium">{mentor.sessions}</span>
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <p className="text-xs text-gray-600 mb-2">Expertise:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {mentor.expertise.map((skill, index) => (
+                        <span key={index} className="bg-orange-100 text-orange-700 px-2 py-1 rounded-full text-xs">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button className="w-full bg-orange-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors">
+                    Book Session
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Mentorship Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] text-center">
+              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <MentorshipIcon />
+              </div>
+              <p className="text-2xl font-bold text-gray-900">150+</p>
+              <p className="text-sm text-gray-600">Expert Mentors</p>
+            </div>
+            <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] text-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <p className="text-2xl font-bold text-gray-900">2,500+</p>
+              <p className="text-sm text-gray-600">Sessions Completed</p>
+            </div>
+            <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] text-center">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <p className="text-2xl font-bold text-gray-900">96%</p>
+              <p className="text-sm text-gray-600">Success Rate</p>
+            </div>
+            <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] text-center">
+              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              </div>
+              <p className="text-2xl font-bold text-gray-900">4.9</p>
+              <p className="text-sm text-gray-600">Average Rating</p>
+            </div>
+          </div>
+        </>
+      );
+    }
+
     if (activeSection === "assessments") {
       return (
         <>
@@ -582,11 +1241,10 @@ const Home = ({ showStats, showFilterTab }) => {
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-md ${
-                        assessment.status === 'Completed' 
-                          ? 'bg-green-100 text-green-800' 
+                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-md ${assessment.status === 'Completed'
+                          ? 'bg-green-100 text-green-800'
                           : 'bg-yellow-100 text-yellow-800'
-                      }`}>
+                        }`}>
                         {assessment.status}
                       </span>
                     </td>
@@ -649,11 +1307,10 @@ const Home = ({ showStats, showFilterTab }) => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-md ${
-                        user.role === 'Instructor' 
-                          ? 'bg-blue-100 text-blue-800' 
+                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-md ${user.role === 'Instructor'
+                          ? 'bg-blue-100 text-blue-800'
                           : 'bg-gray-100 text-gray-800'
-                      }`}>
+                        }`}>
                         {user.role}
                       </span>
                     </td>
@@ -802,11 +1459,10 @@ const Home = ({ showStats, showFilterTab }) => {
                   <button
                     key={tab.key}
                     onClick={() => setFilter(tab.key)}
-                    className={`cursor-pointer px-6 py-2 text-sm font-semibold rounded-xl transition-all duration-300 ${
-                      filter === tab.key
+                    className={`cursor-pointer px-6 py-2 text-sm font-semibold rounded-xl transition-all duration-300 ${filter === tab.key
                         ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
                         : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                    }`}
+                      }`}
                   >
                     {tab.label}
                   </button>
@@ -863,6 +1519,10 @@ const Home = ({ showStats, showFilterTab }) => {
     { key: "analytics", label: "User Analytics", icon: ChartIcon },
     { key: "assessments", label: "Assessment", icon: ClipboardIcon },
     { key: "users", label: "User Management", icon: UsersIcon },
+    { key: "career", label: "Career Services", icon: BriefcaseIcon },
+    { key: "community", label: "Community Forum", icon: ForumIcon },
+    { key: "calendar", label: "Calendar & Schedule", icon: CalendarIcon },
+    { key: "mentorship", label: "Mentorship Program", icon: MentorshipIcon },
     { key: "support", label: "Help & Support", icon: SupportIcon },
   ];
 
@@ -878,11 +1538,10 @@ const Home = ({ showStats, showFilterTab }) => {
                 <button
                   key={section.key}
                   onClick={() => setActiveSection(section.key)}
-                  className={`cursor-pointer w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-colors border ${
-                    activeSection === section.key
+                  className={`cursor-pointer w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-colors border ${activeSection === section.key
                       ? "bg-blue-50 text-blue-700 border-blue-200"
                       : "text-gray-600 hover:bg-gray-50 border-transparent"
-                  }`}
+                    }`}
                 >
                   <IconComponent />
                   <span className="font-medium">{section.label}</span>
