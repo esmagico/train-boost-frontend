@@ -108,6 +108,7 @@ const VideoPanel = forwardRef(
     const { currentVideoIndex, isQuestionMode } = useSelector((state) => state.video);
     const [showChat, setShowChat] = useState(false);
     const questionModeAIRef = useRef(null);
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
     const handleQuestionSubmit = async (userQuestion) => {
       if (!userQuestion) return;
       
@@ -124,7 +125,7 @@ const VideoPanel = forwardRef(
       ]);
       
       try {
-        const response = await fetch(`https://cf.be.trainboost.esmagico.com/api/qa/${presentationId}?stream_audio=true`, {
+        const response = await fetch(`${API_BASE_URL}/qa/${presentationId}?stream_audio=true`, {
           method: 'POST',
           headers: {
             'Accept': 'audio/mpeg',

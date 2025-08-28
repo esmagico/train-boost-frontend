@@ -51,28 +51,28 @@ const Header = () => {
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
-    try {
-      const tokens = JSON.parse(localStorage.getItem("trainboost_tokens") || '{}');
-      if (tokens.refresh_token) {
-        const response = await fetch('https://xstk67r5-3001.inc1.devtunnels.ms/auth/logout', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ refresh_token: tokens.refresh_token }),
-        });
+    // try {
+    //   const tokens = JSON.parse(localStorage.getItem("trainboost_tokens") || '{}');
+    //   if (tokens.refresh_token) {
+    //     const response = await fetch('https://xstk67r5-3001.inc1.devtunnels.ms/auth/logout', {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //       body: JSON.stringify({ refresh_token: tokens.refresh_token }),
+    //     });
         
-        if (response.ok) {
+    //     if (response.ok) {
           localStorage.removeItem("trainboost_tokens");
           setIsDropdownOpen(false);
           router.push("/login");
-        }
-      }
-    } catch (error) {
-      console.log('Logout API error:', error);
-    } finally {
-      setIsLoggingOut(false);
-    }
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.log('Logout API error:', error);
+    // } finally {
+    //   setIsLoggingOut(false);
+    // }
   };
 
   return (

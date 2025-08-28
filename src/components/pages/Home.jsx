@@ -3,8 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useGetPresentationsQuery } from "../../store/api/questionsApi";
-
-
+import chat_star from "../../assets/svg/chat_star.svg";
 // Course data matching Figma design
 const dummyPresentations = [
   {
@@ -13,7 +12,8 @@ const dummyPresentations = [
     author: "Dr. Ananya Mehta",
     status: "start",
     isCompleted: false,
-    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
   },
   {
     presentation_id: 2,
@@ -21,7 +21,8 @@ const dummyPresentations = [
     author: "Ms. Shreya Iyer",
     status: "completed",
     isCompleted: true,
-    image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop",
   },
   {
     presentation_id: 3,
@@ -29,7 +30,8 @@ const dummyPresentations = [
     author: "Mr. Arjun Deshmukh",
     status: "progress",
     isCompleted: false,
-    image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&h=300&fit=crop",
   },
   {
     presentation_id: 4,
@@ -37,7 +39,8 @@ const dummyPresentations = [
     author: "Dr. Kavita Nair",
     status: "completed",
     isCompleted: true,
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=300&fit=crop",
   },
   {
     presentation_id: 5,
@@ -45,7 +48,8 @@ const dummyPresentations = [
     author: "Mr. Kunal Verma",
     status: "start",
     isCompleted: false,
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
   },
   {
     presentation_id: 6,
@@ -53,7 +57,8 @@ const dummyPresentations = [
     author: "Dr. Sneha Reddy",
     status: "progress",
     isCompleted: false,
-    image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&h=300&fit=crop",
   },
   {
     presentation_id: 7,
@@ -61,7 +66,8 @@ const dummyPresentations = [
     author: "Prof. Aditya Bansal",
     status: "start",
     isCompleted: false,
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop",
   },
   {
     presentation_id: 8,
@@ -69,7 +75,8 @@ const dummyPresentations = [
     author: "Prof. Neeraj Sharma",
     status: "progress",
     isCompleted: false,
-    image: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=400&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=400&h=300&fit=crop",
   },
 ];
 
@@ -118,7 +125,7 @@ const PresentationCard = ({ presentation, onClick }) => {
             className="object-cover transition-transform duration-300 hover:scale-110"
           />
         </div>
-        
+
         {/* Content */}
         <div className="flex flex-col items-start gap-[8px] w-full">
           <div className="flex items-center gap-[8px] w-full">
@@ -126,7 +133,7 @@ const PresentationCard = ({ presentation, onClick }) => {
               {presentation?.title || "Unknown Title"}
             </h3>
           </div>
-          
+
           <div className="flex justify-between items-start gap-[8px] w-full">
             <span className="font-lato font-normal text-[12px] leading-[14px] text-[#585858]">
               {presentation?.author || "Unknown Author"}
@@ -142,8 +149,11 @@ const PresentationCard = ({ presentation, onClick }) => {
 const Home = () => {
   const router = useRouter();
   const [filter, setFilter] = useState("all");
-  const { data: presentations = [], isLoading: loading, error } = useGetPresentationsQuery();
-
+  const {
+    data: presentations = [],
+    isLoading: loading,
+    error,
+  } = useGetPresentationsQuery();
   const handlePresentationClick = (presentationId) => {
     router.push(`/lectures/${presentationId}`);
   };
@@ -152,7 +162,9 @@ const Home = () => {
     return (
       <div className="w-full min-h-screen bg-[#F9F9F9] flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-red-600 mb-2">Error Loading Presentations</h2>
+          <h2 className="text-xl font-semibold text-red-600 mb-2">
+            Error Loading Presentations
+          </h2>
           <p className="text-gray-600">Failed to fetch data from the server.</p>
         </div>
       </div>
@@ -186,11 +198,14 @@ const Home = () => {
           <div className="flex flex-col items-start gap-[12px] w-full h-[459px]">
             <div className="grid grid-cols-4 gap-[12px] w-full">
               {[...Array(8)].map((_, index) => (
-                <div key={index} className="flex flex-col items-start p-[12px_12px_16px] gap-[10px] w-full min-w-[280px] aspect-[331/223.5] bg-white rounded-[8px]">
+                <div
+                  key={index}
+                  className="flex flex-col items-start p-[12px_12px_16px] gap-[10px] w-full min-w-[280px] aspect-[331/223.5] bg-white rounded-[8px]"
+                >
                   <div className="flex flex-col items-start gap-[12px] w-full flex-1">
                     {/* Thumbnail skeleton */}
                     <div className="w-full flex-1 bg-gray-200 rounded-[8px]"></div>
-                    
+
                     {/* Content skeleton */}
                     <div className="flex flex-col items-start gap-[8px] w-full">
                       <div className="w-full h-[19px] bg-gray-200 rounded"></div>
@@ -209,22 +224,25 @@ const Home = () => {
     );
   }
 
-  const completedCount = presentations.filter((p) => p.isCompleted || p.status === 'completed').length;
-  const totalCount = presentations.length;
+  const completedCount = presentations?.data?.filter(
+    (p) => p.isCompleted || p.status === "completed"
+  ).length;
+  const totalCount = presentations?.data?.length;
 
   return (
     <div className="w-full min-h-screen bg-[#F9F9F9]">
       {/* Purple Header Section */}
       <div className="w-full h-[112px] bg-[#744FFF] relative mt-1">
         {/* User Profile */}
-        <div className="absolute flex items-center gap-[12px] w-[150px] h-[48px] left-[40px] top-[32px]">
-          <div className="w-[48px] h-[48px] bg-[#F1F2F4] rounded-[60px]"></div>
-          <div className="flex flex-col justify-center items-start gap-[4px] w-[90px] h-[38px]">
-            <span className="font-lato font-normal text-[12px] leading-[14px] text-white opacity-70">
-              Welcome back
-            </span>
+        <div className="flex items-center gap-[12px] px-[40px] py-8">
+          {/* <div className="w-[48px] h-[48px] bg-[#F1F2F4] rounded-[60px]"></div> */}
+          <Image className="w-[48px] h-[48px] bg-[#F1F2F4] rounded-[60px]" src={chat_star} alt="User icon"/>
+          <div className="flex flex-col justify-center items-start gap-[4px] min-w-[120px] h-[38px]">
             <span className="font-lato font-semibold text-[17px] leading-[20px] text-white">
-              John Doe
+            Hello, Giri Prathap!
+            </span>
+            <span className="font-lato font-normal text-[12px] leading-[14px] text-white opacity-70">
+            Browse your courses and get instant answers to your questions with our AI guide.
             </span>
           </div>
         </div>
@@ -234,65 +252,6 @@ const Home = () => {
           <h3 className="w-full h-[17px] font-lato font-semibold text-[14px] leading-[17px] text-white">
             Learning Overview
           </h3>
-          
-          <div className="flex items-center gap-[12px] w-full h-[109px]">
-            {/* Course Completed */}
-            <div className="flex flex-col items-start p-[16px] gap-[10px] flex-1 h-[109px] bg-white rounded-[8px]">
-              <div className="flex flex-col items-start gap-[8px] w-full h-[77px]">
-                <div className="w-[32px] h-[32px] bg-[#F3EDFF] rounded-[37.9259px] flex items-center justify-center">
-                  <div className="w-[20px] h-[20px] bg-[#744FFF] opacity-50 rounded"></div>
-                </div>
-                <div className="flex flex-col items-start gap-[4px] w-full h-[37px]">
-                  <div className="flex items-center gap-[8px] w-full h-[19px]">
-                    <span className="font-lato font-bold text-[16px] leading-[19px] text-[#1D1F2C]">
-                      {completedCount}/{totalCount}
-                    </span>
-                  </div>
-                  <span className="font-lato font-normal text-[12px] leading-[14px] text-[rgba(26,28,41,0.5)]">
-                    Course Completed
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Speaking Skills */}
-            <div className="flex flex-col items-start p-[16px] gap-[10px] flex-1 h-[109px] bg-white rounded-[8px]">
-              <div className="flex flex-col items-start gap-[8px] w-full h-[77px]">
-                <div className="w-[32px] h-[32px] bg-[#F3EDFF] rounded-[37.9259px] flex items-center justify-center">
-                  <div className="w-[17.78px] h-[17.78px] bg-[#744FFF] rounded"></div>
-                </div>
-                <div className="flex flex-col items-start gap-[4px] w-full h-[37px]">
-                  <div className="flex items-center gap-[8px] w-full h-[19px]">
-                    <span className="font-lato font-bold text-[16px] leading-[19px] text-[#1D1F2C]">
-                      5/10
-                    </span>
-                  </div>
-                  <span className="font-lato font-normal text-[12px] leading-[14px] text-[rgba(26,28,41,0.5)]">
-                    Course Completed
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Achievements */}
-            <div className="flex flex-col items-start p-[16px] gap-[10px] flex-1 h-[112px] bg-white rounded-[8px]">
-              <div className="flex flex-col items-start gap-[8px] w-full h-[77px]">
-                <div className="w-[32px] h-[32px] bg-[#F3EDFF] rounded-[37.9259px] flex items-center justify-center">
-                  <div className="w-[18px] h-[18px] bg-[#744FFF] rounded-[5px]"></div>
-                </div>
-                <div className="flex flex-col items-start gap-[4px] w-full h-[37px]">
-                  <div className="flex items-center gap-[8px] w-full h-[19px]">
-                    <span className="font-lato font-bold text-[16px] leading-[19px] text-[#1D1F2C]">
-                      5
-                    </span>
-                  </div>
-                  <span className="font-lato font-normal text-[12px] leading-[14px] text-[rgba(26,28,41,0.5)]">
-                    Achievement's
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -303,7 +262,7 @@ const Home = () => {
           <h2 className="font-lato font-bold text-[16px] leading-[19px] text-[#1A1C29]">
             Available Courses
           </h2>
-          
+
           {/* Tabs */}
           <div className="flex items-start p-1 w-[234px] h-[32px] bg-white border border-[#E0E2E7] rounded-[6px]">
             <button
@@ -312,9 +271,11 @@ const Home = () => {
                 filter === "all" ? "bg-[#744FFF]" : ""
               }`}
             >
-              <span className={`font-lato font-medium text-[12px] leading-[20px] ${
-                filter === "all" ? "text-white" : "text-[#667085]"
-              }`}>
+              <span
+                className={`font-lato font-medium text-[12px] leading-[20px] ${
+                  filter === "all" ? "text-white" : "text-[#667085]"
+                }`}
+              >
                 All
               </span>
             </button>
@@ -324,9 +285,11 @@ const Home = () => {
                 filter === "in-progress" ? "bg-[#744FFF]" : ""
               }`}
             >
-              <span className={`font-lato font-medium text-[12px] leading-[20px] whitespace-nowrap ${
-                filter === "in-progress" ? "text-white" : "text-[#667085]"
-              }`}>
+              <span
+                className={`font-lato font-medium text-[12px] leading-[20px] whitespace-nowrap ${
+                  filter === "in-progress" ? "text-white" : "text-[#667085]"
+                }`}
+              >
                 In Progress
               </span>
             </button>
@@ -336,9 +299,11 @@ const Home = () => {
                 filter === "completed" ? "bg-[#744FFF]" : ""
               }`}
             >
-              <span className={`font-lato font-medium text-[12px] leading-[20px] ${
-                filter === "completed" ? "text-white" : "text-[#667085]"
-              }`}>
+              <span
+                className={`font-lato font-medium text-[12px] leading-[20px] ${
+                  filter === "completed" ? "text-white" : "text-[#667085]"
+                }`}
+              >
                 Completed
               </span>
             </button>
@@ -348,7 +313,7 @@ const Home = () => {
         {/* Course Grid */}
         <div className="flex flex-col items-start gap-[12px] w-full h-[459px]">
           <div className="grid grid-cols-4 gap-[12px] w-full">
-            {presentations
+            {presentations?.data
               .filter(
                 (p) =>
                   filter === "all" ||
@@ -359,7 +324,9 @@ const Home = () => {
                 <PresentationCard
                   key={presentation.presentation_id}
                   presentation={presentation}
-                  onClick={() => handlePresentationClick(presentation.presentation_id)}
+                  onClick={() =>
+                    handlePresentationClick(presentation.presentation_id)
+                  }
                 />
               ))}
           </div>
