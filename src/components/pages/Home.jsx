@@ -1,22 +1,22 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
+'use client'
+import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 // AI-themed icons
 const AIIcon = () => (
   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
     <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z" />
   </svg>
-);
+)
 
 const PlayIcon = () => (
   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
     <path d="M8 5.14v14.72L19 12L8 5.14z" />
   </svg>
-);
+)
 
-const CheckIcon = ({ color = "currentColor" }) => (
+const CheckIcon = ({ color = 'currentColor' }) => (
   <svg className="w-4 h-4" fill={color} viewBox="0 0 20 20">
     <path
       fillRule="evenodd"
@@ -24,7 +24,7 @@ const CheckIcon = ({ color = "currentColor" }) => (
       clipRule="evenodd"
     />
   </svg>
-);
+)
 
 const ClockIcon = () => (
   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -34,92 +34,148 @@ const ClockIcon = () => (
       clipRule="evenodd"
     />
   </svg>
-);
+)
 
 const BrainIcon = () => (
   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
     <path d="M21.33 12.91c.09-.69.07-1.4-.07-2.08c.17-.73.17-1.5-.02-2.24c-.2-.78-.53-1.5-.95-2.16c-.44-.68-.97-1.28-1.58-1.77c-.63-.5-1.32-.89-2.07-1.15c-.76-.27-1.55-.4-2.35-.4c-.8 0-1.59.13-2.35.4c-.75.26-1.44.65-2.07 1.15c-.61.49-1.14 1.09-1.58 1.77c-.42.66-.75 1.38-.95 2.16c-.19.74-.19 1.51-.02 2.24c-.14.68-.16 1.39-.07 2.08c.1.7.32 1.37.65 1.98c.33.61.75 1.16 1.25 1.63c.51.48 1.09.87 1.71 1.17c.63.3 1.3.45 1.98.45c.68 0 1.35-.15 1.98-.45c.62-.3 1.2-.69 1.71-1.17c.5-.47.92-1.02 1.25-1.63c.33-.61.55-1.28.65-1.98z" />
   </svg>
-);
+)
 
 // Sidebar icons
 const BookIcon = () => (
   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
     <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
   </svg>
-);
+)
 
 const ClipboardIcon = () => (
   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-    <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+    <path
+      fillRule="evenodd"
+      d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7z"
+      clipRule="evenodd"
+    />
   </svg>
-);
+)
 
 const UsersIcon = () => (
   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
     <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
   </svg>
-);
+)
 
 const ChartIcon = () => (
   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
     <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
   </svg>
-);
+)
 
 const SupportIcon = () => (
   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0c0 .993-.241 1.929-.668 2.754l-1.524-1.525a3.997 3.997 0 00.078-2.183l1.562-1.562C15.802 8.249 16 9.1 16 10zm-5.165 3.913l1.58 1.58A5.98 5.98 0 0110 16a5.976 5.976 0 01-2.516-.552l1.562-1.562a4.006 4.006 0 001.789.027zm-4.677-2.796a4.002 4.002 0 01-.041-2.08l-1.106-1.106A6.002 6.002 0 004 10c0 .639.1 1.255.283 1.836l1.875-1.875zM10 4a6.002 6.002 0 012.668.628l-1.524 1.524a4.002 4.002 0 00-2.183.078l-1.562-1.562A5.98 5.98 0 0110 4z" clipRule="evenodd" />
+    <path
+      fillRule="evenodd"
+      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0c0 .993-.241 1.929-.668 2.754l-1.524-1.525a3.997 3.997 0 00.078-2.183l1.562-1.562C15.802 8.249 16 9.1 16 10zm-5.165 3.913l1.58 1.58A5.98 5.98 0 0110 16a5.976 5.976 0 01-2.516-.552l1.562-1.562a4.006 4.006 0 001.789.027zm-4.677-2.796a4.002 4.002 0 01-.041-2.08l-1.106-1.106A6.002 6.002 0 004 10c0 .639.1 1.255.283 1.836l1.875-1.875zM10 4a6.002 6.002 0 012.668.628l-1.524 1.524a4.002 4.002 0 00-2.183.078l-1.562-1.562A5.98 5.98 0 0110 4z"
+      clipRule="evenodd"
+    />
   </svg>
-);
+)
 
 const BriefcaseIcon = () => (
   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-    <path fillRule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h2zm4-1a1 1 0 00-1 1v1h2V6a1 1 0 00-1-1z" clipRule="evenodd" />
+    <path
+      fillRule="evenodd"
+      d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h2zm4-1a1 1 0 00-1 1v1h2V6a1 1 0 00-1-1z"
+      clipRule="evenodd"
+    />
   </svg>
-);
+)
 
 const ForumIcon = () => (
   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
     <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z" />
     <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z" />
   </svg>
-);
+)
 
 const CalendarIcon = () => (
   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-    <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+    <path
+      fillRule="evenodd"
+      d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+      clipRule="evenodd"
+    />
   </svg>
-);
+)
 
 const MentorshipIcon = () => (
   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
     <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
     <path d="M6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
   </svg>
-);
+)
 
 // Dummy data
 const dummyPresentations = [
   {
     presentation_id: 1,
-    title: "Corporate Finance",
-    image: "https://d8it4huxumps7.cloudfront.net/bites/wp-content/uploads/2019/05/14074536/ISB.jpg",
+    title: 'Corporate Finance',
+    image:
+      'https://d8it4huxumps7.cloudfront.net/bites/wp-content/uploads/2019/05/14074536/ISB.jpg',
     isCompleted: false,
   },
-];
+]
 
 const dummyAssessments = [
-  { id: 1, course: "Corporate Finance", score: 85, status: "Completed", date: "2024-01-15" },
-  { id: 2, course: "Data Analytics", score: 92, status: "Completed", date: "2024-01-10" },
-  { id: 3, course: "Machine Learning", score: null, status: "Pending", date: "2024-01-20" },
-];
+  {
+    id: 1,
+    course: 'Corporate Finance',
+    score: 85,
+    status: 'Completed',
+    date: '2024-01-15',
+  },
+  {
+    id: 2,
+    course: 'Data Analytics',
+    score: 92,
+    status: 'Completed',
+    date: '2024-01-10',
+  },
+  {
+    id: 3,
+    course: 'Machine Learning',
+    score: null,
+    status: 'Pending',
+    date: '2024-01-20',
+  },
+]
 
 const dummyUsers = [
-  { id: 1, name: "John Doe", email: "john@company.com", role: "Student", courses: 3, lastActive: "2024-01-15" },
-  { id: 2, name: "Jane Smith", email: "jane@company.com", role: "Instructor", courses: 8, lastActive: "2024-01-14" },
-  { id: 3, name: "Mike Johnson", email: "mike@company.com", role: "Student", courses: 2, lastActive: "2024-01-13" },
-];
+  {
+    id: 1,
+    name: 'John Doe',
+    email: 'john@company.com',
+    role: 'Student',
+    courses: 3,
+    lastActive: '2024-01-15',
+  },
+  {
+    id: 2,
+    name: 'Jane Smith',
+    email: 'jane@company.com',
+    role: 'Instructor',
+    courses: 8,
+    lastActive: '2024-01-14',
+  },
+  {
+    id: 3,
+    name: 'Mike Johnson',
+    email: 'mike@company.com',
+    role: 'Student',
+    courses: 2,
+    lastActive: '2024-01-13',
+  },
+]
 
 const dummyAnalytics = {
   userRank: 2,
@@ -127,113 +183,282 @@ const dummyAnalytics = {
   monthlyProgress: [65, 72, 78, 85, 88, 92],
   monthlyLabels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
   averageScore: 88,
-  completionRate: 94
-};
+  completionRate: 94,
+}
 
 const supportInfo = {
-  email: "support@trainboost.com",
-  phone: "+1 (555) 123-4567"
-};
+  email: 'support@trainboost.com',
+  phone: '+1 (555) 123-4567',
+}
 
 // Career Services dummy data
 const dummyJobOpportunities = [
-  { id: 1, title: "Senior Financial Analyst", company: "Goldman Sachs", location: "New York, NY", type: "Full-time", salary: "$95,000 - $120,000", posted: "2 days ago" },
-  { id: 2, title: "Investment Banking Associate", company: "JP Morgan Chase", location: "Chicago, IL", type: "Full-time", salary: "$110,000 - $140,000", posted: "1 week ago" },
-  { id: 3, title: "Corporate Finance Manager", company: "Microsoft", location: "Seattle, WA", type: "Full-time", salary: "$130,000 - $160,000", posted: "3 days ago" },
-  { id: 4, title: "Financial Planning Analyst", company: "Apple Inc.", location: "Cupertino, CA", type: "Full-time", salary: "$85,000 - $110,000", posted: "5 days ago" },
-];
+  {
+    id: 1,
+    title: 'Senior Financial Analyst',
+    company: 'Goldman Sachs',
+    location: 'New York, NY',
+    type: 'Full-time',
+    salary: '$95,000 - $120,000',
+    posted: '2 days ago',
+  },
+  {
+    id: 2,
+    title: 'Investment Banking Associate',
+    company: 'JP Morgan Chase',
+    location: 'Chicago, IL',
+    type: 'Full-time',
+    salary: '$110,000 - $140,000',
+    posted: '1 week ago',
+  },
+  {
+    id: 3,
+    title: 'Corporate Finance Manager',
+    company: 'Microsoft',
+    location: 'Seattle, WA',
+    type: 'Full-time',
+    salary: '$130,000 - $160,000',
+    posted: '3 days ago',
+  },
+  {
+    id: 4,
+    title: 'Financial Planning Analyst',
+    company: 'Apple Inc.',
+    location: 'Cupertino, CA',
+    type: 'Full-time',
+    salary: '$85,000 - $110,000',
+    posted: '5 days ago',
+  },
+]
 
 const careerResources = [
-  { title: "Resume Builder Tool", description: "Create professional resumes with AI assistance", icon: "📄", link: "#" },
-  { title: "Interview Preparation", description: "Practice with mock interviews and get feedback", icon: "🎯", link: "#" },
-  { title: "Career Counseling", description: "One-on-one sessions with career experts", icon: "💼", link: "#" },
-  { title: "Salary Negotiation Guide", description: "Learn how to negotiate your worth", icon: "💰", link: "#" },
-];
+  {
+    title: 'Resume Builder Tool',
+    description: 'Create professional resumes with AI assistance',
+    icon: '📄',
+    link: '#',
+  },
+  {
+    title: 'Interview Preparation',
+    description: 'Practice with mock interviews and get feedback',
+    icon: '🎯',
+    link: '#',
+  },
+  {
+    title: 'Career Counseling',
+    description: 'One-on-one sessions with career experts',
+    icon: '💼',
+    link: '#',
+  },
+  {
+    title: 'Salary Negotiation Guide',
+    description: 'Learn how to negotiate your worth',
+    icon: '💰',
+    link: '#',
+  },
+]
 
 // Community/Forum dummy data
 const dummyForumPosts = [
-  { id: 1, title: "Best practices for financial modeling in Excel?", author: "Sarah Chen", replies: 12, likes: 24, category: "Finance", time: "2 hours ago", isAnswered: true },
-  { id: 2, title: "Looking for study group for CFA Level 1", author: "Mike Johnson", replies: 8, likes: 15, category: "Study Groups", time: "4 hours ago", isAnswered: false },
-  { id: 3, title: "Career transition from accounting to investment banking", author: "Emily Davis", replies: 18, likes: 32, category: "Career", time: "1 day ago", isAnswered: true },
-  { id: 4, title: "Recommended books for corporate finance beginners", author: "Alex Rodriguez", replies: 25, likes: 45, category: "Resources", time: "2 days ago", isAnswered: true },
-];
+  {
+    id: 1,
+    title: 'Best practices for financial modeling in Excel?',
+    author: 'Sarah Chen',
+    replies: 12,
+    likes: 24,
+    category: 'Finance',
+    time: '2 hours ago',
+    isAnswered: true,
+  },
+  {
+    id: 2,
+    title: 'Looking for study group for CFA Level 1',
+    author: 'Mike Johnson',
+    replies: 8,
+    likes: 15,
+    category: 'Study Groups',
+    time: '4 hours ago',
+    isAnswered: false,
+  },
+  {
+    id: 3,
+    title: 'Career transition from accounting to investment banking',
+    author: 'Emily Davis',
+    replies: 18,
+    likes: 32,
+    category: 'Career',
+    time: '1 day ago',
+    isAnswered: true,
+  },
+  {
+    id: 4,
+    title: 'Recommended books for corporate finance beginners',
+    author: 'Alex Rodriguez',
+    replies: 25,
+    likes: 45,
+    category: 'Resources',
+    time: '2 days ago',
+    isAnswered: true,
+  },
+]
 
 const forumCategories = [
-  { name: "General Discussion", count: 156, color: "bg-blue-100 text-blue-800" },
-  { name: "Study Groups", count: 89, color: "bg-green-100 text-green-800" },
-  { name: "Career Advice", count: 234, color: "bg-purple-100 text-purple-800" },
-  { name: "Course Help", count: 178, color: "bg-orange-100 text-orange-800" },
-  { name: "Resources", count: 92, color: "bg-indigo-100 text-indigo-800" },
-];
+  {
+    name: 'General Discussion',
+    count: 156,
+    color: 'bg-blue-100 text-blue-800',
+  },
+  { name: 'Study Groups', count: 89, color: 'bg-green-100 text-green-800' },
+  { name: 'Career Advice', count: 234, color: 'bg-purple-100 text-purple-800' },
+  { name: 'Course Help', count: 178, color: 'bg-orange-100 text-orange-800' },
+  { name: 'Resources', count: 92, color: 'bg-indigo-100 text-indigo-800' },
+]
 
 // Calendar/Schedule dummy data
 const dummyScheduleEvents = [
-  { id: 1, title: "Corporate Finance - Module 3", type: "course", date: "2024-01-20", time: "10:00 AM", duration: "2 hours", color: "bg-blue-500" },
-  { id: 2, title: "Assignment: Financial Analysis", type: "assignment", date: "2024-01-22", time: "11:59 PM", duration: "Due", color: "bg-red-500" },
-  { id: 3, title: "Quiz: Investment Principles", type: "quiz", date: "2024-01-25", time: "2:00 PM", duration: "1 hour", color: "bg-green-500" },
-  { id: 4, title: "Mentorship Session with John Smith", type: "mentorship", date: "2024-01-26", time: "3:00 PM", duration: "1 hour", color: "bg-purple-500" },
-  { id: 5, title: "Career Workshop: Resume Building", type: "workshop", date: "2024-01-28", time: "1:00 PM", duration: "2 hours", color: "bg-orange-500" },
-];
+  {
+    id: 1,
+    title: 'Corporate Finance - Module 3',
+    type: 'course',
+    date: '2024-01-20',
+    time: '10:00 AM',
+    duration: '2 hours',
+    color: 'bg-blue-500',
+  },
+  {
+    id: 2,
+    title: 'Assignment: Financial Analysis',
+    type: 'assignment',
+    date: '2024-01-22',
+    time: '11:59 PM',
+    duration: 'Due',
+    color: 'bg-red-500',
+  },
+  {
+    id: 3,
+    title: 'Quiz: Investment Principles',
+    type: 'quiz',
+    date: '2024-01-25',
+    time: '2:00 PM',
+    duration: '1 hour',
+    color: 'bg-green-500',
+  },
+  {
+    id: 4,
+    title: 'Mentorship Session with John Smith',
+    type: 'mentorship',
+    date: '2024-01-26',
+    time: '3:00 PM',
+    duration: '1 hour',
+    color: 'bg-purple-500',
+  },
+  {
+    id: 5,
+    title: 'Career Workshop: Resume Building',
+    type: 'workshop',
+    date: '2024-01-28',
+    time: '1:00 PM',
+    duration: '2 hours',
+    color: 'bg-orange-500',
+  },
+]
 
 const upcomingDeadlines = [
-  { title: "Financial Modeling Project", course: "Corporate Finance", dueDate: "Jan 22, 2024", priority: "high" },
-  { title: "Market Analysis Report", course: "Investment Banking", dueDate: "Jan 25, 2024", priority: "medium" },
-  { title: "Risk Assessment Quiz", course: "Risk Management", dueDate: "Jan 28, 2024", priority: "low" },
-];
+  {
+    title: 'Financial Modeling Project',
+    course: 'Corporate Finance',
+    dueDate: 'Jan 22, 2024',
+    priority: 'high',
+  },
+  {
+    title: 'Market Analysis Report',
+    course: 'Investment Banking',
+    dueDate: 'Jan 25, 2024',
+    priority: 'medium',
+  },
+  {
+    title: 'Risk Assessment Quiz',
+    course: 'Risk Management',
+    dueDate: 'Jan 28, 2024',
+    priority: 'low',
+  },
+]
 
 // Mentorship Program dummy data
 const dummyMentors = [
   {
     id: 1,
-    name: "John Smith",
-    title: "Senior VP, Investment Banking",
-    company: "Goldman Sachs",
-    experience: "15+ years",
-    expertise: ["Investment Banking", "Merger & Acquisitions", "Corporate Finance",],
+    name: 'John Smith',
+    title: 'Senior VP, Investment Banking',
+    company: 'Goldman Sachs',
+    experience: '15+ years',
+    expertise: [
+      'Investment Banking',
+      'Merger & Acquisitions',
+      'Corporate Finance',
+    ],
     rating: 4.9,
     sessions: 127,
-    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+    avatar:
+      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
   },
   {
     id: 2,
-    name: "Sarah Johnson",
-    title: "Director of Finance",
-    company: "Microsoft",
-    experience: "12+ years",
-    expertise: ["Corporate Finance", "Financial Planning", "Budgeting"],
+    name: 'Sarah Johnson',
+    title: 'Director of Finance',
+    company: 'Microsoft',
+    experience: '12+ years',
+    expertise: ['Corporate Finance', 'Financial Planning', 'Budgeting'],
     rating: 4.8,
     sessions: 89,
-    avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face"
+    avatar:
+      'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
   },
   {
     id: 3,
-    name: "Michael Chen",
-    title: "Portfolio Manager",
-    company: "BlackRock",
-    experience: "10+ years",
-    expertise: ["Portfolio Management", "Risk Analysis", "Asset Allocation"],
+    name: 'Michael Chen',
+    title: 'Portfolio Manager',
+    company: 'BlackRock',
+    experience: '10+ years',
+    expertise: ['Portfolio Management', 'Risk Analysis', 'Asset Allocation'],
     rating: 4.7,
     sessions: 156,
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
+    avatar:
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
   },
-];
+]
 
 const mentorshipPrograms = [
-  { title: "Career Transition Program", duration: "3 months", participants: 45, description: "For professionals switching to finance careers" },
-  { title: "Leadership Development", duration: "6 months", participants: 28, description: "Develop leadership skills in finance roles" },
-  { title: "Technical Skills Mentorship", duration: "4 months", participants: 67, description: "Advanced financial modeling and analysis" },
-];
+  {
+    title: 'Career Transition Program',
+    duration: '3 months',
+    participants: 45,
+    description: 'For professionals switching to finance careers',
+  },
+  {
+    title: 'Leadership Development',
+    duration: '6 months',
+    participants: 28,
+    description: 'Develop leadership skills in finance roles',
+  },
+  {
+    title: 'Technical Skills Mentorship',
+    duration: '4 months',
+    participants: 67,
+    description: 'Advanced financial modeling and analysis',
+  },
+]
 
 const PresentationCard = ({ presentation, onClick, index, showBadge }) => {
-  const [imageError, setImageError] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
 
   // Fallback image URL with AI/tech theme
   const fallbackImage =
-    "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=300&fit=crop&crop=center";
+    'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=300&fit=crop&crop=center'
 
   // Priority loading for first 6 cards
-  const isPriority = index < 6;
+  const isPriority = index < 6
 
   return (
     <div
@@ -254,12 +479,13 @@ const PresentationCard = ({ presentation, onClick, index, showBadge }) => {
           alt={presentation.title}
           fill
           priority={isPriority}
-          className={`object-cover group-hover:scale-105 transition-all duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"
-            }`}
+          className={`object-cover group-hover:scale-105 transition-all duration-300 ${
+            imageLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
           onError={() => setImageError(true)}
           onLoad={() => setImageLoaded(true)}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          loading={isPriority ? "eager" : "lazy"}
+          loading={isPriority ? 'eager' : 'lazy'}
         />
 
         {/* Gradient overlay */}
@@ -309,9 +535,9 @@ const PresentationCard = ({ presentation, onClick, index, showBadge }) => {
           <h3
             className="font-semibold text-gray-900 text-base leading-tight group-hover:text-blue-600 transition-colors overflow-hidden flex-1 mr-2"
             style={{
-              display: "-webkit-box",
+              display: '-webkit-box',
               WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
+              WebkitBoxOrient: 'vertical',
             }}
           >
             {presentation.title}
@@ -340,15 +566,16 @@ const PresentationCard = ({ presentation, onClick, index, showBadge }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const Home = ({ showStats, showFilterTab }) => {
-  const router = useRouter();
-  const [presentations, setPresentations] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("all");
-  const [activeSection, setActiveSection] = useState("courses");
+  const router = useRouter()
+  const [presentations, setPresentations] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [filter, setFilter] = useState('all')
+  const [activeSection, setActiveSection] = useState('courses')
+  const [sectionLoading, setSectionLoading] = useState(false)
 
   useEffect(() => {
     // Simulate API call
@@ -359,21 +586,21 @@ const Home = ({ showStats, showFilterTab }) => {
         // const data = await response.json();
 
         // For now, use dummy data
-        await new Promise((resolve) => setTimeout(resolve, 1200)); // Simulate loading
-        setPresentations(dummyPresentations);
+        await new Promise((resolve) => setTimeout(resolve, 1200)) // Simulate loading
+        setPresentations(dummyPresentations)
       } catch (error) {
-        console.error("Error loading presentations:", error);
+        console.error('Error loading presentations:', error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    loadPresentations();
-  }, []);
+    loadPresentations()
+  }, [])
 
   const handlePresentationClick = (presentationId) => {
-    router.push(`/lectures/${presentationId}`);
-  };
+    router.push(`/lectures/${presentationId}`)
+  }
 
   if (loading) {
     return (
@@ -471,15 +698,15 @@ const Home = ({ showStats, showFilterTab }) => {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
-  const completedCount = presentations.filter((p) => p.isCompleted).length;
-  const totalCount = presentations.length;
-  const progressPercentage = Math.round((completedCount / totalCount) * 100);
+  const completedCount = presentations.filter((p) => p.isCompleted).length
+  const totalCount = presentations.length
+  const progressPercentage = Math.round((completedCount / totalCount) * 100)
 
   const renderContent = () => {
-    if (activeSection === "analytics") {
+    if (activeSection === 'analytics') {
       return (
         <>
           {/* Hero Header */}
@@ -488,9 +715,13 @@ const Home = ({ showStats, showFilterTab }) => {
               <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                 <ChartIcon />
               </div>
-              <h1 className="text-xl font-semibold text-gray-900">User Analytics</h1>
+              <h1 className="text-xl font-semibold text-gray-900">
+                User Analytics
+              </h1>
             </div>
-            <p className="text-gray-600 text-sm ml-11">Track your progress and compare with other learners</p>
+            <p className="text-gray-600 text-sm ml-11">
+              Track your progress and compare with other learners
+            </p>
           </div>
 
           {/* Analytics Cards */}
@@ -501,12 +732,20 @@ const Home = ({ showStats, showFilterTab }) => {
                 <div className="w-6 h-6 bg-blue-50 rounded flex items-center justify-center">
                   <ChartIcon />
                 </div>
-                <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Top Performer</span>
+                <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
+                  Top Performer
+                </span>
               </div>
               <div>
-                <p className="text-xs font-medium text-gray-600 mb-1">Your Ranking</p>
-                <p className="text-2xl font-bold text-gray-900 mb-0.5">Top {dummyAnalytics.userRank}%</p>
-                <p className="text-xs text-gray-500">of {dummyAnalytics.totalUsers.toLocaleString()} users</p>
+                <p className="text-xs font-medium text-gray-600 mb-1">
+                  Your Ranking
+                </p>
+                <p className="text-2xl font-bold text-gray-900 mb-0.5">
+                  Top {dummyAnalytics.userRank}%
+                </p>
+                <p className="text-xs text-gray-500">
+                  of {dummyAnalytics.totalUsers.toLocaleString()} users
+                </p>
               </div>
             </div>
 
@@ -516,11 +755,17 @@ const Home = ({ showStats, showFilterTab }) => {
                 <div className="w-6 h-6 bg-green-50 rounded flex items-center justify-center">
                   <CheckIcon color="#10b981" />
                 </div>
-                <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">+5%</span>
+                <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
+                  +5%
+                </span>
               </div>
               <div>
-                <p className="text-xs font-medium text-gray-600 mb-1">Average Score</p>
-                <p className="text-2xl font-bold text-gray-900 mb-0.5">{dummyAnalytics.averageScore}%</p>
+                <p className="text-xs font-medium text-gray-600 mb-1">
+                  Average Score
+                </p>
+                <p className="text-2xl font-bold text-gray-900 mb-0.5">
+                  {dummyAnalytics.averageScore}%
+                </p>
                 <p className="text-xs text-gray-500">from last month</p>
               </div>
             </div>
@@ -531,11 +776,17 @@ const Home = ({ showStats, showFilterTab }) => {
                 <div className="w-6 h-6 bg-purple-50 rounded flex items-center justify-center">
                   <BrainIcon />
                 </div>
-                <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">Above Avg</span>
+                <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+                  Above Avg
+                </span>
               </div>
               <div>
-                <p className="text-xs font-medium text-gray-600 mb-1">Completion Rate</p>
-                <p className="text-2xl font-bold text-gray-900 mb-0.5">{dummyAnalytics.completionRate}%</p>
+                <p className="text-xs font-medium text-gray-600 mb-1">
+                  Completion Rate
+                </p>
+                <p className="text-2xl font-bold text-gray-900 mb-0.5">
+                  {dummyAnalytics.completionRate}%
+                </p>
                 <p className="text-xs text-gray-500">courses completed</p>
               </div>
             </div>
@@ -543,19 +794,28 @@ const Home = ({ showStats, showFilterTab }) => {
 
           {/* Monthly Progress Chart */}
           <div className="bg-white rounded-lg p-4 border border-[#f1f2f4] mb-6">
-            <h3 className="text-base font-semibold text-gray-900 mb-4">Monthly Progress</h3>
+            <h3 className="text-base font-semibold text-gray-900 mb-4">
+              Monthly Progress
+            </h3>
             <div className="flex items-end justify-between h-40 gap-2">
               {dummyAnalytics.monthlyProgress.map((value, index) => (
                 <div key={index} className="flex flex-col items-center flex-1">
-                  <div className="w-full bg-gray-50 rounded relative flex items-end" style={{ height: '120px' }}>
+                  <div
+                    className="w-full bg-gray-50 rounded relative flex items-end"
+                    style={{ height: '120px' }}
+                  >
                     <div
                       className="w-full bg-gradient-to-t from-blue-600 to-purple-600 rounded transition-all duration-1000 ease-out"
                       style={{ height: `${(value / 100) * 120}px` }}
                     ></div>
                   </div>
                   <div className="mt-2 text-center">
-                    <div className="text-xs font-medium text-gray-900">{value}%</div>
-                    <div className="text-xs text-gray-500">{dummyAnalytics.monthlyLabels[index]}</div>
+                    <div className="text-xs font-medium text-gray-900">
+                      {value}%
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {dummyAnalytics.monthlyLabels[index]}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -566,21 +826,30 @@ const Home = ({ showStats, showFilterTab }) => {
           <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-4 border border-yellow-200">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <svg
+                  className="w-4 h-4 text-white"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
               </div>
               <div>
-                <h4 className="font-medium text-gray-900 text-sm">🎉 Outstanding Performance!</h4>
-                <p className="text-gray-600 text-xs">You are in the top {dummyAnalytics.userRank}% of users. Keep up the excellent work!</p>
+                <h4 className="font-medium text-gray-900 text-sm">
+                  🎉 Outstanding Performance!
+                </h4>
+                <p className="text-gray-600 text-xs">
+                  You are in the top {dummyAnalytics.userRank}% of users. Keep
+                  up the excellent work!
+                </p>
               </div>
             </div>
           </div>
         </>
-      );
+      )
     }
 
-    if (activeSection === "support") {
+    if (activeSection === 'support') {
       return (
         <>
           {/* Hero Header */}
@@ -589,9 +858,13 @@ const Home = ({ showStats, showFilterTab }) => {
               <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
                 <SupportIcon />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900">Help & Support</h1>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Help & Support
+              </h1>
             </div>
-            <p className="text-gray-600 ml-14">Get assistance and contact our support team</p>
+            <p className="text-gray-600 ml-14">
+              Get assistance and contact our support team
+            </p>
           </div>
 
           {/* Contact Cards */}
@@ -600,15 +873,25 @@ const Home = ({ showStats, showFilterTab }) => {
             <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] hover:shadow-sm transition-shadow">
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                  <svg
+                    className="w-5 h-5 text-blue-600"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
                     <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                     <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Email Support</h3>
-                  <p className="text-blue-600 font-medium mb-1">{supportInfo.email}</p>
-                  <p className="text-sm text-gray-500">Response within 24 hours</p>
+                  <h3 className="font-semibold text-gray-900 mb-2">
+                    Email Support
+                  </h3>
+                  <p className="text-blue-600 font-medium mb-1">
+                    {supportInfo.email}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Response within 24 hours
+                  </p>
                 </div>
               </div>
             </div>
@@ -617,13 +900,21 @@ const Home = ({ showStats, showFilterTab }) => {
             <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] hover:shadow-sm transition-shadow">
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                  <svg
+                    className="w-5 h-5 text-green-600"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
                     <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Phone Support</h3>
-                  <p className="text-green-600 font-medium mb-1">{supportInfo.phone}</p>
+                  <h3 className="font-semibold text-gray-900 mb-2">
+                    Phone Support
+                  </h3>
+                  <p className="text-green-600 font-medium mb-1">
+                    {supportInfo.phone}
+                  </p>
                   <p className="text-sm text-gray-500">Mon-Fri, 9AM-6PM EST</p>
                 </div>
               </div>
@@ -632,27 +923,44 @@ const Home = ({ showStats, showFilterTab }) => {
 
           {/* FAQ Section */}
           <div className="bg-white rounded-xl p-8 border border-[#f1f2f4]">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">Frequently Asked Questions</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">
+              Frequently Asked Questions
+            </h3>
             <div className="space-y-6">
               <div className="pb-6 border-b border-gray-100 last:border-b-0 last:pb-0">
-                <h4 className="font-medium text-gray-900 mb-2">How do I reset my password?</h4>
-                <p className="text-gray-600 text-sm leading-relaxed">Click on "Forgot Password" on the login page and follow the instructions sent to your email.</p>
+                <h4 className="font-medium text-gray-900 mb-2">
+                  How do I reset my password?
+                </h4>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Click on "Forgot Password" on the login page and follow the
+                  instructions sent to your email.
+                </p>
               </div>
               <div className="pb-6 border-b border-gray-100 last:border-b-0 last:pb-0">
-                <h4 className="font-medium text-gray-900 mb-2">How can I track my learning progress?</h4>
-                <p className="text-gray-600 text-sm leading-relaxed">Visit the User Analytics section to see detailed progress charts and performance insights.</p>
+                <h4 className="font-medium text-gray-900 mb-2">
+                  How can I track my learning progress?
+                </h4>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Visit the User Analytics section to see detailed progress
+                  charts and performance insights.
+                </p>
               </div>
               <div className="pb-6 border-b border-gray-100 last:border-b-0 last:pb-0">
-                <h4 className="font-medium text-gray-900 mb-2">Can I download course materials?</h4>
-                <p className="text-gray-600 text-sm leading-relaxed">Yes, most course materials are available for download in the course sections.</p>
+                <h4 className="font-medium text-gray-900 mb-2">
+                  Can I download course materials?
+                </h4>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Yes, most course materials are available for download in the
+                  course sections.
+                </p>
               </div>
             </div>
           </div>
         </>
-      );
+      )
     }
 
-    if (activeSection === "career") {
+    if (activeSection === 'career') {
       return (
         <>
           {/* Hero Header */}
@@ -675,10 +983,17 @@ const Home = ({ showStats, showFilterTab }) => {
           {/* Career Resources */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {careerResources.map((resource, index) => (
-              <div key={index} className="bg-white rounded-xl p-6 border border-[#f1f2f4] hover:shadow-sm transition-shadow cursor-pointer">
+              <div
+                key={index}
+                className="bg-white rounded-xl p-6 border border-[#f1f2f4] hover:shadow-sm transition-shadow cursor-pointer"
+              >
                 <div className="text-3xl mb-3">{resource.icon}</div>
-                <h3 className="font-semibold text-gray-900 mb-2">{resource.title}</h3>
-                <p className="text-sm text-gray-600 mb-4">{resource.description}</p>
+                <h3 className="font-semibold text-gray-900 mb-2">
+                  {resource.title}
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  {resource.description}
+                </p>
                 <button className="text-blue-600 text-sm font-medium hover:text-blue-700">
                   Get Started →
                 </button>
@@ -690,7 +1005,9 @@ const Home = ({ showStats, showFilterTab }) => {
           <div className="bg-white rounded-xl border border-[#f1f2f4] mb-8">
             <div className="p-6 border-b border-gray-100">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">Latest Job Opportunities</h3>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Latest Job Opportunities
+                </h3>
                 <button className="text-blue-600 text-sm font-medium hover:text-blue-700">
                   View All Jobs
                 </button>
@@ -698,26 +1015,51 @@ const Home = ({ showStats, showFilterTab }) => {
             </div>
             <div className="divide-y divide-gray-100">
               {dummyJobOpportunities.map((job) => (
-                <div key={job.id} className="p-6 hover:bg-gray-50 transition-colors">
+                <div
+                  key={job.id}
+                  className="p-6 hover:bg-gray-50 transition-colors"
+                >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900 mb-1">{job.title}</h4>
-                      <p className="text-blue-600 font-medium mb-2">{job.company}</p>
+                      <h4 className="font-semibold text-gray-900 mb-1">
+                        {job.title}
+                      </h4>
+                      <p className="text-blue-600 font-medium mb-2">
+                        {job.company}
+                      </p>
                       <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
                         <span className="flex items-center gap-1">
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                          <svg
+                            className="w-4 h-4"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                              clipRule="evenodd"
+                            />
                           </svg>
                           {job.location}
                         </span>
                         <span className="flex items-center gap-1">
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                          <svg
+                            className="w-4 h-4"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                              clipRule="evenodd"
+                            />
                           </svg>
                           {job.type}
                         </span>
                       </div>
-                      <p className="text-green-600 font-medium text-sm">{job.salary}</p>
+                      <p className="text-green-600 font-medium text-sm">
+                        {job.salary}
+                      </p>
                     </div>
                     <div className="text-right">
                       <p className="text-xs text-gray-500 mb-3">{job.posted}</p>
@@ -736,13 +1078,23 @@ const Home = ({ showStats, showFilterTab }) => {
             <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-green-600 font-medium text-sm">Job Placement Rate</p>
+                  <p className="text-green-600 font-medium text-sm">
+                    Job Placement Rate
+                  </p>
                   <p className="text-2xl font-bold text-green-700">94%</p>
                   <p className="text-green-600 text-xs">of graduates</p>
                 </div>
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  <svg
+                    className="w-6 h-6 text-green-600"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </div>
               </div>
@@ -750,13 +1102,23 @@ const Home = ({ showStats, showFilterTab }) => {
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-blue-600 font-medium text-sm">Average Salary Increase</p>
+                  <p className="text-blue-600 font-medium text-sm">
+                    Average Salary Increase
+                  </p>
                   <p className="text-2xl font-bold text-blue-700">35%</p>
                   <p className="text-blue-600 text-xs">after completion</p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  <svg
+                    className="w-6 h-6 text-blue-600"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </div>
               </div>
@@ -764,12 +1126,18 @@ const Home = ({ showStats, showFilterTab }) => {
             <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-purple-600 font-medium text-sm">Partner Companies</p>
+                  <p className="text-purple-600 font-medium text-sm">
+                    Partner Companies
+                  </p>
                   <p className="text-2xl font-bold text-purple-700">150+</p>
                   <p className="text-purple-600 text-xs">hiring partners</p>
                 </div>
                 <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                  <svg
+                    className="w-6 h-6 text-purple-600"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
                     <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
                   </svg>
                 </div>
@@ -777,10 +1145,10 @@ const Home = ({ showStats, showFilterTab }) => {
             </div>
           </div>
         </>
-      );
+      )
     }
 
-    if (activeSection === "community") {
+    if (activeSection === 'community') {
       return (
         <>
           {/* Hero Header */}
@@ -803,9 +1171,16 @@ const Home = ({ showStats, showFilterTab }) => {
           {/* Forum Categories */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
             {forumCategories.map((category, index) => (
-              <div key={index} className="bg-white rounded-xl p-4 border border-[#f1f2f4] hover:shadow-sm transition-shadow cursor-pointer">
-                <h3 className="font-semibold text-gray-900 text-sm mb-2">{category.name}</h3>
-                <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${category.color}`}>
+              <div
+                key={index}
+                className="bg-white rounded-xl p-4 border border-[#f1f2f4] hover:shadow-sm transition-shadow cursor-pointer"
+              >
+                <h3 className="font-semibold text-gray-900 text-sm mb-2">
+                  {category.name}
+                </h3>
+                <span
+                  className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${category.color}`}
+                >
                   {category.count} posts
                 </span>
               </div>
@@ -816,7 +1191,9 @@ const Home = ({ showStats, showFilterTab }) => {
           <div className="bg-white rounded-xl border border-[#f1f2f4] mb-8">
             <div className="p-6 border-b border-gray-100">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">Recent Discussions</h3>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Recent Discussions
+                </h3>
                 <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
                   New Post
                 </button>
@@ -824,7 +1201,10 @@ const Home = ({ showStats, showFilterTab }) => {
             </div>
             <div className="divide-y divide-gray-100">
               {dummyForumPosts.map((post) => (
-                <div key={post.id} className="p-6 hover:bg-gray-50 transition-colors">
+                <div
+                  key={post.id}
+                  className="p-6 hover:bg-gray-50 transition-colors"
+                >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
@@ -839,24 +1219,42 @@ const Home = ({ showStats, showFilterTab }) => {
                       </div>
                       <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
                         <span className="font-medium">{post.author}</span>
-                        <span className={`px-2 py-1 rounded-full text-xs ${post.category === 'Finance' ? 'bg-blue-100 text-blue-700' :
-                            post.category === 'Study Groups' ? 'bg-green-100 text-green-700' :
-                              post.category === 'Career' ? 'bg-purple-100 text-purple-700' :
-                                'bg-orange-100 text-orange-700'
-                          }`}>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs ${
+                            post.category === 'Finance'
+                              ? 'bg-blue-100 text-blue-700'
+                              : post.category === 'Study Groups'
+                              ? 'bg-green-100 text-green-700'
+                              : post.category === 'Career'
+                              ? 'bg-purple-100 text-purple-700'
+                              : 'bg-orange-100 text-orange-700'
+                          }`}
+                        >
                           {post.category}
                         </span>
                         <span>{post.time}</span>
                       </div>
                       <div className="flex items-center gap-4 text-sm text-gray-500">
                         <span className="flex items-center gap-1">
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
+                          <svg
+                            className="w-4 h-4"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
+                              clipRule="evenodd"
+                            />
                           </svg>
                           {post.replies} replies
                         </span>
                         <span className="flex items-center gap-1">
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <svg
+                            className="w-4 h-4"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
                             <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
                           </svg>
                           {post.likes} likes
@@ -873,7 +1271,11 @@ const Home = ({ showStats, showFilterTab }) => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] text-center">
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                <svg
+                  className="w-6 h-6 text-blue-600"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
                   <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
                 </svg>
               </div>
@@ -882,8 +1284,16 @@ const Home = ({ showStats, showFilterTab }) => {
             </div>
             <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] text-center">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
+                <svg
+                  className="w-6 h-6 text-green-600"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               </div>
               <p className="text-2xl font-bold text-gray-900">749</p>
@@ -891,8 +1301,16 @@ const Home = ({ showStats, showFilterTab }) => {
             </div>
             <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] text-center">
               <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                <svg
+                  className="w-6 h-6 text-purple-600"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               </div>
               <p className="text-2xl font-bold text-gray-900">1,234</p>
@@ -900,7 +1318,11 @@ const Home = ({ showStats, showFilterTab }) => {
             </div>
             <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] text-center">
               <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                <svg
+                  className="w-6 h-6 text-orange-600"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
               </div>
@@ -909,10 +1331,10 @@ const Home = ({ showStats, showFilterTab }) => {
             </div>
           </div>
         </>
-      );
+      )
     }
 
-    if (activeSection === "calendar") {
+    if (activeSection === 'calendar') {
       return (
         <>
           {/* Hero Header */}
@@ -954,8 +1376,16 @@ const Home = ({ showStats, showFilterTab }) => {
                   <p className="text-red-500 text-xs">deadlines approaching</p>
                 </div>
                 <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  <svg
+                    className="w-6 h-6 text-red-600"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </div>
               </div>
@@ -963,13 +1393,23 @@ const Home = ({ showStats, showFilterTab }) => {
             <div className="bg-white rounded-xl p-6 border border-[#f1f2f4]">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-green-600 font-medium text-sm">Completed</p>
+                  <p className="text-green-600 font-medium text-sm">
+                    Completed
+                  </p>
                   <p className="text-2xl font-bold text-green-700">12</p>
                   <p className="text-green-500 text-xs">tasks this month</p>
                 </div>
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  <svg
+                    className="w-6 h-6 text-green-600"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </div>
               </div>
@@ -980,7 +1420,9 @@ const Home = ({ showStats, showFilterTab }) => {
           <div className="bg-white rounded-xl border border-[#f1f2f4] mb-8">
             <div className="p-6 border-b border-gray-100">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">Upcoming Events</h3>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Upcoming Events
+                </h3>
                 <button className="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
                   Add Event
                 </button>
@@ -988,36 +1430,68 @@ const Home = ({ showStats, showFilterTab }) => {
             </div>
             <div className="divide-y divide-gray-100">
               {dummyScheduleEvents.map((event) => (
-                <div key={event.id} className="p-6 hover:bg-gray-50 transition-colors">
+                <div
+                  key={event.id}
+                  className="p-6 hover:bg-gray-50 transition-colors"
+                >
                   <div className="flex items-center gap-4">
-                    <div className={`w-3 h-12 rounded-full ${event.color}`}></div>
+                    <div
+                      className={`w-3 h-12 rounded-full ${event.color}`}
+                    ></div>
                     <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900 mb-1">{event.title}</h4>
+                      <h4 className="font-semibold text-gray-900 mb-1">
+                        {event.title}
+                      </h4>
                       <div className="flex items-center gap-4 text-sm text-gray-600">
                         <span className="flex items-center gap-1">
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                          <svg
+                            className="w-4 h-4"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                              clipRule="evenodd"
+                            />
                           </svg>
                           {event.date}
                         </span>
                         <span className="flex items-center gap-1">
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                          <svg
+                            className="w-4 h-4"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                              clipRule="evenodd"
+                            />
                           </svg>
                           {event.time}
                         </span>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${event.type === 'course' ? 'bg-blue-100 text-blue-700' :
-                            event.type === 'assignment' ? 'bg-red-100 text-red-700' :
-                              event.type === 'quiz' ? 'bg-green-100 text-green-700' :
-                                event.type === 'mentorship' ? 'bg-purple-100 text-purple-700' :
-                                  'bg-orange-100 text-orange-700'
-                          }`}>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            event.type === 'course'
+                              ? 'bg-blue-100 text-blue-700'
+                              : event.type === 'assignment'
+                              ? 'bg-red-100 text-red-700'
+                              : event.type === 'quiz'
+                              ? 'bg-green-100 text-green-700'
+                              : event.type === 'mentorship'
+                              ? 'bg-purple-100 text-purple-700'
+                              : 'bg-orange-100 text-orange-700'
+                          }`}
+                        >
                           {event.type}
                         </span>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-medium text-gray-900">{event.duration}</p>
+                      <p className="text-sm font-medium text-gray-900">
+                        {event.duration}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -1028,22 +1502,36 @@ const Home = ({ showStats, showFilterTab }) => {
           {/* Upcoming Deadlines */}
           <div className="bg-white rounded-xl border border-[#f1f2f4]">
             <div className="p-6 border-b border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-900">Upcoming Deadlines</h3>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Upcoming Deadlines
+              </h3>
             </div>
             <div className="divide-y divide-gray-100">
               {upcomingDeadlines.map((deadline, index) => (
-                <div key={index} className="p-6 hover:bg-gray-50 transition-colors">
+                <div
+                  key={index}
+                  className="p-6 hover:bg-gray-50 transition-colors"
+                >
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">{deadline.title}</h4>
+                      <h4 className="font-semibold text-gray-900 mb-1">
+                        {deadline.title}
+                      </h4>
                       <p className="text-sm text-gray-600">{deadline.course}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-medium text-gray-900 mb-1">{deadline.dueDate}</p>
-                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${deadline.priority === 'high' ? 'bg-red-100 text-red-700' :
-                          deadline.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                            'bg-green-100 text-green-700'
-                        }`}>
+                      <p className="text-sm font-medium text-gray-900 mb-1">
+                        {deadline.dueDate}
+                      </p>
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                          deadline.priority === 'high'
+                            ? 'bg-red-100 text-red-700'
+                            : deadline.priority === 'medium'
+                            ? 'bg-yellow-100 text-yellow-700'
+                            : 'bg-green-100 text-green-700'
+                        }`}
+                      >
                         {deadline.priority} priority
                       </span>
                     </div>
@@ -1053,10 +1541,10 @@ const Home = ({ showStats, showFilterTab }) => {
             </div>
           </div>
         </>
-      );
+      )
     }
 
-    if (activeSection === "mentorship") {
+    if (activeSection === 'mentorship') {
       return (
         <>
           {/* Hero Header */}
@@ -1070,7 +1558,8 @@ const Home = ({ showStats, showFilterTab }) => {
                   Mentorship Program
                 </h1>
                 <p className="text-gray-600 text-lg">
-                  Connect with industry experts and accelerate your career growth
+                  Connect with industry experts and accelerate your career
+                  growth
                 </p>
               </div>
             </div>
@@ -1079,12 +1568,23 @@ const Home = ({ showStats, showFilterTab }) => {
           {/* Mentorship Programs */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {mentorshipPrograms.map((program, index) => (
-              <div key={index} className="bg-white rounded-xl p-6 border border-[#f1f2f4] hover:shadow-sm transition-shadow">
-                <h3 className="font-semibold text-gray-900 mb-2">{program.title}</h3>
-                <p className="text-sm text-gray-600 mb-4">{program.description}</p>
+              <div
+                key={index}
+                className="bg-white rounded-xl p-6 border border-[#f1f2f4] hover:shadow-sm transition-shadow"
+              >
+                <h3 className="font-semibold text-gray-900 mb-2">
+                  {program.title}
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  {program.description}
+                </p>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-orange-600 font-medium">{program.duration}</span>
-                  <span className="text-gray-500">{program.participants} participants</span>
+                  <span className="text-orange-600 font-medium">
+                    {program.duration}
+                  </span>
+                  <span className="text-gray-500">
+                    {program.participants} participants
+                  </span>
                 </div>
                 <button className="w-full mt-4 bg-orange-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors">
                   Join Program
@@ -1097,7 +1597,9 @@ const Home = ({ showStats, showFilterTab }) => {
           <div className="bg-white rounded-xl border border-[#f1f2f4] mb-8">
             <div className="p-6 border-b border-gray-100">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">Featured Mentors</h3>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Featured Mentors
+                </h3>
                 <button className="text-orange-600 text-sm font-medium hover:text-orange-700">
                   View All Mentors
                 </button>
@@ -1105,16 +1607,23 @@ const Home = ({ showStats, showFilterTab }) => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
               {dummyMentors.map((mentor) => (
-                <div key={mentor.id} className="border border-gray-200 rounded-xl p-6 hover:shadow-sm transition-shadow">
+                <div
+                  key={mentor.id}
+                  className="border border-gray-200 rounded-xl p-6 hover:shadow-sm transition-shadow"
+                >
                   <div className="text-center mb-4">
                     <img
                       src={mentor.avatar}
                       alt={mentor.name}
                       className="w-16 h-16 rounded-full mx-auto mb-3 object-cover"
                     />
-                    <h4 className="font-semibold text-gray-900">{mentor.name}</h4>
+                    <h4 className="font-semibold text-gray-900">
+                      {mentor.name}
+                    </h4>
                     <p className="text-sm text-gray-600 mb-1">{mentor.title}</p>
-                    <p className="text-sm text-blue-600 font-medium">{mentor.company}</p>
+                    <p className="text-sm text-blue-600 font-medium">
+                      {mentor.company}
+                    </p>
                   </div>
 
                   <div className="mb-4">
@@ -1126,7 +1635,11 @@ const Home = ({ showStats, showFilterTab }) => {
                       <span className="text-gray-600">Rating:</span>
                       <div className="flex items-center gap-1">
                         <span className="font-medium">{mentor.rating}</span>
-                        <svg className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                        <svg
+                          className="w-4 h-4 text-yellow-400"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
                           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                         </svg>
                       </div>
@@ -1141,7 +1654,10 @@ const Home = ({ showStats, showFilterTab }) => {
                     <p className="text-xs text-gray-600 mb-2">Expertise:</p>
                     <div className="flex flex-wrap gap-1">
                       {mentor.expertise.map((skill, index) => (
-                        <span key={index} className="bg-orange-100 text-orange-700 px-2 py-1 rounded-full text-xs">
+                        <span
+                          key={index}
+                          className="bg-orange-100 text-orange-700 px-2 py-1 rounded-full text-xs"
+                        >
                           {skill}
                         </span>
                       ))}
@@ -1167,8 +1683,16 @@ const Home = ({ showStats, showFilterTab }) => {
             </div>
             <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] text-center">
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                <svg
+                  className="w-6 h-6 text-blue-600"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               </div>
               <p className="text-2xl font-bold text-gray-900">2,500+</p>
@@ -1176,8 +1700,16 @@ const Home = ({ showStats, showFilterTab }) => {
             </div>
             <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] text-center">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                <svg
+                  className="w-6 h-6 text-green-600"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               </div>
               <p className="text-2xl font-bold text-gray-900">96%</p>
@@ -1185,7 +1717,11 @@ const Home = ({ showStats, showFilterTab }) => {
             </div>
             <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] text-center">
               <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                <svg
+                  className="w-6 h-6 text-purple-600"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
               </div>
@@ -1194,10 +1730,10 @@ const Home = ({ showStats, showFilterTab }) => {
             </div>
           </div>
         </>
-      );
+      )
     }
 
-    if (activeSection === "assessments") {
+    if (activeSection === 'assessments') {
       return (
         <>
           {/* Hero Header */}
@@ -1221,35 +1757,73 @@ const Home = ({ showStats, showFilterTab }) => {
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Course
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Score
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Date
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {dummyAssessments.map((assessment) => (
-                  <tr key={assessment.id} className="hover:bg-gray-50 transition-colors">
+                  <tr
+                    key={assessment.id}
+                    className="hover:bg-gray-50 transition-colors"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{assessment.course}</div>
+                      <div className="text-sm font-medium text-gray-900">
+                        {assessment.course}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {assessment.score ? (
-                        <div className="text-sm text-gray-900 font-medium">{assessment.score}%</div>
+                        <div className="text-sm text-gray-900 font-medium">
+                          {assessment.score}%
+                        </div>
                       ) : (
                         <div className="text-sm text-gray-400">—</div>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-md ${assessment.status === 'Completed'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-yellow-100 text-yellow-800'
-                        }`}>
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-medium rounded-md ${
+                          assessment.status === 'Completed'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}
+                      >
                         {assessment.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {assessment.date}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {assessment.status === 'Completed' ? (
+                        <button
+                          onClick={() => setActiveSection('courses')}
+                          className="cursor-pointer px-3 py-1 bg-blue-600 text-white text-xs font-medium rounded-md hover:bg-blue-700 transition-colors"
+                        >
+                          Retake
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => setActiveSection('courses')}
+                          className="cursor-pointer px-3 py-1 bg-green-600 text-white text-xs font-medium rounded-md hover:bg-green-700 transition-colors"
+                        >
+                          Complete
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -1257,10 +1831,10 @@ const Home = ({ showStats, showFilterTab }) => {
             </table>
           </div>
         </>
-      );
+      )
     }
 
-    if (activeSection === "users") {
+    if (activeSection === 'users') {
       return (
         <>
           {/* Hero Header */}
@@ -1284,33 +1858,54 @@ const Home = ({ showStats, showFilterTab }) => {
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Courses</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Active</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    User
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Role
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Courses
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Last Active
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {dummyUsers.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                  <tr
+                    key={user.id}
+                    className="hover:bg-gray-50 transition-colors"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
                           <span className="text-xs font-medium text-gray-600">
-                            {user.name.split(' ').map(n => n[0]).join('')}
+                            {user.name
+                              .split(' ')
+                              .map((n) => n[0])
+                              .join('')}
                           </span>
                         </div>
                         <div className="ml-3">
-                          <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                          <div className="text-sm text-gray-500">{user.email}</div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {user.name}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {user.email}
+                          </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-md ${user.role === 'Instructor'
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-gray-100 text-gray-800'
-                        }`}>
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-medium rounded-md ${
+                          user.role === 'Instructor'
+                            ? 'bg-blue-100 text-blue-800'
+                            : 'bg-gray-100 text-gray-800'
+                        }`}
+                      >
                         {user.role}
                       </span>
                     </td>
@@ -1320,7 +1915,9 @@ const Home = ({ showStats, showFilterTab }) => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="h-2 w-2 bg-green-400 rounded-full mr-2"></div>
-                        <span className="text-sm text-gray-500">{user.lastActive}</span>
+                        <span className="text-sm text-gray-500">
+                          {user.lastActive}
+                        </span>
                       </div>
                     </td>
                   </tr>
@@ -1329,7 +1926,7 @@ const Home = ({ showStats, showFilterTab }) => {
             </table>
           </div>
         </>
-      );
+      )
     }
 
     return (
@@ -1345,7 +1942,8 @@ const Home = ({ showStats, showFilterTab }) => {
                 AI-Powered Training Hub
               </h1>
               <p className="text-gray-600 text-lg">
-                Master new skills with intelligent, adaptive learning experiences
+                Master new skills with intelligent, adaptive learning
+                experiences
               </p>
             </div>
           </div>
@@ -1452,17 +2050,18 @@ const Home = ({ showStats, showFilterTab }) => {
             {showFilterTab && (
               <div className="flex bg-white/80 backdrop-blur-sm rounded-2xl p-1 shadow-lg border border-gray-200">
                 {[
-                  { key: "all", label: "All Courses" },
-                  { key: "in-progress", label: "In Progress" },
-                  { key: "completed", label: "Completed" },
+                  { key: 'all', label: 'All Courses' },
+                  { key: 'in-progress', label: 'In Progress' },
+                  { key: 'completed', label: 'Completed' },
                 ].map((tab) => (
                   <button
                     key={tab.key}
                     onClick={() => setFilter(tab.key)}
-                    className={`cursor-pointer px-6 py-2 text-sm font-semibold rounded-xl transition-all duration-300 ${filter === tab.key
-                        ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
-                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                      }`}
+                    className={`cursor-pointer px-6 py-2 text-sm font-semibold rounded-xl transition-all duration-300 ${
+                      filter === tab.key
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }`}
                   >
                     {tab.label}
                   </button>
@@ -1478,9 +2077,9 @@ const Home = ({ showStats, showFilterTab }) => {
             {presentations
               .filter(
                 (p) =>
-                  filter === "all" ||
-                  (filter === "completed" && p.isCompleted) ||
-                  (filter === "in-progress" && !p.isCompleted)
+                  filter === 'all' ||
+                  (filter === 'completed' && p.isCompleted) ||
+                  (filter === 'in-progress' && !p.isCompleted)
               )
               .map((presentation, index) => (
                 <PresentationCard
@@ -1511,20 +2110,20 @@ const Home = ({ showStats, showFilterTab }) => {
           </div>
         )}
       </>
-    );
-  };
+    )
+  }
 
   const sidebarSections = [
-    { key: "courses", label: "Courses", icon: BookIcon },
-    { key: "analytics", label: "User Analytics", icon: ChartIcon },
-    { key: "assessments", label: "Assessment", icon: ClipboardIcon },
-    { key: "users", label: "User Management", icon: UsersIcon },
-    { key: "career", label: "Career Services", icon: BriefcaseIcon },
-    { key: "community", label: "Community Forum", icon: ForumIcon },
-    { key: "calendar", label: "Calendar & Schedule", icon: CalendarIcon },
-    { key: "mentorship", label: "Mentorship Program", icon: MentorshipIcon },
-    { key: "support", label: "Help & Support", icon: SupportIcon },
-  ];
+    { key: 'courses', label: 'Courses', icon: BookIcon },
+    { key: 'analytics', label: 'User Analytics', icon: ChartIcon },
+    { key: 'assessments', label: 'Assessment', icon: ClipboardIcon },
+    { key: 'users', label: 'User Management', icon: UsersIcon },
+    { key: 'career', label: 'Career Services', icon: BriefcaseIcon },
+    { key: 'community', label: 'Community Forum', icon: ForumIcon },
+    { key: 'calendar', label: 'Calendar & Schedule', icon: CalendarIcon },
+    { key: 'mentorship', label: 'Mentorship Program', icon: MentorshipIcon },
+    { key: 'support', label: 'Help & Support', icon: SupportIcon },
+  ]
 
   return (
     <div className="min-h-screen flex">
@@ -1533,20 +2132,29 @@ const Home = ({ showStats, showFilterTab }) => {
         <div className="p-6">
           <nav className="space-y-2">
             {sidebarSections.map((section) => {
-              const IconComponent = section.icon;
+              const IconComponent = section.icon
               return (
                 <button
                   key={section.key}
-                  onClick={() => setActiveSection(section.key)}
-                  className={`cursor-pointer w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-colors border ${activeSection === section.key
-                      ? "bg-blue-50 text-blue-700 border-blue-200"
-                      : "text-gray-600 hover:bg-gray-50 border-transparent"
-                    }`}
+                  onClick={() => {
+                    if (section.key !== activeSection) {
+                      setSectionLoading(true)
+                      setTimeout(() => {
+                        setActiveSection(section.key)
+                        setSectionLoading(false)
+                      }, 500)
+                    }
+                  }}
+                  className={`cursor-pointer w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-colors border ${
+                    activeSection === section.key
+                      ? 'bg-blue-50 text-blue-700 border-blue-200'
+                      : 'text-gray-600 hover:bg-gray-50 border-transparent'
+                  }`}
                 >
                   <IconComponent />
                   <span className="font-medium">{section.label}</span>
                 </button>
-              );
+              )
             })}
           </nav>
         </div>
@@ -1555,11 +2163,17 @@ const Home = ({ showStats, showFilterTab }) => {
       {/* Main Content */}
       <div className="flex-1">
         <div className="max-w-7xl mx-auto px-6 py-8">
-          {renderContent()}
+          {sectionLoading ? (
+            <div className="flex items-center justify-center h-96">
+              <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+            </div>
+          ) : (
+            renderContent()
+          )}
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
