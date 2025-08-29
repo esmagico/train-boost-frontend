@@ -124,6 +124,27 @@ const dummyPresentations = [
       'https://d8it4huxumps7.cloudfront.net/bites/wp-content/uploads/2019/05/14074536/ISB.jpg',
     isCompleted: false,
   },
+  {
+    presentation_id: 2,
+    title: 'Strategic Management',
+    image:
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop&crop=center',
+    isCompleted: true,
+  },
+  {
+    presentation_id: 3,
+    title: 'Investment Banking Fundamentals',
+    image:
+      'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop&crop=center',
+    isCompleted: false,
+  },
+  {
+    presentation_id: 4,
+    title: 'Risk Management & Compliance',
+    image:
+      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop&crop=center',
+    isCompleted: true,
+  },
 ]
 
 const dummyAssessments = [
@@ -546,8 +567,8 @@ const PresentationCard = ({ presentation, onClick, index, showBadge }) => {
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm text-gray-600">
-            <BrainIcon />
-            <span>AI Training</span>
+            <ClockIcon />
+            <span>{presentation.isCompleted ? 'Completed' : 'In Progress'}</span>
           </div>
 
           <div className="flex items-center gap-2">
