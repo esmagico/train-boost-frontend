@@ -174,24 +174,24 @@ const dummyAssessments = [
 const dummyUsers = [
   {
     id: 1,
-    name: 'John Doe',
-    email: 'john@company.com',
+    name: 'Arjun Sharma',
+    email: 'arjun@company.in',
     role: 'Student',
     courses: 3,
     lastActive: '2024-01-15',
   },
   {
     id: 2,
-    name: 'Jane Smith',
-    email: 'jane@company.com',
+    name: 'Priya Patel',
+    email: 'priya@company.in',
     role: 'Instructor',
     courses: 8,
     lastActive: '2024-01-14',
   },
   {
     id: 3,
-    name: 'Mike Johnson',
-    email: 'mike@company.com',
+    name: 'Rahul Gupta',
+    email: 'rahul@company.in',
     role: 'Student',
     courses: 2,
     lastActive: '2024-01-13',
@@ -208,8 +208,9 @@ const dummyAnalytics = {
 }
 
 const supportInfo = {
-  email: 'support@trainboost.com',
-  phone: '+1 (555) 123-4567',
+  email: 'support@trainboost.in',
+  phone: '+91 98765 43210',
+  address: 'TrainBoost India Pvt Ltd, 4th Floor, Cyber City, Gurgaon, Haryana 122002',
 }
 
 // UpSkilling Services dummy data
@@ -275,60 +276,60 @@ const upSkillingResources = [
   },
 ]
 
-// Community/Forum dummy data
-const dummyForumPosts = [
+// Knowledge Hub dummy data
+const dummyKnowledgePosts = [
   {
     id: 1,
-    title: 'Best practices for financial modeling in Excel?',
-    author: 'Sarah Chen',
-    replies: 12,
-    likes: 24,
+    title: 'Q4 Financial Planning Best Practices',
+    author: 'Sneha Agarwal - Finance Director',
+    replies: 8,
+    likes: 15,
     category: 'Finance',
     time: '2 hours ago',
     isAnswered: true,
   },
   {
     id: 2,
-    title: 'Looking for study group for CFA Level 1',
-    author: 'Mike Johnson',
-    replies: 8,
-    likes: 15,
-    category: 'Study Groups',
+    title: 'New Compliance Requirements - Implementation Guide',
+    author: 'Vikram Singh - Risk Manager',
+    replies: 12,
+    likes: 28,
+    category: 'Compliance',
     time: '4 hours ago',
-    isAnswered: false,
+    isAnswered: true,
   },
   {
     id: 3,
-    title: 'Career transition from accounting to investment banking',
-    author: 'Emily Davis',
-    replies: 18,
-    likes: 32,
-    category: 'Career',
+    title: 'Leadership Training Program Updates',
+    author: 'Kavya Reddy - HR Manager',
+    replies: 6,
+    likes: 18,
+    category: 'Management',
     time: '1 day ago',
     isAnswered: true,
   },
   {
     id: 4,
-    title: 'Recommended books for corporate finance beginners',
-    author: 'Alex Rodriguez',
-    replies: 25,
-    likes: 45,
-    category: 'Resources',
+    title: 'Digital Transformation Initiative - Phase 2',
+    author: 'Amit Joshi - IT Director',
+    replies: 15,
+    likes: 32,
+    category: 'Technology',
     time: '2 days ago',
     isAnswered: true,
   },
 ]
 
-const forumCategories = [
+const knowledgeCategories = [
   {
-    name: 'General Discussion',
+    name: 'Finance & Accounting',
     count: 156,
     color: 'bg-blue-100 text-blue-800',
   },
-  { name: 'Study Groups', count: 89, color: 'bg-green-100 text-green-800' },
-  { name: 'Career Advice', count: 234, color: 'bg-purple-100 text-purple-800' },
-  { name: 'Course Help', count: 178, color: 'bg-orange-100 text-orange-800' },
-  { name: 'Resources', count: 92, color: 'bg-indigo-100 text-indigo-800' },
+  { name: 'Compliance & Risk', count: 89, color: 'bg-red-100 text-red-800' },
+  { name: 'Management & Leadership', count: 134, color: 'bg-purple-100 text-purple-800' },
+  { name: 'Technology & Innovation', count: 78, color: 'bg-green-100 text-green-800' },
+  { name: 'Operations & Strategy', count: 92, color: 'bg-indigo-100 text-indigo-800' },
 ]
 
 // Calendar/Schedule dummy data
@@ -564,7 +565,9 @@ const PresentationCard = ({ presentation, onClick, index, showBadge }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <ClockIcon />
-            <span>{presentation.isCompleted ? 'Completed' : 'In Progress'}</span>
+            <span>
+              {presentation.isCompleted ? 'Completed' : 'In Progress'}
+            </span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -932,7 +935,7 @@ const Home = ({ showStats, showFilterTab }) => {
                   <p className="text-green-600 font-medium mb-1">
                     {supportInfo.phone}
                   </p>
-                  <p className="text-sm text-gray-500">Mon-Fri, 9AM-6PM EST</p>
+                  <p className="text-sm text-gray-500">Mon-Fri, 9AM-6PM IST</p>
                 </div>
               </div>
             </div>
@@ -991,7 +994,8 @@ const Home = ({ showStats, showFilterTab }) => {
                   UpSkilling Services
                 </h1>
                 <p className="text-gray-600 text-lg">
-                  Enhance your team's capabilities and drive organizational growth
+                  Enhance your team's capabilities and drive organizational
+                  growth
                 </p>
               </div>
             </div>
@@ -1046,13 +1050,25 @@ const Home = ({ showStats, showFilterTab }) => {
                       </p>
                       <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
                         <span className="flex items-center gap-1">
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                          <svg
+                            className="w-4 h-4"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                              clipRule="evenodd"
+                            />
                           </svg>
                           {program.duration}
                         </span>
                         <span className="flex items-center gap-1">
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <svg
+                            className="w-4 h-4"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
                             <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
                           </svg>
                           {program.participants} participants
@@ -1085,8 +1101,16 @@ const Home = ({ showStats, showFilterTab }) => {
                   <p className="text-green-600 text-xs">average increase</p>
                 </div>
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  <svg
+                    className="w-6 h-6 text-green-600"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </div>
               </div>
@@ -1101,7 +1125,11 @@ const Home = ({ showStats, showFilterTab }) => {
                   <p className="text-blue-600 text-xs">satisfaction rate</p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                  <svg
+                    className="w-6 h-6 text-blue-600"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                 </div>
@@ -1117,8 +1145,16 @@ const Home = ({ showStats, showFilterTab }) => {
                   <p className="text-purple-600 text-xs">across departments</p>
                 </div>
                 <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                  <svg
+                    className="w-6 h-6 text-purple-600"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </div>
               </div>
@@ -1139,18 +1175,18 @@ const Home = ({ showStats, showFilterTab }) => {
               </div>
               <div>
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                  Community Forum
+                  Knowledge Hub
                 </h1>
                 <p className="text-gray-600 text-lg">
-                  Connect, collaborate, and learn with fellow students
+                  Share insights, best practices, and collaborate across departments
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Forum Categories */}
+          {/* Knowledge Categories */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-            {forumCategories.map((category, index) => (
+            {knowledgeCategories.map((category, index) => (
               <div
                 key={index}
                 className="bg-white rounded-xl p-4 border border-[#f1f2f4] hover:shadow-sm transition-shadow cursor-pointer"
@@ -1161,26 +1197,26 @@ const Home = ({ showStats, showFilterTab }) => {
                 <span
                   className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${category.color}`}
                 >
-                  {category.count} posts
+                  {category.count} articles
                 </span>
               </div>
             ))}
           </div>
 
-          {/* Recent Posts */}
+          {/* Recent Knowledge Posts */}
           <div className="bg-white rounded-xl border border-[#f1f2f4] mb-8">
             <div className="p-6 border-b border-gray-100">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-900">
-                  Recent Discussions
+                  Recent Knowledge Sharing
                 </h3>
                 <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
-                  New Post
+                  Share Knowledge
                 </button>
               </div>
             </div>
             <div className="divide-y divide-gray-100">
-              {dummyForumPosts.map((post) => (
+              {dummyKnowledgePosts.map((post) => (
                 <div
                   key={post.id}
                   className="p-6 hover:bg-gray-50 transition-colors"
@@ -1191,11 +1227,9 @@ const Home = ({ showStats, showFilterTab }) => {
                         <h4 className="font-semibold text-gray-900 hover:text-blue-600 cursor-pointer">
                           {post.title}
                         </h4>
-                        {post.isAnswered && (
-                          <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
-                            ✓ Answered
-                          </span>
-                        )}
+                        <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
+                          ✓ Reviewed
+                        </span>
                       </div>
                       <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
                         <span className="font-medium">{post.author}</span>
@@ -1203,11 +1237,11 @@ const Home = ({ showStats, showFilterTab }) => {
                           className={`px-2 py-1 rounded-full text-xs ${
                             post.category === 'Finance'
                               ? 'bg-blue-100 text-blue-700'
-                              : post.category === 'Study Groups'
-                              ? 'bg-green-100 text-green-700'
-                              : post.category === 'Career'
+                              : post.category === 'Compliance'
+                              ? 'bg-red-100 text-red-700'
+                              : post.category === 'Management'
                               ? 'bg-purple-100 text-purple-700'
-                              : 'bg-orange-100 text-orange-700'
+                              : 'bg-green-100 text-green-700'
                           }`}
                         >
                           {post.category}
@@ -1216,28 +1250,16 @@ const Home = ({ showStats, showFilterTab }) => {
                       </div>
                       <div className="flex items-center gap-4 text-sm text-gray-500">
                         <span className="flex items-center gap-1">
-                          <svg
-                            className="w-4 h-4"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
-                              clipRule="evenodd"
-                            />
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
                           </svg>
-                          {post.replies} replies
+                          {post.replies} comments
                         </span>
                         <span className="flex items-center gap-1">
-                          <svg
-                            className="w-4 h-4"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
                           </svg>
-                          {post.likes} likes
+                          {post.likes} helpful
                         </span>
                       </div>
                     </div>
@@ -1247,67 +1269,43 @@ const Home = ({ showStats, showFilterTab }) => {
             </div>
           </div>
 
-          {/* Community Stats */}
+          {/* Knowledge Hub Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] text-center">
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg
-                  className="w-6 h-6 text-blue-600"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
+                <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
                 </svg>
               </div>
-              <p className="text-2xl font-bold text-gray-900">2,847</p>
-              <p className="text-sm text-gray-600">Active Members</p>
+              <p className="text-2xl font-bold text-gray-900">847</p>
+              <p className="text-sm text-gray-600">Active Contributors</p>
             </div>
             <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] text-center">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg
-                  className="w-6 h-6 text-green-600"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
-                    clipRule="evenodd"
-                  />
+                <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                 </svg>
               </div>
-              <p className="text-2xl font-bold text-gray-900">749</p>
-              <p className="text-sm text-gray-600">Total Discussions</p>
+              <p className="text-2xl font-bold text-gray-900">549</p>
+              <p className="text-sm text-gray-600">Knowledge Articles</p>
             </div>
             <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] text-center">
               <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg
-                  className="w-6 h-6 text-purple-600"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                    clipRule="evenodd"
-                  />
+                <svg className="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
               </div>
-              <p className="text-2xl font-bold text-gray-900">1,234</p>
-              <p className="text-sm text-gray-600">Questions Answered</p>
+              <p className="text-2xl font-bold text-gray-900">1,834</p>
+              <p className="text-sm text-gray-600">Best Practices Shared</p>
             </div>
             <div className="bg-white rounded-xl p-6 border border-[#f1f2f4] text-center">
               <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg
-                  className="w-6 h-6 text-orange-600"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
+                <svg className="w-6 h-6 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
               </div>
-              <p className="text-2xl font-bold text-gray-900">4.8</p>
-              <p className="text-sm text-gray-600">Community Rating</p>
+              <p className="text-2xl font-bold text-gray-900">4.9</p>
+              <p className="text-sm text-gray-600">Average Rating</p>
             </div>
           </div>
         </>
@@ -2098,9 +2096,9 @@ const Home = ({ showStats, showFilterTab }) => {
     { key: 'analytics', label: 'User Analytics', icon: ChartIcon },
     { key: 'assessments', label: 'Assessment', icon: ClipboardIcon },
     { key: 'career', label: 'UpSkilling Services', icon: BriefcaseIcon },
-    { key: 'community', label: 'Community Forum', icon: ForumIcon },
+    { key: 'community', label: 'Knowledge Hub', icon: ForumIcon },
     { key: 'calendar', label: 'Calendar & Schedule', icon: CalendarIcon },
-    { key: 'mentorship', label: 'Mentorship Program', icon: MentorshipIcon },
+    // { key: 'mentorship', label: 'Mentorship Program', icon: MentorshipIcon },
     { key: 'support', label: 'Help & Support', icon: SupportIcon },
   ]
 
