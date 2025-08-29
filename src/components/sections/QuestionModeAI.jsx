@@ -99,16 +99,27 @@ const QuestionModeAI = forwardRef(
 
             {/* Text Content */}
             {isLoading ? (
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
-                <div
-                  className="w-2 h-2 bg-white rounded-full animate-bounce"
-                  style={{ animationDelay: "0.1s" }}
-                ></div>
-                <div
-                  className="w-2 h-2 bg-white rounded-full animate-bounce"
-                  style={{ animationDelay: "0.2s" }}
-                ></div>
+              <div className="flex flex-col items-center space-y-3">
+                {/* Thinking Animation */}
+                <div className="relative">
+                  <div className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-white/80 rounded-full animate-pulse"></div>
+                    <div 
+                      className="w-2 h-2 bg-white/60 rounded-full animate-pulse"
+                      style={{ animationDelay: "0.3s" }}
+                    ></div>
+                    <div 
+                      className="w-2 h-2 bg-white/40 rounded-full animate-pulse"
+                      style={{ animationDelay: "0.6s" }}
+                    ></div>
+                  </div>
+                  {/* Thought bubble effect */}
+                  <div className="absolute -top-1 -right-1 w-1 h-1 bg-white/30 rounded-full animate-ping"></div>
+                </div>
+                {/* Professor thinking text */}
+                <p className="text-white/90 text-xs font-light animate-pulse">
+                  Professor is thinking...
+                </p>
               </div>
             ) : (
               !answer && (
