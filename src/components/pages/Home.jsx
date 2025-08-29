@@ -212,69 +212,65 @@ const supportInfo = {
   phone: '+1 (555) 123-4567',
 }
 
-// Career Services dummy data
-const dummyJobOpportunities = [
+// UpSkilling Services dummy data
+const upSkillingPrograms = [
   {
     id: 1,
-    title: 'Senior Financial Analyst',
-    company: 'Goldman Sachs',
-    location: 'New York, NY',
-    type: 'Full-time',
-    salary: '$95,000 - $120,000',
-    posted: '2 days ago',
+    title: 'Leadership Development Program',
+    department: 'Management',
+    duration: '6 months',
+    participants: 45,
+    completion: '92%',
   },
   {
     id: 2,
-    title: 'Investment Banking Associate',
-    company: 'JP Morgan Chase',
-    location: 'Chicago, IL',
-    type: 'Full-time',
-    salary: '$110,000 - $140,000',
-    posted: '1 week ago',
+    title: 'Advanced Financial Analysis',
+    department: 'Finance',
+    duration: '3 months',
+    participants: 28,
+    completion: '88%',
   },
   {
     id: 3,
-    title: 'Corporate Finance Manager',
-    company: 'Microsoft',
-    location: 'Seattle, WA',
-    type: 'Full-time',
-    salary: '$130,000 - $160,000',
-    posted: '3 days ago',
+    title: 'Digital Transformation Skills',
+    department: 'Technology',
+    duration: '4 months',
+    participants: 67,
+    completion: '95%',
   },
   {
     id: 4,
-    title: 'Financial Planning Analyst',
-    company: 'Apple Inc.',
-    location: 'Cupertino, CA',
-    type: 'Full-time',
-    salary: '$85,000 - $110,000',
-    posted: '5 days ago',
+    title: 'Strategic Planning & Execution',
+    department: 'Operations',
+    duration: '5 months',
+    participants: 34,
+    completion: '90%',
   },
 ]
 
-const careerResources = [
+const upSkillingResources = [
   {
-    title: 'Resume Builder Tool',
-    description: 'Create professional resumes with AI assistance',
-    icon: '📄',
+    title: 'Skill Assessment Tool',
+    description: 'Identify skill gaps and development opportunities',
+    icon: '📊',
     link: '#',
   },
   {
-    title: 'Interview Preparation',
-    description: 'Practice with mock interviews and get feedback',
-    icon: '🎯',
+    title: 'Learning Path Builder',
+    description: 'Create personalized development roadmaps',
+    icon: '🛤️',
     link: '#',
   },
   {
-    title: 'Career Counseling',
-    description: 'One-on-one sessions with career experts',
-    icon: '💼',
+    title: 'Internal Mentorship',
+    description: 'Connect with senior colleagues for guidance',
+    icon: '👥',
     link: '#',
   },
   {
-    title: 'Salary Negotiation Guide',
-    description: 'Learn how to negotiate your worth',
-    icon: '💰',
+    title: 'Certification Tracking',
+    description: 'Monitor progress and achievements',
+    icon: '🏆',
     link: '#',
   },
 ]
@@ -992,18 +988,18 @@ const Home = ({ showStats, showFilterTab }) => {
               </div>
               <div>
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                  Career Services
+                  UpSkilling Services
                 </h1>
                 <p className="text-gray-600 text-lg">
-                  Your gateway to career success and professional growth
+                  Enhance your team's capabilities and drive organizational growth
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Career Resources */}
+          {/* UpSkilling Resources */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            {careerResources.map((resource, index) => (
+            {upSkillingResources.map((resource, index) => (
               <div
                 key={index}
                 className="bg-white rounded-xl p-6 border border-[#f1f2f4] hover:shadow-sm transition-shadow cursor-pointer"
@@ -1016,76 +1012,59 @@ const Home = ({ showStats, showFilterTab }) => {
                   {resource.description}
                 </p>
                 <button className="text-blue-600 text-sm font-medium hover:text-blue-700">
-                  Get Started →
+                  Explore →
                 </button>
               </div>
             ))}
           </div>
 
-          {/* Job Opportunities */}
+          {/* Active Programs */}
           <div className="bg-white rounded-xl border border-[#f1f2f4] mb-8">
             <div className="p-6 border-b border-gray-100">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-900">
-                  Latest Job Opportunities
+                  Active UpSkilling Programs
                 </h3>
                 <button className="text-blue-600 text-sm font-medium hover:text-blue-700">
-                  View All Jobs
+                  View All Programs
                 </button>
               </div>
             </div>
             <div className="divide-y divide-gray-100">
-              {dummyJobOpportunities.map((job) => (
+              {upSkillingPrograms.map((program) => (
                 <div
-                  key={job.id}
+                  key={program.id}
                   className="p-6 hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <h4 className="font-semibold text-gray-900 mb-1">
-                        {job.title}
+                        {program.title}
                       </h4>
                       <p className="text-blue-600 font-medium mb-2">
-                        {job.company}
+                        {program.department} Department
                       </p>
                       <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
                         <span className="flex items-center gap-1">
-                          <svg
-                            className="w-4 h-4"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                              clipRule="evenodd"
-                            />
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                           </svg>
-                          {job.location}
+                          {program.duration}
                         </span>
                         <span className="flex items-center gap-1">
-                          <svg
-                            className="w-4 h-4"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                              clipRule="evenodd"
-                            />
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
                           </svg>
-                          {job.type}
+                          {program.participants} participants
                         </span>
                       </div>
                       <p className="text-green-600 font-medium text-sm">
-                        {job.salary}
+                        {program.completion} completion rate
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs text-gray-500 mb-3">{job.posted}</p>
                       <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
-                        Apply Now
+                        View Details
                       </button>
                     </div>
                   </div>
@@ -1094,28 +1073,20 @@ const Home = ({ showStats, showFilterTab }) => {
             </div>
           </div>
 
-          {/* Career Stats */}
+          {/* UpSkilling Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-green-600 font-medium text-sm">
-                    Job Placement Rate
+                    Skill Improvement
                   </p>
-                  <p className="text-2xl font-bold text-green-700">94%</p>
-                  <p className="text-green-600 text-xs">of graduates</p>
+                  <p className="text-2xl font-bold text-green-700">87%</p>
+                  <p className="text-green-600 text-xs">average increase</p>
                 </div>
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6 text-green-600"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
+                  <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                 </div>
               </div>
@@ -1124,22 +1095,14 @@ const Home = ({ showStats, showFilterTab }) => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-blue-600 font-medium text-sm">
-                    Average Salary Increase
+                    Employee Engagement
                   </p>
-                  <p className="text-2xl font-bold text-blue-700">35%</p>
-                  <p className="text-blue-600 text-xs">after completion</p>
+                  <p className="text-2xl font-bold text-blue-700">94%</p>
+                  <p className="text-blue-600 text-xs">satisfaction rate</p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6 text-blue-600"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                      clipRule="evenodd"
-                    />
+                  <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                 </div>
               </div>
@@ -1148,18 +1111,14 @@ const Home = ({ showStats, showFilterTab }) => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-purple-600 font-medium text-sm">
-                    Partner Companies
+                    Active Programs
                   </p>
-                  <p className="text-2xl font-bold text-purple-700">150+</p>
-                  <p className="text-purple-600 text-xs">hiring partners</p>
+                  <p className="text-2xl font-bold text-purple-700">12</p>
+                  <p className="text-purple-600 text-xs">across departments</p>
                 </div>
                 <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6 text-purple-600"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
+                  <svg className="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                   </svg>
                 </div>
               </div>
@@ -2138,8 +2097,7 @@ const Home = ({ showStats, showFilterTab }) => {
     { key: 'courses', label: 'Courses', icon: BookIcon },
     { key: 'analytics', label: 'User Analytics', icon: ChartIcon },
     { key: 'assessments', label: 'Assessment', icon: ClipboardIcon },
-    { key: 'users', label: 'User Management', icon: UsersIcon },
-    { key: 'career', label: 'Career Services', icon: BriefcaseIcon },
+    { key: 'career', label: 'UpSkilling Services', icon: BriefcaseIcon },
     { key: 'community', label: 'Community Forum', icon: ForumIcon },
     { key: 'calendar', label: 'Calendar & Schedule', icon: CalendarIcon },
     { key: 'mentorship', label: 'Mentorship Program', icon: MentorshipIcon },
