@@ -138,7 +138,7 @@ const PresentationCard = ({ presentation, onClick }) => {
             <span className="font-lato font-normal text-[12px] leading-[14px] text-[#585858]">
               {presentation?.author || "Unknown Author"}
             </span>
-            {getStatusBadge()}
+            {/* {getStatusBadge()} */}
           </div>
         </div>
       </div>
@@ -264,7 +264,7 @@ const Home = () => {
           </h2>
 
           {/* Tabs */}
-          <div className="flex items-start p-1 w-[234px] h-[32px] bg-white border border-[#E0E2E7] rounded-[6px]">
+          {/* <div className="flex items-start p-1 w-[234px] h-[32px] bg-white border border-[#E0E2E7] rounded-[6px]">
             <button
               onClick={() => setFilter("all")}
               className={`flex justify-center items-center px-[8px] py-[2px] gap-[8px] flex-1 h-[22px] rounded-[4px] cursor-pointer ${
@@ -307,7 +307,7 @@ const Home = () => {
                 Completed
               </span>
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Course Grid */}
