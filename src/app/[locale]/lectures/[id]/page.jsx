@@ -19,7 +19,7 @@ import { useAppHeight } from "@/hooks/useAppHeight";
 import FullscreenController from "@/components/ui/FullscreenController";
 import { getUserDetailsFromToken } from "@/store/utils/token";
 import { getVideoProgress, clearVideoProgress } from "@/utils/videoProgress";
-import { clearAssessmentProgress } from "@/utils/assessmentProgress";
+import { clearAssessmentProgress, isAssessmentValid } from "@/utils/assessmentProgress";
 import { useTranslation } from "react-i18next";
 import PortraitLectureView, { PortraitSkeleton } from "@/components/sections/PortraitLectureView";
 
@@ -237,7 +237,13 @@ const Home = () => {
     };
   }, [isLandscape]);
   const isOnlyVideoMode = videos?.[currentVideoIndex]?.trainer_video === null;
-  const isFinalAssessmentPresent = data?.assessment_details && data.assessment_details.length > 0 && data.assessment_details[0].id ? true : false;
+  const isFinalAssessmentPresent =
+    data?.assessment_details &&
+    data.assessment_details.length > 0 &&
+    isAssessmentValid(data.assessment_details[0]) &&
+    data.assessment_details[0].id
+      ? true
+      : false;
   const showQueryRelatedSlides = data?.presentation_query;
   const liveKitAgentEnabled = data?.interaction_mode === "pyzo_train_convo_ai" || false;
   // Shared video state for synchronization
@@ -501,13 +507,19 @@ const Home = () => {
         // Auto-select assessment if video is completed and has assessments
         if (slideObj?.is_completed) {
           // Check for middle assessments (slide_assessments)
-          if (slideObj?.slide_assessments && slideObj.slide_assessments.length > 0) {
-            const firstAssessment = slideObj.slide_assessments[0];
-            console.log("Auto-selecting middle assessment for completed video:", firstAssessment.id);
-            dispatch(setSelectedAssessmentId(firstAssessment.id));
+          const validMiddleAssessment = slideObj?.slide_assessments?.find(isAssessmentValid);
+          if (validMiddleAssessment) {
+            console.log("Auto-selecting middle assessment for completed video:", validMiddleAssessment.id);
+            dispatch(setSelectedAssessmentId(validMiddleAssessment.id));
           }
-          // Check if this is the last video and there's a final assessment
-          else if (idx === allVideos.length - 1 && data.assessment_details && data.assessment_details.length > 0) {
+          // Check if this is the last video, all videos are completed, and there's a final assessment
+          else if (
+            idx === allVideos.length - 1 &&
+            allVideos.every((v) => v.is_completed) &&
+            data.assessment_details &&
+            data.assessment_details.length > 0 &&
+            isAssessmentValid(data.assessment_details[0])
+          ) {
             const finalAssessment = data.assessment_details[0];
             console.log("Auto-selecting final assessment for completed training:", finalAssessment.id);
             dispatch(setSelectedAssessmentId(finalAssessment.id));

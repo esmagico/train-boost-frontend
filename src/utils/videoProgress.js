@@ -77,7 +77,7 @@ export const getVideoProgress = (presentationId) => {
     if (!stored) return null;
     
     const progressData = JSON.parse(stored);
-    return progressData[presentationId] || null;
+    return progressData[presentationId] || progressData[String(presentationId)] || progressData[Number(presentationId)] || null;
   } catch (error) {
     console.log('Error getting video progress:', error);
     return null;
@@ -91,6 +91,8 @@ export const clearVideoProgress = (presentationId) => {
     
     const progressData = JSON.parse(stored);
     delete progressData[presentationId];
+    delete progressData[String(presentationId)];
+    delete progressData[Number(presentationId)];
     
     if (Object.keys(progressData).length === 0) {
       localStorage.removeItem(VIDEO_PROGRESS_KEY);
@@ -99,5 +101,25 @@ export const clearVideoProgress = (presentationId) => {
     }
   } catch (error) {
     console.log('Error clearing video progress:', error);
+  }
+};
+
+export const isSlideVideoCompleted = (slideId, videos = [], presentationId) => {
+  try {
+    const video = videos?.find((v) => v.slide === slideId);
+    if (!video) return false;
+    if (video.is_completed) return true;
+
+    const progressData = getVideoProgress(presentationId);
+    const slideEntries = progressData?.slide_data?.filter((entry) => entry.slide_id === slideId) || [];
+    const maxLocalDuration =
+      slideEntries.length > 0 ? Math.max(...slideEntries.map((entry) => entry.duration_seconds)) : 0;
+    const apiDuration = video.duration_viewed || 0;
+    const viewedDuration = Math.floor(Math.max(maxLocalDuration, apiDuration));
+    const totalDuration = Math.floor(video.duration || 0);
+
+    return totalDuration > 0 && viewedDuration + 1 >= totalDuration;
+  } catch {
+    return false;
   }
 };
