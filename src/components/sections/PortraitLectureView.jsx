@@ -8,6 +8,8 @@ import back_arrow from "@/assets/svg/back_arrow.svg";
 import sparkles from "@/assets/svg/sparkles.svg";
 import notebook from "@/assets/svg/Notebook Minimalistic.svg";
 import { useLocalizedRouter } from "@/hooks/useLocalizedRouter";
+import { useKeyboardInset } from "@/hooks/useKeyboardInset";
+import { useKeyboardOpen } from "@/hooks/useKeyboardOpen";
 import SlideVideoSection from "./SlideVideoSection";
 import VideoPanel from "./VideoPanel";
 import VideoPlaylist from "./VideoPlaylist";
@@ -272,10 +274,11 @@ const BottomTabBar = ({ activePanel, onToggle }) => {
 
 const ModuleContentPanel = ({ videos, loading, canSkipVideo, assessmentDetails, onClose, topOffset }) => {
   const { t } = useTranslation();
+  const keyboardInset = useKeyboardInset();
   return (
     <div
-      className="absolute inset-x-0 bottom-0 z-20 flex flex-col bg-white"
-      style={{ top: topOffset }}
+      className="absolute inset-x-0 z-20 flex flex-col bg-white"
+      style={{ top: topOffset, bottom: keyboardInset }}
     >
       {/* Panel header with back arrow */}
       <div className="flex items-center gap-3 px-4 py-3 border-b border-border-light shrink-0">
@@ -320,6 +323,8 @@ const AskAssistantInlinePanel = ({
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const keyboardInset = useKeyboardInset();
+  const isKeyboardOpen = useKeyboardOpen();
 
   // Re-render every 300ms to pick up conversationState/liveMessages changes from ref
   const [tick, setTick] = useState(0);
@@ -353,8 +358,13 @@ const AskAssistantInlinePanel = ({
 
   return (
     <div
-      className="absolute inset-x-0 bottom-0 z-20 flex flex-col bg-white"
-      style={{ top: topOffset }}
+      className="absolute inset-x-0 z-20 flex flex-col bg-white transition-[top] duration-150"
+      // While the keyboard is open, let the drawer expand all the way to the
+      // top (covering the slide) instead of staying pinned at topOffset — a
+      // drawer that can only shrink from the bottom runs out of room once the
+      // keyboard is taller than its own slack space, trapping the input
+      // behind the keyboard with nowhere left to go.
+      style={{ top: isKeyboardOpen ? 0 : topOffset, bottom: keyboardInset }}
     >
       {/* Panel header — commented out for now
       <div className="flex items-center gap-2 px-4 py-3 border-b border-border-light shrink-0">

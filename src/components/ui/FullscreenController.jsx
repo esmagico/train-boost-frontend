@@ -97,7 +97,14 @@ const FullscreenController = ({ children, enableAutoFullscreen = true }) => {
   const evaluatePrompt = useCallback(() => {
     if (!enableAutoFullscreen) return;
 
-    const landscape = window.innerWidth > window.innerHeight;
+    // window.innerWidth/innerHeight — and even matchMedia('(orientation: ...)'),
+    // which the CSS spec defines in terms of the viewport, not the device —
+    // all shrink when the on-screen keyboard opens (interactive-widget=resizes-content
+    // makes that resize reliable), which falsely reads as a rotation to
+    // landscape while typing. window.screen.width/height reflect the
+    // physical screen in its current hardware orientation and are
+    // unaffected by the keyboard or any viewport resize.
+    const landscape = window.screen.width > window.screen.height;
     isLandscapeRef.current = landscape;
 
     if (!landscape) {

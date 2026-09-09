@@ -47,7 +47,12 @@ export const useFullscreenOnLandscape = (enabled = true) => {
 
         // Small delay to ensure orientation change is complete
         setTimeout(() => {
-            const isLandscape = window.innerWidth > window.innerHeight;
+            // Use the physical screen dimensions, not the viewport — an
+            // on-screen keyboard shrinks window.innerHeight (and even
+            // matchMedia('(orientation: ...)'), which the CSS spec also
+            // defines in terms of the viewport) without the device actually
+            // rotating. window.screen.width/height are unaffected by that.
+            const isLandscape = window.screen.width > window.screen.height;
             const isFullscreen = document.fullscreenElement ||
                 document.webkitFullscreenElement ||
                 document.mozFullScreenElement ||
