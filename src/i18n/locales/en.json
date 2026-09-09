@@ -250,6 +250,7 @@
     "speaking": "Speaking",
     "listening": "Listening",
     "thinking": "Thinking",
+    "mutedSpeaking": "Muted",
     "askMeAnything": "Ask me anything about the presentation, and I'll help with the answers.",
     "continueLesson": "Continue Lesson",
     "microphoneMuted": "Microphone Muted",
