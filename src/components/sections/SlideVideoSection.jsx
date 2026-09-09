@@ -8,6 +8,9 @@ import Image from "next/image";
 import ResultModal from "../modals/ResultModal";
 import FeedbackModal from "../modals/FeedbackModal";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
+import { isSlideVideoCompleted } from "@/utils/videoProgress";
+import { canAccessFinalAssessment, isAssessmentValid, isAssessmentCompleted } from "@/utils/assessmentProgress";
 
 const SlideVideoSection = React.forwardRef(
   (
@@ -29,7 +32,7 @@ const SlideVideoSection = React.forwardRef(
   ) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const { currentVideoIndex, currentVideoTime, slideNumbers } = useSelector((state) => state.video);
+    const { currentVideoIndex, currentVideoTime, slideNumbers, completedAssessmentIds = [] } = useSelector((state) => state.video);
     const slideVideoRef = useRef(null);
     const preloadSlideVideoRef = useRef(null);
     const videoPlayerContainerRef = useRef(null);
@@ -246,7 +249,8 @@ const SlideVideoSection = React.forwardRef(
             showRemainingDuration={true}
             onVideoEnd={() => {
               const currentVideo = videos[currentVideoIndex];
-              const currentVideoAssessmentId = currentVideo?.slide_assessments?.[0]?.id;
+              const validSlideAssessment = currentVideo?.slide_assessments?.find(isAssessmentValid);
+              const currentVideoAssessmentId = validSlideAssessment?.id;
               if (currentVideoAssessmentId) {
                 dispatch(setSelectedAssessmentId(currentVideoAssessmentId));
                 setAutoPlayEnabled(true);
@@ -258,12 +262,39 @@ const SlideVideoSection = React.forwardRef(
                 setAutoPlayEnabled(true);
               } else {
                 // Last video
-                const isFinalAssessmentPresent =
-                  assessmentDetails && assessmentDetails.length > 0 && assessmentDetails[0].id;
-                if (!isFinalAssessmentPresent) {
+                const canAccessFinal = canAccessFinalAssessment({
+                  videos,
+                  assessmentDetails,
+                  presentationId,
+                  completedAssessmentIds,
+                });
+
+                if (!canAccessFinal) {
+                  const firstIncompleteIdx = videos.findIndex(
+                    (v) =>
+                      !isSlideVideoCompleted(v.slide, videos, presentationId) ||
+                      (v.slide_assessments || [])
+                        .filter(isAssessmentValid)
+                        .some((a) => !isAssessmentCompleted(a, presentationId, completedAssessmentIds))
+                  );
+                  if (firstIncompleteIdx !== -1 && onVideoIndexChange) {
+                    onVideoIndexChange(firstIncompleteIdx);
+                  }
+                  toast.info(t("lectures.completeAllSlidesForAssessment") || "Please complete all previous slides before taking the final assessment.");
+                  return;
+                }
+
+                const isFinalValid =
+                  assessmentDetails &&
+                  assessmentDetails.length > 0 &&
+                  isAssessmentValid(assessmentDetails[0]) &&
+                  assessmentDetails[0].id;
+                if (!isFinalValid) {
                   setShowResultModal(true);
                 }
-                dispatch(setSelectedAssessmentId(assessmentId));
+                if (isFinalValid && assessmentId) {
+                  dispatch(setSelectedAssessmentId(assessmentId));
+                }
               }
             }}
           />

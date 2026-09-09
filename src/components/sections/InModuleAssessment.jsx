@@ -143,7 +143,7 @@ const RolePlayAssessmentView = ({ assessmentData, selectedAssessmentId }) => {
       }
     } catch (err) {
       console.error("Failed to start role play assessment:", err);
-      toast.error("Failed to start the assessment. Please try again.");
+      toast.error(getApiErrorMessage(err, "Failed to start the assessment. Please try again."));
     } finally {
       setIsStarting(false);
       setShowConfirmModal(false);
@@ -365,11 +365,31 @@ const InModuleAssessment = ({ videos = [], assessmentDetails = [], passingScore 
     data: assessmentData,
     isLoading,
     isError,
+    error,
     refetch,
   } = useGetAssessmentQuery(selectedAssessmentId, {
     skip: !selectedAssessmentId || shouldSkipAutoStart,
     refetchOnMountOrArgChange: true,
   });
+
+  const apiErrorMessage = getApiErrorMessage(error, "");
+  const isAttemptsExhaustedError =
+    error?.status === 400 &&
+    (/attempt|max.*attempt|exceed/i.test(apiErrorMessage) ||
+      /attempt/i.test(error?.data?.message || "") ||
+      error?.data?.code === "VALIDATION_ERROR");
+
+  const isAttemptsExhaustedMeta =
+    currentAssessmentMeta?.can_attempt === false ||
+    (typeof currentAssessmentMeta?.max_attempts === "number" &&
+      typeof currentAssessmentMeta?.attempts_used === "number" &&
+      currentAssessmentMeta.max_attempts > 0 &&
+      currentAssessmentMeta.attempts_used >= currentAssessmentMeta.max_attempts);
+
+  const isAttemptsExhausted =
+    isAttemptsExhaustedError ||
+    (isError && isAttemptsExhaustedMeta) ||
+    (!isLoading && !assessmentData && isAttemptsExhaustedMeta);
 
   const [triggerGetAssessment] = useLazyGetAssessmentQuery();
 
@@ -644,6 +664,96 @@ const InModuleAssessment = ({ videos = [], assessmentDetails = [], passingScore 
 
   // Error state
   if (isError || !assessmentData) {
+    if (isAttemptsExhausted) {
+      return (
+        <div className="w-full h-full bg-white rounded-xl flex flex-col overflow-hidden">
+          <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
+            <div className="flex flex-col justify-center items-center p-4 sm:p-6 min-h-full">
+              <div className="w-full max-w-sm flex flex-col items-center text-center gap-4">
+                {/* Attempt limit icon */}
+                <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-7 h-7 text-amber-500"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                </div>
+
+                <div>
+                  <h3 className="text-base font-bold text-gray-900 mb-1">
+                    {t("lectures.attemptsExhausted") || "Maximum Attempts Reached"}
+                  </h3>
+                  <p className="text-[13px] text-gray-500 leading-snug">
+                    {apiErrorMessage ||
+                      t("lectures.attemptsExhaustedDesc") ||
+                      "You have used all available attempts for this assessment."}
+                  </p>
+                </div>
+
+                {/* Attempts / Score Info Card */}
+                {(currentAssessmentMeta?.attempts_used !== undefined ||
+                  currentAssessmentMeta?.last_score !== undefined) && (
+                  <div className="w-full bg-amber-50 border border-amber-200 rounded-xl p-3 text-left">
+                    <div className="flex items-start gap-2.5">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-4 h-4 text-amber-600 shrink-0 mt-0.5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                      </svg>
+                      <div className="text-[12px] text-amber-900 leading-snug space-y-1">
+                        {typeof currentAssessmentMeta?.attempts_used === "number" && (
+                          <p>
+                            <span className="font-semibold">Attempts used:</span>{" "}
+                            {currentAssessmentMeta.attempts_used}
+                            {currentAssessmentMeta.max_attempts
+                              ? ` / ${currentAssessmentMeta.max_attempts}`
+                              : ""}
+                          </p>
+                        )}
+                        {typeof currentAssessmentMeta?.last_score === "number" && (
+                          <p>
+                            <span className="font-semibold">Last score:</span>{" "}
+                            {currentAssessmentMeta.last_score}%{" "}
+                            {currentAssessmentMeta.passed ? (
+                              <span className="text-green-700 font-semibold">(Passed)</span>
+                            ) : (
+                              <span className="text-red-700 font-semibold">(Not Passed)</span>
+                            )}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Action button */}
+                <button
+                  onClick={() => dispatch(setSelectedAssessmentId(null))}
+                  className="py-2 px-6 bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded-xl transition-colors cursor-pointer">
+                  {t("lectures.close") || "Back to Module"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="w-full bg-white rounded-xl flex flex-col overflow-hidden">
         <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
@@ -831,6 +941,32 @@ const InModuleAssessment = ({ videos = [], assessmentDetails = [], passingScore 
     return <RolePlayAssessmentView assessmentData={assessmentData} selectedAssessmentId={selectedAssessmentId} />;
   }
 
+  // Handle empty questions state
+  if (!assessmentData?.questions || assessmentData.questions.length === 0) {
+    return (
+      <div className="w-full h-full bg-white rounded-xl flex flex-col overflow-hidden">
+        <div className="flex-1 overflow-y-auto flex flex-col justify-center items-center p-4 sm:p-6">
+          <div className="w-full max-w-sm flex flex-col items-center text-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400">
+              <HiExclamationCircle className="w-6 h-6" />
+            </div>
+            <h3 className="text-base font-semibold text-gray-800">
+              {assessmentData?.title || t("lectures.assessment")}
+            </h3>
+            <p className="text-xs text-gray-500">
+              {t("lectures.noQuestionsAvailable") || "No questions available for this assessment."}
+            </p>
+            <button
+              onClick={() => dispatch(setSelectedAssessmentId(null))}
+              className="mt-2 px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary-hover transition-colors">
+              {t("lectures.close") || "Close"}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full h-full bg-white rounded-xl flex flex-col overflow-hidden">
       {/* Scrollable Assessment Container */}
@@ -863,8 +999,8 @@ const InModuleAssessment = ({ videos = [], assessmentDetails = [], passingScore 
                 if (isSubjective) {
                   return (
                     <TextArea
-                      value={answers[currentQuestion.question_id] || ""}
-                      onChange={(e) => handleAnswer(currentQuestion.question_id, e.target.value)}
+                      value={answers[currentQuestion?.question_id] || ""}
+                      onChange={(e) => handleAnswer(currentQuestion?.question_id, e.target.value)}
                       placeholder={t("lectures.typeAnswerHere")}
                     />
                   );
@@ -875,8 +1011,8 @@ const InModuleAssessment = ({ videos = [], assessmentDetails = [], passingScore 
                     <input
                       type="text"
                       className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:border-accent text-sm text-gray-800"
-                      value={answers[currentQuestion.question_id] || ""}
-                      onChange={(e) => handleAnswer(currentQuestion.question_id, e.target.value)}
+                      value={answers[currentQuestion?.question_id] || ""}
+                      onChange={(e) => handleAnswer(currentQuestion?.question_id, e.target.value)}
                       placeholder={t("lectures.typeAnswerHere") || "Type your answer here..."}
                     />
                   );
@@ -894,7 +1030,7 @@ const InModuleAssessment = ({ videos = [], assessmentDetails = [], passingScore 
                 return (
                   <div className="space-y-1 sm:space-y-2">
                     {Object.entries(optionsObj).map(([option, text]) => {
-                      const currentAns = answers[currentQuestion.question_id] || "";
+                      const currentAns = answers[currentQuestion?.question_id] || "";
                       let isChecked = false;
                       if (isMultiCorrect) {
                         const selectedArr = Array.isArray(currentAns) ? currentAns : (currentAns ? currentAns.split(",").map(s => s.trim()) : []);
@@ -910,9 +1046,9 @@ const InModuleAssessment = ({ videos = [], assessmentDetails = [], passingScore 
                           const newArr = selectedArr.includes(option)
                             ? selectedArr.filter((item) => item !== option)
                             : [...selectedArr, option];
-                          handleAnswer(currentQuestion.question_id, newArr.join(","));
+                          handleAnswer(currentQuestion?.question_id, newArr.join(","));
                         } else {
-                          handleAnswer(currentQuestion.question_id, option);
+                          handleAnswer(currentQuestion?.question_id, option);
                         }
                       };
 
@@ -926,7 +1062,7 @@ const InModuleAssessment = ({ videos = [], assessmentDetails = [], passingScore 
                             }`}>
                             <input
                               type={isMultiCorrect ? "checkbox" : "radio"}
-                              name={`question-${currentQuestion.question_id}`}
+                              name={`question-${currentQuestion?.question_id}`}
                               value={option}
                               checked={isChecked}
                               onChange={handleOptionToggle}

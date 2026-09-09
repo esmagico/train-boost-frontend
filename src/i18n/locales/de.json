@@ -234,6 +234,8 @@
     "pleaseTryAgain": "Bitte versuchen Sie es später erneut",
     "retry": "Wiederholen",
     "close": "Schließen",
+    "attemptsExhausted": "Maximale Versuche erreicht",
+    "attemptsExhaustedDesc": "Sie haben alle verfügbaren Versuche für diese Bewertung aufgebraucht.",
     "assessment": "Bewertung",
     "questionCount": "Frage {{current}} von {{total}}",
     "typeAnswerHere": "Geben Sie hier Ihre Antwort ein...",

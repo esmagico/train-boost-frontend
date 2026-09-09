@@ -25,7 +25,8 @@ import QuestionModeAI from "./QuestionModeAI";
 import ChatUI from "./ChatUI";
 import { getUserDetailsFromToken } from "@/store/utils/token";
 import { usePostHog } from "@/hooks/usePostHog";
-import { updateVideoProgress, startVideoSession } from "@/utils/videoProgress";
+import { updateVideoProgress, startVideoSession, isSlideVideoCompleted } from "@/utils/videoProgress";
+import { canAccessFinalAssessment, isAssessmentValid, isAssessmentCompleted } from "@/utils/assessmentProgress";
 import redirecting_logo from "@/assets/svg/redirecting.svg";
 import Image from "next/image";
 import VideoPlayerContainer from "@/components/VideoPlayerContainer";
@@ -146,6 +147,7 @@ const VideoPanel = forwardRef(
       currentVideoTime,
       showChat,
       productRecommendations,
+      completedAssessmentIds = [],
     } = useSelector((state) => state.video);
     const { capture } = usePostHog();
     const isQuestionModeRef = useRef(isQuestionMode);
@@ -765,7 +767,8 @@ const VideoPanel = forwardRef(
         const nextVideoIndex = currentVideoIndex + 1;
         const nextVideo = videos[nextVideoIndex];
         const currentVideo = videos[currentVideoIndex];
-        const currentVideoAssessmentId = currentVideo?.slide_assessments?.[0]?.id;
+        const validSlideAssessment = currentVideo?.slide_assessments?.find(isAssessmentValid);
+        const currentVideoAssessmentId = validSlideAssessment?.id;
         if (currentVideoAssessmentId) {
           console.log(currentVideoAssessmentId, "currentVideoAssessmentId");
           dispatch(setSelectedAssessmentId(currentVideoAssessmentId));
@@ -816,12 +819,48 @@ const VideoPanel = forwardRef(
           });
         }
       } else {
+        const currentVideo = videos[currentVideoIndex];
+        const validSlideAssessment = currentVideo?.slide_assessments?.find(isAssessmentValid);
+        const currentVideoAssessmentId = validSlideAssessment?.id;
+        if (currentVideoAssessmentId) {
+          console.log(currentVideoAssessmentId, "currentVideoAssessmentId");
+          dispatch(setSelectedAssessmentId(currentVideoAssessmentId));
+          return;
+        }
+
+        const canAccessFinal = canAccessFinalAssessment({
+          videos,
+          assessmentDetails,
+          presentationId,
+          completedAssessmentIds,
+        });
+
+        if (!canAccessFinal) {
+          const firstIncompleteIdx = videos.findIndex(
+            (v) =>
+              !isSlideVideoCompleted(v.slide, videos, presentationId) ||
+              (v.slide_assessments || [])
+                .filter(isAssessmentValid)
+                .some((a) => !isAssessmentCompleted(a, presentationId, completedAssessmentIds))
+          );
+          if (firstIncompleteIdx !== -1) {
+            dispatch(setCurrentVideoIndex(firstIncompleteIdx));
+            dispatch(setCurrentSlide(videos[firstIncompleteIdx]?.slide));
+            dispatch(setCurrentVideoTime(0));
+          }
+          toast.info(t("lectures.completeAllSlidesForAssessment") || "Please complete all previous slides before taking the final assessment.");
+          return;
+        }
+
         // setShowRedirectPopup(true);
-        if (!isFinalAssessmentPresent) {
+        const isFinalValid = isFinalAssessmentPresent && isAssessmentValid(assessmentDetails?.[0]);
+        if (!isFinalValid) {
           setShowResultModal(true);
         }
         dispatch(setAutoPlayEnabled(false));
-        dispatch(setSelectedAssessmentId(assessmentId));
+        if (isFinalValid && assessmentId) {
+          dispatch(setSelectedAssessmentId(assessmentId));
+        }
       }
     };
 

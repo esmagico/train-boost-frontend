@@ -8,8 +8,14 @@ import {
 } from "@/store/features/videoSlice";
 import { usePostHog } from "@/hooks/usePostHog";
 import { getUserDetailsFromToken } from "@/store/utils/token";
-import { getVideoProgress } from "@/utils/videoProgress";
-import { isAssessmentCompletedLocally } from "@/utils/assessmentProgress";
+import { getVideoProgress, isSlideVideoCompleted } from "@/utils/videoProgress";
+import {
+  isAssessmentCompletedLocally,
+  isAssessmentCompleted,
+  canAccessFinalAssessment,
+  canAccessSlideAssessment,
+  isAssessmentValid,
+} from "@/utils/assessmentProgress";
 import { useParams } from "next/navigation";
 import playlist_completed_icon from "@/assets/svg/playlist_completed.svg";
 import Image from "next/image";
@@ -61,12 +67,15 @@ const VideoPlaylist = ({
   };
 
   const isVideoCompleted = (slideId) => {
-    const viewedDuration = Math.floor(hasLocalProgress(slideId));
-    const totalDuration = Math.floor(videos.find((video) => video.slide === slideId)?.duration || 0);
-    const isAlreadyCompleted = videos.find((video) => video.slide === slideId)?.is_completed;
-    const isCompleted = isAlreadyCompleted || (totalDuration > 0 && viewedDuration + 1 >= totalDuration);
-    return isCompleted;
+    return isSlideVideoCompleted(slideId, videos, presentationId);
   };
+
+  const canAccessFinal = canAccessFinalAssessment({
+    videos,
+    assessmentDetails,
+    presentationId,
+    completedAssessmentIds,
+  });
 
   // Auto-scroll to current video when currentVideoIndex changes (horizontal layout)
   useEffect(() => {
@@ -196,6 +205,19 @@ const VideoPlaylist = ({
             .map((video, index) => {
               const items = [];
 
+              const hasIncompletePreviousAssessments = videos
+                .slice(0, index)
+                .some((v) =>
+                  (v.slide_assessments || [])
+                    .filter(isAssessmentValid)
+                    .some((a) => !isAssessmentCompleted(a, presentationId, completedAssessmentIds))
+                );
+              const isVideoLocked =
+                isQuestionMode ||
+                showChat ||
+                hasIncompletePreviousAssessments ||
+                (!canSkipVideo && hasLocalProgress(video.slide) === 0);
+
               // Add the video item
               items.push(
                 <div
@@ -205,7 +227,7 @@ const VideoPlaylist = ({
                     if (isGridLayout) itemRefs.current[`video-${index}`] = el;
                   }}
                   onClick={() => {
-                    if (isQuestionMode || showChat || (!canSkipVideo && hasLocalProgress(video.slide) === 0)) {
+                    if (isVideoLocked) {
                       return;
                     }
                     handleVideoSelect(index, true);
@@ -225,7 +247,7 @@ const VideoPlaylist = ({
                       : "bg-white border border-border-light hover:bg-bg-item-hover"
                   }
                 ${
-                  isQuestionMode || showChat || (!canSkipVideo && hasLocalProgress(video.slide) === 0)
+                  isVideoLocked
                     ? "opacity-50 cursor-not-allowed"
                     : "cursor-pointer"
                 }`}>
@@ -256,13 +278,23 @@ const VideoPlaylist = ({
               );
 
               // Add assessment items if they exist for this video
-              if (video.slide_assessments && video.slide_assessments.length > 0) {
-                video.slide_assessments.forEach((assessment, assessmentIndex) => {
+              const validSlideAssessments = (video.slide_assessments || []).filter(isAssessmentValid);
+              if (validSlideAssessments.length > 0) {
+                validSlideAssessments.forEach((assessment, assessmentIndex) => {
                   const assessmentId = assessment.id; // Use the actual assessment ID from the data
-                  const isAssessmentCompletedLocal =
-                    completedAssessmentIds.includes(assessmentId) ||
-                    isAssessmentCompletedLocally(presentationId, assessmentId) ||
-                    assessment.attempts_used > 0;
+                  const isAssessmentCompletedLocal = isAssessmentCompleted(
+                    assessment,
+                    presentationId,
+                    completedAssessmentIds
+                  );
+                  const canAccessSlide = canAccessSlideAssessment({
+                    videos,
+                    videoIndex: index,
+                    assessmentIndex,
+                    assessment,
+                    presentationId,
+                    completedAssessmentIds,
+                  });
                   const isAssessmentSelected = selectedAssessmentId === assessmentId;
 
                   items.push(
@@ -272,7 +304,7 @@ const VideoPlaylist = ({
                         if (isGridLayout) itemRefs.current[`assessment-${assessmentId}`] = el;
                       }}
                       onClick={() => {
-                        if (isQuestionMode || showChat || (!canSkipVideo && hasLocalProgress(video.slide) === 0)) {
+                        if (isQuestionMode || showChat || !canAccessSlide) {
                           return;
                         }
                         // Handle assessment click
@@ -296,7 +328,7 @@ const VideoPlaylist = ({
                           : "bg-white border border-border-light hover:bg-bg-item-hover"
                       }
                     ${
-                      isQuestionMode || showChat || (!canSkipVideo && !isVideoCompleted(video?.slide))
+                      isQuestionMode || showChat || !canAccessSlide
                         ? "opacity-50 cursor-not-allowed"
                         : "cursor-pointer"
                     }`}>
@@ -339,7 +371,7 @@ const VideoPlaylist = ({
             .flat()}
 
           {/* Add final assessment from assessment_details if present */}
-          {assessmentDetails && assessmentDetails.length > 0 && (
+          {assessmentDetails && assessmentDetails.length > 0 && isAssessmentValid(assessmentDetails[0]) && (
             <div
               key="final-assessment"
               ref={(el) => {
@@ -347,13 +379,7 @@ const VideoPlaylist = ({
               }}
               onClick={() => {
                 // Check if final assessment should be accessible
-                if (
-                  isQuestionMode ||
-                  showChat ||
-                  (!canSkipVideo &&
-                    !assessmentDetails[0]?.passed &&
-                    !isVideoCompleted(videos[videos.length - 1]?.slide))
-                ) {
+                if (isQuestionMode || showChat || !canAccessFinal) {
                   return;
                 }
                 const finalAssessment = assessmentDetails[0]; // Take the first assessment
@@ -376,7 +402,7 @@ const VideoPlaylist = ({
               ${
                 isQuestionMode ||
                 showChat ||
-                (!canSkipVideo && !assessmentDetails[0]?.passed && !isVideoCompleted(videos[videos.length - 1]?.slide))
+                !canAccessFinal
                   ? "opacity-50 cursor-not-allowed"
                   : "cursor-pointer"
               }`}>
@@ -404,9 +430,7 @@ const VideoPlaylist = ({
               </div>
 
               {/* Final Assessment Status indicator - Show green checkmark if passed */}
-              {(completedAssessmentIds.includes(assessmentDetails[0]?.id) ||
-                isAssessmentCompletedLocally(presentationId, assessmentDetails[0]?.id) ||
-                assessmentDetails[0]?.passed) && (
+              {isAssessmentCompleted(assessmentDetails[0], presentationId, completedAssessmentIds) && (
                 <Image
                   src={playlist_completed_icon}
                   alt="Completed"

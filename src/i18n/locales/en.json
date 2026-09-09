@@ -234,6 +234,8 @@
     "pleaseTryAgain": "Please try again later",
     "retry": "Retry",
     "close": "Close",
+    "attemptsExhausted": "Maximum Attempts Reached",
+    "attemptsExhaustedDesc": "You have used all available attempts for this assessment.",
     "assessment": "Assessment",
     "questionCount": "Question {{current}} of {{total}}",
     "typeAnswerHere": "Type your answer here...",
