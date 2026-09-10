@@ -508,8 +508,9 @@ const InModuleAssessment = ({ videos = [], assessmentDetails = [], passingScore 
     if (isLocked) {
       return (
         <div className="w-full h-full bg-white rounded-xl flex flex-col overflow-hidden">
-          <div className="flex-1 overflow-y-auto flex flex-col justify-center items-center p-3 sm:p-5 md:p-6">
-            <div className="w-full max-w-sm sm:max-w-md flex flex-col items-center text-center">
+          <div className="flex-1 min-h-0 overflow-y-auto flex flex-col items-center p-3 sm:p-5 md:p-6">
+            {/* Auto margins center short content without clipping the top when it overflows. */}
+            <div className="w-full max-w-sm sm:max-w-md my-auto shrink-0 flex flex-col items-center text-center">
               {/* Clean Lock Icon Badge */}
               <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-[#EFF6FF] border border-[#BFDBFE] text-[#2762EA] flex items-center justify-center mb-1.5 sm:mb-2.5 shrink-0">
                 <svg
@@ -575,8 +576,9 @@ const InModuleAssessment = ({ videos = [], assessmentDetails = [], passingScore 
     // Role Play - Not started yet
     return (
       <div className="w-full h-full bg-white rounded-xl flex flex-col overflow-hidden">
-        <div className="flex-1 overflow-y-auto flex flex-col justify-center items-center p-3 sm:p-5 md:p-6">
-          <div className="w-full max-w-sm sm:max-w-md flex flex-col items-center text-center">
+        <div className="flex-1 min-h-0 overflow-y-auto flex flex-col items-center p-3 sm:p-5 md:p-6">
+          {/* Auto margins center short content without clipping the top when it overflows. */}
+          <div className="w-full max-w-sm sm:max-w-md my-auto shrink-0 flex flex-col items-center text-center">
             {/* Clean Icon Badge */}
             <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-[#EFF6FF] border border-[#BFDBFE] text-[#2762EA] flex items-center justify-center mb-1.5 sm:mb-2.5 shrink-0">
               <svg

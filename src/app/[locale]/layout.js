@@ -51,6 +51,16 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  viewportFit: "cover",
+  // Without this, mobile keyboards on Chrome/Android only shift the *visual*
+  // viewport (visualViewport.height) while the layout viewport (and every
+  // 100vh/100dvh/var(--app-height) container anchored to it) stays the same
+  // size — leaving a gap of stale, now-offscreen layout below focused inputs
+  // whenever the keyboard opens. "resizes-content" makes the layout viewport
+  // itself shrink with the keyboard, so 100dvh/--app-height-based layouts
+  // (PortraitLectureView, ChatUI's input footer, etc.) actually resize instead
+  // of leaving blank space behind.
+  interactiveWidget: "resizes-content",
 };
 
 export default async function RootLayout({ children, params }) {
@@ -60,10 +70,6 @@ export default async function RootLayout({ children, params }) {
   return (
     <html lang={locale}>
       <head>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
-        />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Atlas" />

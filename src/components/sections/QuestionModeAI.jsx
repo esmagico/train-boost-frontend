@@ -73,7 +73,7 @@ const QuestionModeAI = forwardRef(
                     return (
                       <div
                         key={ring}
-                        className={`absolute rounded-full border-2 ${borderOpacity} animate-wave`}
+                        className={`absolute rounded-full border-2 ${borderOpacity} animate-wave pointer-events-none`}
                         style={{
                           width: isMobile ? '40px' : '64px',
                           height: isMobile ? '40px' : '64px',
@@ -134,7 +134,7 @@ const QuestionModeAI = forwardRef(
                     ? (liveKitAgentState === "listening"
                         ? (isUserMuted ? "" : t("lectures.listening"))
                         : liveKitAgentState === "speaking"
-                          ? (isAgentVoiceMuted ? t("lectures.thinking") : t("lectures.speaking"))
+                          ? (isAgentVoiceMuted ? t("lectures.mutedSpeaking") : t("lectures.speaking"))
                           : t("lectures.thinking"))
                     : isAudioPlaying
                       ? t("lectures.speaking")
