@@ -35,7 +35,7 @@ jobs:
   build-and-push:
     # Trigger on push (dev), release (prod), PR merged into prod, or manual dispatch
     if: github.event_name != 'pull_request' || github.event.pull_request.merged == true
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -224,7 +224,7 @@ jobs:
   update-manifest:
     needs: build-and-push
     if: always() && needs.build-and-push.result == 'success' && (needs.build-and-push.outputs.target_branch == 'dev' || needs.build-and-push.outputs.target_branch == 'prod')
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Kubernetes Config Repo
         uses: actions/checkout@v4
